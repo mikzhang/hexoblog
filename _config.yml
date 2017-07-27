@@ -74,9 +74,9 @@ pagination_dir: page
 ## Themes: https://hexo.io/themes/
 #theme: landscape
 # alpha-dust ref: https://github.com/klugjo/hexo-theme-alpha-dust
-theme: alpha-dust
+#theme: alpha-dust
 # ref: https://github.com/iTimeTraveler/hexo-theme-hipaper
-#theme: hipaper
+theme: hipaper
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
