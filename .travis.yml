@@ -1,14 +1,16 @@
 language: node_js
 node_js: stable
+
 # S: Build Lifecycle
 install:
   - npm install
-  - npm install hexo-renderer-ejs
 
 #before_script:
  # - npm install -g gulp
+
 script:
   - hexo g
+
 after_script:
   - cd ./public
   - git init
@@ -18,9 +20,11 @@ after_script:
   - git commit -m "Update docs"
   - git push --force --quiet "https://${tkn4TravisCI}@${GH_REF}" master:master
 # E: Build LifeCycle
+
 branches:
   only:
     - srcbr
+
 env:
  global:
    - GH_REF: github.com/mikzhang/mikzhang.github.io
