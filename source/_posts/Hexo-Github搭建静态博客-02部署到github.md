@@ -21,12 +21,16 @@ Repo name: your_user_name.github.io
 ## 第一种方法
 
 ### 生成网站
->$ hexo generate
+```
+$ hexo generate
+```
 
 此时会将/source的.md文件生成到/public中，形成网站的静态文件。
 
 ### 开启本地服务器
->$ hexo server
+```
+$ hexo server
+```
 
 输入http://localhost:4000 即可查看网站。指定端口号方式: hexo server -p 3000,此时，输入http://localhost:3000 查看网站。
 
@@ -44,13 +48,17 @@ deploy:
 ```
 
 部署命令
->$ hexo deploy
+```
+$ hexo deploy
+```
 
 部署网站之前需要生成静态文件，也可以用$ hexo generate -d直接生成并部署。
 到此为止完成网站的雏形。输入yourname.github.io可访问博客主页。例如：http://your_user_name.github.io/ 。
 
 部署的时候若出错，加这一步:
->$ npm install hexo-deployer-git --save
+```
+$ npm install hexo-deployer-git --save
+```
 
 PS:这种方式，如果需要多台电脑之间操作blog，会很麻烦。个人建议使用第二种方式。
 
