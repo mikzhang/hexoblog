@@ -3,8 +3,6 @@ node_js: stable
 # S: Build Lifecycle
 install:
   - npm install
-  - npm install hexo-generator-search
-  - npm install hexo-generator-searchdb
 #before_script:
  # - npm install -g gulp
 script:

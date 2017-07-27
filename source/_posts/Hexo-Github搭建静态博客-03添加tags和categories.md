@@ -31,12 +31,14 @@ comments: false
 创建分类页和Tag页是差不多的步骤。
 >$ hexo new page "categories"
 
->\---
+```
+---
 title: categories
 date: 2017-06-22 12:39:04
 type: "categories"
 comments: false
-\---
+---
+```
 
 ### 添加菜单
 
