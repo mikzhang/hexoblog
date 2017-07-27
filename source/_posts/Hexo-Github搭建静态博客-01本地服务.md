@@ -1,10 +1,10 @@
 ---
 title: Hexo+Github搭建静态博客-01本地服务
 date: 2017-07-27 16:26:21
+categories: Hexo
 tags:
+     - Hexo
 ---
-
-# Hexo+Github搭建静态博客-01本地服务
 
 ## 安装Git和NodeJS环境
 

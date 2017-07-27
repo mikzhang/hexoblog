@@ -1,10 +1,10 @@
 ---
 title: Hexo+Github搭建静态博客-02部署到github
 date: 2017-07-27 17:33:51
+categories: Hexo
 tags:
+     - Hexo
 ---
-
-# Hexo+Github搭建静态博客-02部署到github
 
 将hexo部署到github上，这篇文章中我将介绍两种方法
 
@@ -55,7 +55,7 @@ deploy:
 PS:这种方式，如果需要多台电脑之间操作blog，会很麻烦。个人建议使用第二种方式。
 
 
-##第二种方法
+## 第二种方法
 
 第一种方法，我们需要每次写完文章后自己进行编译静态文件并部署到  github 上, 太麻烦，可借助 Travis CI 持续集成构建项目来完成自动编译部署。
 
