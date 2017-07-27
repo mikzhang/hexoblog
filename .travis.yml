@@ -21,4 +21,4 @@ branches:
     - srcbr
 env:
  global:
-   - GH_REF: github.com/mikzhang/hexoblog.git
+   - GH_REF: github.com/mikzhang/mikzhang.github.io
