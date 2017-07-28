@@ -7,7 +7,8 @@ title: Ran's Blog
 subtitle:
 description:
 author: Ran
-language: zh
+#language: zh
+language: zh-Hans
 timezone: Asia/Shanghai
 
 # URL
@@ -77,9 +78,17 @@ pagination_dir: page
 #theme: alpha-dust
 # ref: https://github.com/iTimeTraveler/hexo-theme-hipaper
 #theme: hipaper
-theme: hiero
+#ref: https://github.com/iissnan/hexo-theme-next
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type:
+
+# Local Search for next
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
