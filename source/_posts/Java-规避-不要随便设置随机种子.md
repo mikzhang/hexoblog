@@ -1,7 +1,7 @@
 ---
 title: Java_规避_不要随便设置随机种子
 date: 2017-07-28 11:58:48
-catagories: Java
+categories: Java
 tags:
     - Java
     - 规避

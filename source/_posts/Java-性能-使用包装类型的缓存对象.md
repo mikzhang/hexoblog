@@ -1,7 +1,7 @@
 ---
 title: Java_性能_使用包装类型的缓存对象
 date: 2017-07-28 11:58:48
-catagories: Java
+categories: Java
 tags:
     - Java
     - 性能

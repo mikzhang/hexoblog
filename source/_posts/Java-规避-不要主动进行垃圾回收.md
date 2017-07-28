@@ -1,10 +1,10 @@
 ---
 title: Java_规避_不要主动进行垃圾回收
 date: 2017-07-28 11:58:48
-catagories: Java
+categories: Java
 tags:
     - Java
-    - 危险
+    - 规避
 comments: false
 ---
 
