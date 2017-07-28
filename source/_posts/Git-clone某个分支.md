@@ -3,16 +3,16 @@ title: Git_clone某个分支
 date: 2017-07-28 11:48:07
 categories: Git
 tags:
-     -Git
+     - Git
 ---
 
-##clone 某个分支：
+## clone 某个分支：
 git clone -b srcbr git://github.com/xxx/xxx.git
 
-##clone所有分支
+## clone所有分支
 git clone git://github.com/xxx/xxx.git
 
-##List or delete (if used with -d) the remote-tracking branches.
+## List or delete (if used with -d) the remote-tracking branches.
 ```
 git branch -r           
 * master
@@ -21,5 +21,5 @@ git branch -r
   origin/b1
 ```
 
-##Switch branches or restore working tree files.
+## Switch branches or restore working tree files.
 git checkout b1
