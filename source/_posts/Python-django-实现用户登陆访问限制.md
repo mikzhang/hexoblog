@@ -86,7 +86,7 @@ If you are writing custom views for Django’s admin (or need the same authoriza
 ```python
 from django.contrib.auth.decorators import permission_required
 ...
-@permission_required('xxx.view_myview')
+@permission_required('应用名.权限标识')
 def my_view(request):
     ...
 ```
