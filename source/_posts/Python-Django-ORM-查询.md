@@ -34,9 +34,7 @@ def search(request):
 ```
 
 ## django使用Q来实现动态可变条件的或查询
-```python
-
-
+```
 from django.db.models import Q
 
 # 1.固定条件的或查询
@@ -85,6 +83,7 @@ Class New(models.Model):
 #自定义表名
     class Meta:
         db_table = 'New'
+```
 
 #### 查询字段隐射到模型字段（Mapping query fields to model fields）
 
@@ -115,7 +114,7 @@ Fields may also be left out（left out：忽视，不考虑；被遗忘），这
 ...
 John Smith
 Jane Jones
-
+```
 这个例子其实检索了三个字段，一个主键(必需)、一个原始SQL字段、一个需求字段。这里主键字段不能省略，否则会出错
 
 #### 传递参数(Passing parameters into raw() )
