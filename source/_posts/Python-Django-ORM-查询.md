@@ -119,11 +119,11 @@ Jane Jones
 
 #### 传递参数(Passing parameters into raw() )
 
-如果需要执行参数化查询,您可以使用params参数原始()
-'''
+如果需要执行参数化查询,您可以使用params参数
+```
 >>> query = 'SELECT * FROM myapp_person WHERE last_name = %s' % lname
 >>> Person.objects.raw(query)
-'''
+```
 注意： 必须使用[参数]，否则出错
 
 
