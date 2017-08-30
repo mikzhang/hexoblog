@@ -552,7 +552,7 @@ vendors:
 
   # Internal version: 1.0.6
   # See: https://github.com/ftlabs/fastclick
-  fastclick: cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js
+  fastclick: //cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js
 
   # Internal version: 1.9.7
   # See: https://github.com/tuupola/jquery_lazyload
