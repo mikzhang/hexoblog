@@ -2626,7 +2626,11 @@ Name:  miki
 Age  50
 ```
 
-PS: 官网陈述, 关键字参数既可以用标识符(```name=```)的形式, 也可以用字典(```**{'key1', value1, 'key2', value2}```)的形式
+PS: 
+```
+官网陈述, 关键字参数既可以用标识符(name=)的形式, 也可以用字典(**{'key1', value1, 'key2', value2})的形式
+```
+
 ```
 keyword argument: an argument preceded by an identifier (e.g. name=) in a function call or passed as a value in a dictionary preceded by **. For example, 3 and 5 are both keyword arguments in the following calls to complex():
 
