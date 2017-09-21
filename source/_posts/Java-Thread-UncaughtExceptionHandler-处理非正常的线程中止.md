@@ -1,5 +1,5 @@
 ---
-title: Java-Thread-UncaughtExceptionHandler--处理非正常的线程中止
+title: Java-Thread-UncaughtExceptionHandler-处理非正常的线程中止
 date: 2017-09-13 19:15:33
 categories: Java
 tags:
@@ -8,6 +8,8 @@ tags:
 ---
 
 当单线程的程序发生一个未捕获的异常时我们可以采用try...catch进行异常的捕获,但是在多线程环境中,线程抛出的异常是不能用try...catch捕获的,这样就有可能导致一些问题的出现,比如异常的时候无法回收一些系统资源,或者没有关闭当前的连接等等。
+
+<!-- more -->
 
 首先来看一个示例:
 ```java
