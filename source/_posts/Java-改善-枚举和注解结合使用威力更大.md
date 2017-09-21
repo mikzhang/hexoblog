@@ -126,3 +126,5 @@ enum CommonIdentifier implements Identifier {
 ref:
 [http://www.cnblogs.com/DreamDrive/p/5640900.html](http://www.cnblogs.com/DreamDrive/p/5640900.html)
 
+<!-- more -->
+

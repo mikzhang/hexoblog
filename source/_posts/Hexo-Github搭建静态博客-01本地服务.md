@@ -7,6 +7,8 @@ tags:
 comments: false
 ---
 
+<!-- more -->
+
 ## 安装Git和NodeJS环境
 
 因为hexo需要依赖Git和NodeJs，所以需要先安装环境。

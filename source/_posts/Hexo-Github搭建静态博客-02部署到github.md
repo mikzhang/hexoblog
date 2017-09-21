@@ -9,6 +9,8 @@ comments: false
 
 将hexo部署到github上，这篇文章中我将介绍两种方法
 
+<!-- more -->
+
 ## github准备工作
 
 ### 注册账号

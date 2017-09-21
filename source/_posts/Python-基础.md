@@ -7,6 +7,8 @@ tags:
 ---
 
 
+<!-- more -->
+
 ## Python 入门
 
 

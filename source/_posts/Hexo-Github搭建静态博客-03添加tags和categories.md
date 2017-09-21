@@ -9,6 +9,8 @@ comments: false
 
 之前我们已经写了怎么安装设置Hexo和怎么部署到gitHub上，下面我们说一下怎么完善我们的blog，今天先介绍下怎么添加分类和标签页面
 
+<!-- more -->
+
 ### 创建Tag页面
 ```
 $ hexo new page "tags"

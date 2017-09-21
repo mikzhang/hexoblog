@@ -8,6 +8,8 @@ tags:
 ---
 
 
+<!-- more -->
+
 ## 模糊查询
 ```python
 def search(request):

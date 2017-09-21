@@ -7,6 +7,8 @@ tags:
     - 性能
 ---
 
+<!-- more -->
+
 ## 问题
 
 对一个字符串拼接有三种方法:加号,contact方法,StringBuffer或者StringBuilder的append方法,其中加号是最常用的.其他两种方式偶尔会出现在一些开源项目中,那么这三者有什么区别?

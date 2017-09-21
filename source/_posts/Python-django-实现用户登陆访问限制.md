@@ -8,6 +8,8 @@ tags:
 comments: false
 ---
 
+<!-- more -->
+
 ## Limiting access to logged-in users
 ### The raw way
 The simple, raw way to limit access to pages is to check [request.user.is_authenticated](https://docs.djangoproject.com/en/1.10/ref/contrib/auth/#django.contrib.auth.models.User.is_authenticated) and either redirect to a login page:

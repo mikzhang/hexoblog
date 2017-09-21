@@ -9,6 +9,8 @@ comments: false
 ---
 
 
+<!-- more -->
+
 ## 问题
 开发中经常用到Arrays和Collections这两个工具类. 在数组和列表之间进行切换.非常方便.但是也会遇到一些问题.
 看代码:

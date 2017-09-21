@@ -9,6 +9,8 @@ comments: false
 ---
 
 
+<!-- more -->
+
 ## 标识接口
 在Java中，RandomAccess和Cloneable、Serializable一样都是标识接口，不需要任何实现，只是用来表明其实现类具有某种特质的，实现了Cloneable表明可以被拷贝，实现了Serializable接口表明被序列化了，实现了RandomAccess则表明这个类可以随机存取。
 ArrayList数组实现了RandomAccess接口（随机存取接口），标识着ArrayList是一个可以随机存取的列表，即元素之间没有关联，即两个位置相邻的元素之间没有相互依赖关系，可以随机访问和存储。

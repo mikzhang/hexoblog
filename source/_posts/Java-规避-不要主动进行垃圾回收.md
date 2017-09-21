@@ -10,6 +10,8 @@ comments: false
 
 ref: [http://blog.csdn.net/p106786860/article/details/9167411](http://blog.csdn.net/p106786860/article/details/9167411)
 
+<!-- more -->
+
 ## 建议 
 不要调用system.gc，即使经常出现内存溢出也不要调用，内存溢出是可分析的，是可以查找原因的，GC可不是一个好招数。
 

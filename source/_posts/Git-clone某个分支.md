@@ -6,6 +6,8 @@ tags:
      - Git
 ---
 
+<!-- more -->
+
 ## clone 某个分支：
 git clone -b srcbr git://github.com/xxx/xxx.git
 

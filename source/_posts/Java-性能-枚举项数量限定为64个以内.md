@@ -166,3 +166,5 @@ JumboEnumSet类把枚举项按照64个元素一组拆分成了多组，每组都
 ref:
 [http://km.java.tedu.cn/news/163367.html](http://km.java.tedu.cn/news/163367.html)
 
+<!-- more -->
+

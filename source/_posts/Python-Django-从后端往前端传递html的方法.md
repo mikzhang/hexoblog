@@ -25,3 +25,5 @@ mark_safe这个函数就是确认这段函数是安全的，不是恶意攻击�
 
 ref:
 [http://www.jianshu.com/p/5b304cb7c397](http://www.jianshu.com/p/5b304cb7c397)
+<!-- more -->
+

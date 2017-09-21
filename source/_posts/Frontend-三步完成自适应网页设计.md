@@ -9,6 +9,10 @@ tags:
 自适应网页设计近来很流行，如果你接触比较少请参见 [responsive sites](http://webdesignerwall.com/trends/inspiration-fluid-responsive-design)。当然，对一个新手来说可能听起来有点复杂，其实它比你想象的简单多了。这里是一个快速教程，通过学习你会自适应网页和media queries的基本原理（前提你有css基础）。
 [demo](http://webdesignerwall.com/demo/responsive-design/index.html)
 
+<!-- more -->
+
+<!-- more -->
+
 ## Step 1：Meta 标签
 
 为了适应屏幕，不少移动浏览器都会把HTML页面置于较大视口宽度（一般会大于屏幕宽度），你可以使用viewport meta标签来设定。以下viewport meta标签告诉浏览器视口宽度等于设备屏幕宽度，且不进行初始缩放：
