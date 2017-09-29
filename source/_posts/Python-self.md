@@ -6,7 +6,7 @@ tags:
     - Python
 ---
 
-刚开始学习Python的类写法的时候觉得很是麻烦,slef 为什么定义时需要而调用时又不需要,为什么不能内部简化从而减少我们敲击键盘的次数？你看完这篇文章后就会明白所有的疑问。
+首先明确的是self只有在类的方法中才会有，独立的函数或方法是不必带有self的。self在定义类的方法时是必须有的，虽然在调用时不必传入相应的参数。
 
 <!-- more -->
 
@@ -27,6 +27,20 @@ t.prt()
 <class '__main__.Test'>
 ```
 从上面的例子中可以很明显的看出,self代表的是类的实例。而self.class则指向类。
+
+再举个栗子
+```python
+class Person:
+     def _init_(self,name):
+          self.name=name
+     def sayhello(self):
+          print 'My name is:',self.name
+p=Person('Bill')
+p1=Person('Tom')
+print p
+print p1
+```
+在上述例子中，self指向Person的实例p。 为什么不是指向类本身呢，如果self指向类本身，那么当有多个实例对象时，self指向哪一个呢
 
 ## self不必非写成self
 
@@ -139,6 +153,59 @@ self in Desc: <__main__.Desc object at 0x000000000223E208>
 ```
 题外话:由于在很多时候描述符类中仍然需要知道调用该描述符的实例是谁,所以在描述符类中存在第二个参数ins,用来表示调用它的类实例,所以t.x时可以看到第三行中的运行结果中第二项为<main.Test object at 0x0000000002A570B8>。而采用Test.x进行调用时,由于没有实例,所以返回None。
 
+## 从OO的本质理解python中的self
+
+举个栗子，假设我要对用户的数据进行操作，用户的数据包含name和age。如果用面向过程的话，实现出来是下面这样子的。
+```pyhon
+def user_init(user,name,age): 
+  user['name'] = name 
+  user['age'] = age 
+  
+def set_user_name(user, x): 
+  user['name'] = x 
+  
+def set_user_age(user, x): 
+  user['age'] = x 
+  
+def get_user_name(user): 
+  return user['name'] 
+  
+def get_user_age(user): 
+  return user['age'] 
+  
+myself = {} 
+user_init(myself,'kzc',17) 
+print get_user_age(myself) 
+set_user_age(myself,20) 
+print get_user_age(myself) 
+```
+可以看到，对用户的各种操作，都要传user参数进去。
+如果用面向对象的话，就不用每次把user参数传来传去，把相关的数据和操作绑定在一个地方，在这个类的各个地方，可以方便的获取数据。
+之所以可以在类中的各个地方访问数据，本质就是绑定了self这个东西，它方法的第一个参数，当然可以不叫self，叫其它名字，self只不过是个约定。
+下面是面向对象的实现，可以看到，结构化多了，清晰可读。
+```python
+class User(object): 
+  def __init__(self,name,age): 
+    self.name = name 
+    self.age = age 
+  
+  def SetName(self,name): 
+    self.name = name 
+  
+  def SetAge(self,age): 
+    self.age = age 
+  
+  def GetName(self): 
+    return self.name 
+  
+  def GetAge(self): 
+    return self.age 
+  
+u = User('kzc',17) 
+print u.GetName() 
+print u.GetAge() 
+```
+
 ## 总结
 
 - self在定义时需要定义,但是在调用时会自动传入。
@@ -147,4 +214,5 @@ self in Desc: <__main__.Desc object at 0x000000000223E208>
 
 ref:
 [http://python.jobbole.com/81921/](http://python.jobbole.com/81921/)
+[http://www.jb51.net/article/85871.htm](http://www.jb51.net/article/85871.htm)
 
