@@ -178,7 +178,7 @@ enum Season {
 运行输出: 春
 */
 ```
-其枚举项是英文的,描述是英文的,这样使其描述更加准确.方便了多个协作者共同引用常量.若不考虑描述的使用(即访问getDes方法),它与如下定义的描述很相似.
+其枚举项是英文的,描述是英文的,这样使其描述更加准确.方便了多个协作者共同引用常量.若不考虑描述的使用(即访问getDesc方法),它与如下定义的描述很相似.
 ```java
 interface Season{
     //春
@@ -226,6 +226,14 @@ java.util.EnumSet和java.util.EnumMap是两个枚举集合。EnumSet保证集合
 关于枚举的实现细节和原理请参考：
 
 参考资料：《ThinkingInJava》第四版
+
+**注意: 枚举类型对象之间的值比较，是可以使用==，直接来比较值，是否相等的，不是必须使用equals方法的**
+见 Enum 源码
+```java
+public final boolean equals(Object other) {
+    return this==other;
+}
+```
 
 ref:
 [http://blog.lichengwu.cn/java/2011/09/26/the-usage-of-enum-in-java/](http://blog.lichengwu.cn/java/2011/09/26/the-usage-of-enum-in-java/)
