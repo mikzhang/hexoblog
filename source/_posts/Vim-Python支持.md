@@ -18,4 +18,5 @@ Vim 集成 Python 编程环境时, 需要 Python 支持, 但有的环境并不�
 4. 在命令终端输入:sudo update-alternatives –config vim
 {% asset_img 20161029201825239.png %}
 我这里是第三项属于python，第二项属于python3，故想打开哪一项支持就输入它的编号就可以了（0，1，2，3）。
+5. 想知道Vim中使用的Python版本，你可以在编辑器中运行: python import sys; print(sys.version)
 
