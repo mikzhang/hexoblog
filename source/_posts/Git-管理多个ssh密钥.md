@@ -196,58 +196,61 @@ ssh -T git@192.168.1.222
 此时需要输入刚才生成SSH-KEY时输入的私钥密码，输入后自行观察信息判断是否连接成功。
 
 比如Github的信息是：
+```
 Hi yanzhenjie! You've successfully authenticated, but GitHub does not provide shell access.
-1
+```
 比如Gitlib的信息是：
+```
 Welcome to GitLab, YanZhenjie!
-1
+```
+
 添加SSH到SSH-Agent时报错
 
 如果执行ssh-add ...命令提示如下错误：
-
+```
 Could not open a connection to your authentication agent.
-1
+```
 那么请执行eval $(ssh-agent)命令后再重试，如果还不行，请再执行ssh-agent bash命令后重试。 
 ref:
 [http://blog.csdn.net/yanzhenjie1003/article/details/69487932?locationNum=4&fps=1](http://blog.csdn.net/yanzhenjie1003/article/details/69487932?locationNum=4&fps=1)
 
 
-踩坑:
+## 踩坑:
 直接 clone git协议的链接，提示 permission denied..., 网友说不是自己建的库,git clone http: ,自己建的库 git clone git:
 至于具体原理 ref: http://blog.csdn.net/liangpz521/article/details/21534849
-ran@ranux:~/Documents/caidanmao_src$ git clone git@git.hualala.com:CaiDanMao/caidanmao-service-wechat.git
-Cloning into 'caidanmao-service-wechat'...
-The authenticity of host 'git.hualala.com (61.149.179.190)' can't be established.
+ran@ranux:~/Documents/xxx_src$ git clone git@git.xxx.com:xxx/xxx-service-wechat.git
+Cloning into 'xxx-service-wechat'...
+The authenticity of host 'git.xxx.com (61.149.179.190)' can't be established.
 RSA key fingerprint is SHA256:dk7bjq40xJ9oEFm4NS7Uo+lDvgVPilONMLheB6suFB0.
 Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added 'git.hualala.com,61.149.179.190' (RSA) to the list of known hosts.
-git@git.hualala.com's password: 
+Warning: Permanently added 'git.xxx.com,61.149.179.190' (RSA) to the list of known hosts.
+git@git.xxx.com's password: 
 Permission denied, please try again.
-git@git.hualala.com's password: 
-Connection to git.hualala.com closed by remote host.
+git@git.xxx.com's password: 
+Connection to git.xxx.com closed by remote host.
 fatal: Could not read from remote repository.
 
 Please make sure you have the correct access rights
 and the repository exists.
-ran@ranux:~/Documents/caidanmao_src$ git clone git@git.hualala.com:CaiDanMao/caidanmao-service-wechat.git
-Cloning into 'caidanmao-service-wechat'...
-The authenticity of host 'git.hualala.com (61.149.179.190)' can't be established.
+ran@ranux:~/Documents/xxx_src$ git clone git@git.xxx.com:xxx/xxx-service-wechat.git
+Cloning into 'xxx-service-wechat'...
+The authenticity of host 'git.xxx.com (61.149.179.190)' can't be established.
 RSA key fingerprint is SHA256:dk7bjq40xJ9oEFm4NS7Uo+lDvgVPilONMLheB6suFB0.
 Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added 'git.hualala.com,61.149.179.190' (RSA) to the list of known hosts.
-git@git.hualala.com's password: 
+Warning: Permanently added 'git.xxx.com,61.149.179.190' (RSA) to the list of known hosts.
+git@git.xxx.com's password: 
 Permission denied, please try again.
-git@git.hualala.com's password: 
+git@git.xxx.com's password: 
 
-ran@ranux:~/Documents/caidanmao_src$ git clone http://git.hualala.com/CaiDanMao/caidanmao-service-wechat.git
-Cloning into 'caidanmao-service-wechat'...
-Username for 'http://git.hualala.com': zhangran@hualala.com
-Password for 'http://zhangran@hualala.com@git.hualala.com': 
-fatal: Authentication failed for 'http://git.hualala.com/CaiDanMao/caidanmao-service-wechat.git/'
-ran@ranux:~/Documents/caidanmao_src$ git clone http://git.hualala.com/CaiDanMao/caidanmao-service-wechat.git
-Cloning into 'caidanmao-service-wechat'...
-Username for 'http://git.hualala.com': zhangran
-Password for 'http://zhangran@git.hualala.com': 
+ran@ranux:~/Documents/xxx_src$ git clone http://git.xxx.com/xxx/xxx-service-wechat.git
+Cloning into 'xxx-service-wechat'...
+Username for 'http://git.xxx.com': xxx@xxx.com
+Password for 'http://xxx@xxx.com@git.xxx.com': 
+fatal: Authentication failed for 'http://git.xxx.com/xxx/xxx-service-wechat.git/'
+ran@ranux:~/Documents/xxx_src$ git clone http://git.xxx.com/xxx/xxx-service-wechat.git
+Cloning into 'xxx-service-wechat'...
+Username for 'http://git.xxx.com': xxx
+Password for 'http://xxx@git.xxx.com': 
 remote: Counting objects: 825, done.
 remote: Compressing objects: 100% (330/330), done.
 remote: Total 825 (delta 276), reused 739 (delta 256)
