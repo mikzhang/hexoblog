@@ -50,7 +50,6 @@ cd nginx-1.7.7 #进入源码包
 ./configure --prefix=/usr/local/nginx --conf-path=/etc/nginx/nginx.conf
 ```
 其中我们通过--prefix制定了安装路径，通过--conf-path制定了配置文件的具体位置。注意:不是所有的程序的configure参数都是一样的 可以使用 ./configure --help查看详细参数说明。如果该程序所依赖的库在当前系统中没有安装，则会导致configure最后报错，遇到这种情况就需要你先安装依赖库。
-
 5. 执行make命令，编译程序
 ```
 make
