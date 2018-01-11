@@ -69,7 +69,7 @@ make install
 ```
 export PATH=$PATH:/path/to/somewhere　　#记得是可执行文件所在的目录，路径中不要包含可执行文件。
 ```
-然后执行 :
+然后执行
 ```
 source /etc/profile #是我们的修改生效 　　　
 ```
