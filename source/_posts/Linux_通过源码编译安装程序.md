@@ -31,7 +31,7 @@ linux程序的存放目录大致有三个地方:
 
 ## 编译安装源程序
 
-安装步骤:
+步骤:
 
 1. 使用如下命令查看当前是否安装了gcc编译器，没有可以先用yum安装gcc
 ```
@@ -49,7 +49,7 @@ cd nginx-1.7.7 #进入源码包
 ```
 ./configure --prefix=/usr/local/nginx --conf-path=/etc/nginx/nginx.conf
 ```
-其中我们通过--prefix制定了安装路径，通过--conf-path制定了配置文件的具体位置。注意:不是所有的程序的configure参数都是一样的 可以使用 ./configure --help查看详细参数说明。如果该程序所依赖的库在当前系统中没有安装，则会导致configure最后报错，遇到这种情况就需要你先安装依赖库。
+    其中我们通过--prefix制定了安装路径，通过--conf-path制定了配置文件的具体位置。注意:不是所有的程序的configure参数都是一样的 可以使用 ./configure --help查看详细参数说明。如果该程序所依赖的库在当前系统中没有安装，则会导致configure最后报错，遇到这种情况就需要你先安装依赖库。
 5. 执行make命令，编译程序
 ```
 make
@@ -62,7 +62,7 @@ make install
 
 ## 配置程序
 
-步骤如下:
+步骤:
 
 1. 修改PATH环境变量，以能够识别此程序的二进制文件路径；
 修改/etc/profile文件，在文件中 添加
@@ -83,3 +83,22 @@ ldconfig
 ln -s /usr/local/nginx/include  /usr/include/yourname
 ```
 4. 可能程序还提供了帮助文档，一般是安装目录下的man目录，为了我们可以使用man命令查看我们程序的帮助文档，我们需要:在/etc/man.config中添加一条MANPATH，指向我们的文档目录
+
+## 删除软件
+
+方法一、如果你知道要删除软件的具体名称，可以使用               
+```
+sudo apt-get remove --purge 软件名称  
+sudo apt-get autoremove --purge 软件名称 
+```
+
+方法二、如果不知道要删除软件的具体名称，可以使用
+```
+dpkg --get-selections | grep ‘软件相关名称’
+sudo apt-get purge 一个带core的package，如果没有带core的package，则是情况而定。
+```
+
+清理残留数据
+```
+dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P 
+```
