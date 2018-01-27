@@ -89,3 +89,8 @@ But, if you really really want 2 change python2 2 python3 on your system, do as 
 sudo update-alternatives --install /usr/bin/python python /usr/local/lib/python2.7 1
 sudo update-alternatives --install /usr/bin/python python /usr/local/lib/python3.x 2
 ```
+
+then
+```
+sudo update-alternatives --config python
+```
