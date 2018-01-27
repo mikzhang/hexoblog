@@ -80,5 +80,12 @@ ran@ranux:~$ sudo update-alternatives --config python3
 
 then specify the latest python3 as default by select numbers.
 
+## swith python2 2 python3
 ps: do not do anything on python2, as many system tools may rely on it.
 if you want 2 use python3 instead of python2, suggest you use virtualenv.
+But, if you really really want 2 change python2 2 python3 on your system, do as follows
+
+```
+sudo update-alternatives --install /usr/bin/python python /usr/local/lib/python2.7 1
+sudo update-alternatives --install /usr/bin/python python /usr/local/lib/python3.x 2
+```
