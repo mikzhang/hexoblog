@@ -64,6 +64,21 @@ s 选择并切换会话；在同时开启了多个会话时使用
 ~ 列出提示信息缓存；其中包含了之前tmux返回的各种提示信息
 ```
 
+### 会话
+
+| Command                 | Description               |
+| ----------------------- | ------------------------- |
+| `tmux ls` | 等同`tmux list-sessions`, 显示所有会话 |
+| `tmux new -s <session-name>` | 新建会话并指定会话名称（建议制定会话名称，以便了解该会话用途）|
+| `tmux new` | 新建会话（不指定会话名称）|
+| `tmux a` | 等同`tmux attach`, 接入上一个会话 | 
+| `tmux a -t <session-name>` | 接入指定名称的会话 |
+| `tmux detach` | 断开当前会话（还可以在会话中使用快捷键：`control+b，再按d`）|
+| `tmux kill-session -t session-name` | 关闭指定会话 |
+| `tmux kill-session -a -t session-name` | 关闭除指定会话外的所有会话 |
+| `tmux switch -t session_name` | 切换会话, 也可在会话中 `control+b，再按s 显示会话列表，再进行会话切换` |
+| `tmux kill-server` | 销毁所有会话并停止tmux |
+
 ### 窗口操作
 
 ```
@@ -97,4 +112,7 @@ Alt+o 逆时针旋转当前窗口的面板
 Ctrl+o 顺时针旋转当前窗口的面板
 ```
 
-ref: [https://www.cnblogs.com/kevingrace/p/6496899.html](https://www.cnblogs.com/kevingrace/p/6496899.html)
+ref: 
+[https://www.cnblogs.com/kevingrace/p/6496899.html](https://www.cnblogs.com/kevingrace/p/6496899.html)
+[https://robots.thoughtbot.com/a-tmux-crash-course](https://robots.thoughtbot.com/a-tmux-crash-course)
+[https://www.cnblogs.com/aioria13/p/7191080.html](https://www.cnblogs.com/aioria13/p/7191080.html)
