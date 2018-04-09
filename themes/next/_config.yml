@@ -624,6 +624,6 @@ images: images
 version: 5.1.1
 
 # for pay
-reward_comment: 坚持原创技术分享，您的支持将鼓励我继续创作！
+  reward_comment: 如果这篇文章帮助了你, 请不吝回报 :)
 wechatpay: /images/wechatpay.png
 alipay: /images/alipay.jpg
