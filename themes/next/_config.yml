@@ -622,3 +622,8 @@ images: images
 
 # Theme version
 version: 5.1.1
+
+# for pay
+reward_comment: 坚持原创技术分享，您的支持将鼓励我继续创作！
+wechatpay: /source/images/wechatpay.png
+alipay: /source/images/alipay.jpg
