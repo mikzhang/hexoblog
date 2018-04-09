@@ -116,3 +116,6 @@ ref:
 [https://www.cnblogs.com/kevingrace/p/6496899.html](https://www.cnblogs.com/kevingrace/p/6496899.html)
 [https://robots.thoughtbot.com/a-tmux-crash-course](https://robots.thoughtbot.com/a-tmux-crash-course)
 [https://www.cnblogs.com/aioria13/p/7191080.html](https://www.cnblogs.com/aioria13/p/7191080.html)
+[Tmux Resurrect & Continuum: 持久保存 Tmux 会话](https://www.linuxidc.com/Linux/2015-07/120304.htm)
+[tmux的使用方法和个性化配置](https://blog.csdn.net/robertbaker/article/details/42172203)
+[十分钟学会 tmux](https://www.cnblogs.com/kaiye/p/6275207.html)
