@@ -38,5 +38,6 @@ with open(os.path.join(parent_path, '楞严经.md'), 'w') as mdf:
     mdf.write('---\n')
     mdf.write('\n')
     mdf.write('\n')
-    for i in range(0, len(pic_files)):
-        mdf.write(md_pic_link(pic_files[i])+'\n')
+    sorted_pic_files = sorted(pic_files)
+    for i in range(0, len(sorted_pic_files)):
+        mdf.write(md_pic_link(sorted_pic_files[i])+'\n')
