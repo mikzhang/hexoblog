@@ -21,7 +21,7 @@ def get_pic_files(root_dir):
 
 def md_pic_link(f):
     #pic_link = '{%% asset_img %s %%}' % f
-    pic_link = '![%s](楞严经/%s)' % (f,f)
+    pic_link = '![%s](%s)' % (f,f)
     return pic_link
 
 pic_files = get_pic_files(root_dir)
