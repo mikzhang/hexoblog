@@ -233,6 +233,10 @@ if __name__ == '__main__':
 python manage.py runserver
 ```
 
+## 调试
+
+![004.jpg](004.jpg)
+
 ref:
 [https://www.jianshu.com/p/cc90a14856c5](https://www.jianshu.com/p/cc90a14856c5)
 [https://www.jianshu.com/p/9352b191f059](https://www.jianshu.com/p/9352b191f059)
