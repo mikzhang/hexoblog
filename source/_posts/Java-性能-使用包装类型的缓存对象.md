@@ -5,7 +5,10 @@ categories: Java
 tags:
     - Java
     - 性能
+    - 包装类型
 ---
+
+使用包装类型的缓存对象
 
 <!-- more -->
 

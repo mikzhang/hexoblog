@@ -7,6 +7,8 @@ tags:
 comments: false
 ---
 
+Hexo+Github搭建静态博客-01本地服务
+
 <!-- more -->
 
 ## 安装Git和NodeJS环境

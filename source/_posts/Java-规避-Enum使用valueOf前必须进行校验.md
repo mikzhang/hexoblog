@@ -1,12 +1,17 @@
 ---
-title: Java_规避_使用valueOf前必须进行校验
+title: Java_规避_Enum使用valueOf前必须进行校验
 date: 2017-07-31 11:58:48
 categories: Java
 tags:
     - Java
+    - Enum
     - 规避
 comments: false
 ---
+
+避_Enum使用valueOf前必须进行校验
+
+<!-- more -->
 
 每个枚举都是java.lang.Enum的子类,都可以访问Enum类提供的方法,比如hashCode(),name(),valueOf()等.....
 

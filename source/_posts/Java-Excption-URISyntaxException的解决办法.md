@@ -7,6 +7,9 @@ tags:
     - Exception
 ---
 
+URISyntaxException的解决办法
+
+<!-- more -->
 
 近日在用HttpClient访问抓取汇率时，为了省力，直接采用
 String url = "http://api.liqwei.com/currency/?exchange=usd|cny&count=1";
@@ -26,5 +29,4 @@ HttpGet httpget = new HttpGet(uri);
 ref:
 [http://qsfwy.iteye.com/blog/1926302](http://qsfwy.iteye.com/blog/1926302)
 
-<!-- more -->
 

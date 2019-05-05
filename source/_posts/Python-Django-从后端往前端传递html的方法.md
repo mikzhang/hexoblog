@@ -6,6 +6,11 @@ tags:
      - Python
      - Django
 ---
+
+Python_Django_从后端往前端传递html的方法
+
+<!-- more -->
+
 django从view向template传递HTML字符串的时候，django默认不渲染此HTML，原因是为了防止这段字符串里面有恶意攻击的代码。
 
 如果需要渲染这段字符串，需要在view里这样写：
@@ -25,5 +30,4 @@ mark_safe这个函数就是确认这段函数是安全的，不是恶意攻击�
 
 ref:
 [http://www.jianshu.com/p/5b304cb7c397](http://www.jianshu.com/p/5b304cb7c397)
-<!-- more -->
 

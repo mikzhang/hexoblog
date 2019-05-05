@@ -8,6 +8,7 @@ tags:
 comments: false
 ---
 
+_避开基本类型数组转换列表陷阱
 
 <!-- more -->
 
