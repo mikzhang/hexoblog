@@ -4,9 +4,14 @@ date: 2017-07-31 11:58:48
 categories: Java
 tags:
     - Java
+    - Enum
     - 改善
 comments: false
 ---
+
+_枚举和注解结合使用威力更大
+
+<!-- more -->
 
 注解的写法和接口很类似,都采用了关键字interface,而且都不能有实现代码,常量定义默认都是pulbic static final类型的.
 他们的主要不同点是:注解在interface前加上@字符,而且不能继承,不能实现,这经常会给我们的开发带来一些障碍.
@@ -117,14 +122,13 @@ enum CommonIdentifier implements Identifier {
     CommonIdentifier level() default CommonIdentifier.Admin;
 }
 
-/*
+//*
 打印输出:
 您无权访问
-*/
+*//
 ```
 
 ref:
 [http://www.cnblogs.com/DreamDrive/p/5640900.html](http://www.cnblogs.com/DreamDrive/p/5640900.html)
 
-<!-- more -->
 

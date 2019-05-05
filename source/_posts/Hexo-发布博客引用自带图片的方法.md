@@ -6,6 +6,10 @@ tags:
      - Hexo
 ---
 
+Hexo_发布博客引用自带图片的方法
+
+<!-- more -->
+
 有两种方法，第一种是不用插件的情况，第二种是使用一种hexo的插件。
 
 无论哪种方法都有一个共同的前提：修改_config.yml配置文件post_asset_folder项为true。
