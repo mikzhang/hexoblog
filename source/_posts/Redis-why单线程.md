@@ -1,7 +1,7 @@
 ---
 title: Redis-why单线程
 date: 2017-09-22 00:00:00
-categories: Java
+categories: Redis
 tags:
     - Redis
 ---
