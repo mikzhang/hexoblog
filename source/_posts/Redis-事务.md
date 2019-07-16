@@ -7,6 +7,7 @@ tags:
 ---
 
 Redis-事务
+推荐看这篇: [Redis 设计与实现](https://redisbook.readthedocs.io/en/latest/feature/transaction.html)
 
 <!-- more -->
 
