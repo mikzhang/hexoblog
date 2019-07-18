@@ -4,7 +4,6 @@ date: 2017-10-01 10:03:37
 categories: Linux
 tags:
     - Linux
-    - Mint
 ---
 
 here is the tutorial for resetting your panel menu in Linux Mint

@@ -1,10 +1,10 @@
 ﻿---
-title: Java-LinkedList-LinkedList的局限
+title: Java-LinkedList的局限
 date: 2017-09-29 00:00:00
 categories: Java
 tags:
     - Java
-    - LinkedList
+    - linklist
 ---
 
 java.util.LinkedList是双向链表,这个大家都知道,比如Java的基础面试题喜欢问ArrayList和LinkedList的区别,在什么场景下用。

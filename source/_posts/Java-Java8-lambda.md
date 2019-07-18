@@ -4,7 +4,7 @@ date: 2018-09-21 21:31:57
 categories: Java
 tags:
     - Java
-    - Java*8
+    - Java8
     - Lambda
 ---
 

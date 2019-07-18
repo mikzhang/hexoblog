@@ -4,7 +4,7 @@ date: 2017-10-01 10:03:37
 categories: Python
 tags:
     - Python
-    - Pycharm
+    - IDE
 ---
 
 Pycharm 创建Flask项目

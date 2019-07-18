@@ -1,9 +1,9 @@
 ---
 title: Editplus-Theme支持
 date: 2018-01-17 10:03:37
-categories: Editplus
+categories: IDE
 tags:
-    - Editplus
+    - IDE
 ---
 
 Editplus 配色方案改为 Monokai

@@ -4,7 +4,7 @@ date: 2018-01-11 00:00:00
 categories: Java
 tags:
     - Java
-    - Pattern
+    - regularExpression
 ---
 
 Pattern与Matcher一起合作.Matcher类提供了对正则表达式的分组支持,以及对正则表达式的多次匹配支持. 单独用Pattern只能使用Pattern.matcher(String regex,CharSequence input)一种最基础最简单的匹配。
