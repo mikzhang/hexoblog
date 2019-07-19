@@ -3,9 +3,8 @@ title: JUC-CLH
 date: 2017-09-22 00:00:00
 categories: JUC
 tags:
-    - CLH
     - Java
-    - Thread
+    - concurrency
 ---
 
 这篇我们来给大家聊聊AQS中核心同步队列（CLH）。

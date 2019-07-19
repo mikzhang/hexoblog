@@ -4,7 +4,6 @@ date: 2017-09-22 00:00:00
 categories: Redis
 tags:
     - Redis
-    - Redisson
     - 分布式锁
 ---
 

@@ -3,10 +3,8 @@ title: JUC-AQS
 date: 2017-09-22 00:00:00
 categories: JUC
 tags:
-    - JUC
     - Java
-    - Thread
-    - AQS
+    - concurrency
 ---
 
 这篇文章，我们聊一聊Java并发中的核武器， AQS底层实现。
