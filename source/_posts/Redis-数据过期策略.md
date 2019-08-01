@@ -14,7 +14,7 @@ Redis中有个设置时间过期的功能，即对存储在Redis数据库中的�
 
 Redis对存储值的过期处理实际上是针对该值的键（key）处理的，即时间的设置也是设置key的有效时间。Expires字典保存了所有键的过期时间，Expires也被称为过期字段。
 
-_- expire key time(以秒为单位)--这是最常用的方式
+- _expire key time(以秒为单位)--这是最常用的方式
 - setex(String key, int seconds, String value)--字符串独有的方式
 
 注：
