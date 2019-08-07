@@ -2225,6 +2225,76 @@ Python字典包含了以下内置方法:
 
 ref:[http://www.runoob.com/python/python-dictionary.html](http://www.runoob.com/python/python-dictionary.html)
 
+### 字典合并的几种方法
+
+#### update()
+```
+>>> dic1={'Bob':70, 'Asia':99}
+>>> dic2={'Sery':80, 'Jony':92}
+>>>
+>>> dic3={}
+>>> dic3.update(dic1)
+>>> dic3.update(dic2)
+>>> print(dic3)
+{'Bob': 70, 'Asia': 99, 'Sery': 80, 'Jony': 92}
+>>>
+```
+
+```
+>>> dic1={'Bob':70, 'Asia':99}
+>>> dic2={'Sery':80, 'Jony':92}
+>>>
+>>> dic3={}
+>>> dic3=dic1.copy()
+>>> print(dic3)
+{'Bob': 70, 'Asia': 99}
+>>> dic3.update(dic2)
+>>> print(dic3)
+{'Bob': 70, 'Asia': 99, 'Sery': 80, 'Jony': 92}
+>>>
+```
+
+#### dict(d1, `**`d2) or dict(`**`d1, `**`d2)
+Python 3.5 之后
+```
+>>> dic1={'Bob':70, 'Asia':99}
+>>> dic2={'Sery':80, 'Jony':92}
+>>>
+>>> dic3={}
+>>> dic3=dict(dic1, **dic2)
+>>> print(dic3)
+{'Bob': 70, 'Asia': 99, 'Sery': 80, 'Jony': 92}
+>>>
+```
+
+```
+>>> dic1={'Bob':70, 'Asia':99}
+>>> dic2={'Sery':80, 'Jony':92}
+>>>
+>>> dic3={}
+>>> dic3=dict(**dic1, **dic2)
+>>> print(dic3)
+{'Bob': 70, 'Asia': 99, 'Sery': 80, 'Jony': 92}
+>>>
+```
+
+#### 常规处理方法
+```
+>>> dic1={'Bob':70, 'Asia':99}
+>>> dic2={'Sery':80, 'Jony':92}
+>>>
+>>> dic3={}
+>>> for k,v in dic1.items():
+...     dic3[k]=v
+...
+>>> for k,v in dic2.items():
+...     dic3[k]=v
+...
+>>> print(dic3)
+{'Bob': 70, 'Asia': 99, 'Sery': 80, 'Jony': 92}
+>>>
+```
+
 
 ## Python 日期和时间
 Python 程序能用很多方式处理日期和时间，转换日期格式是一个常见的功能。
