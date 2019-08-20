@@ -254,4 +254,6 @@ public class FruitRun {
 */
 ```
 
+//TODO 更好的文章推荐 https://www.jianshu.com/p/28edf5352b63?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
+
 ref: https://www.cnblogs.com/acm-bingzi/p/javaAnnotation.html
