@@ -7,7 +7,7 @@ tags:
     - Lombok
 ---
 
-以前的Java项目中，充斥着太多不友好的代码：POJO的getter/setter/toString；异常处理；I/O流的关闭操作等等，这些样板代码既没有技术含量，又影响着代码的美观，Lombok应运而生
+Lombok是一款Java开发插件，使得Java开发者可以通过其定义的一些注解来消除业务工程中冗长和繁琐的代码，尤其对于简单的Java模型对象（POJO）。在开发环境中使用Lombok插件后，Java开发人员可以节省出重复构建，诸如hashCode和equals这样的方法以及各种业务对象模型的accessor和ToString等方法的大量时间。对于这些方法，它能够在编译源代码期间自动帮我们生成这些方法，并没有如反射那样降低程序的性能。
 
 <!-- more -->
 
@@ -18,7 +18,7 @@ tags:
 <dependency>
     <groupId>org.projectlombok</groupId>
     <artifactId>lombok</artifactId>
-    <version>1.16.18</version>
+    <version>1.18.2-RELEASE</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -67,6 +67,15 @@ Lombok就是一个实现了"JSR 269 API"的程序。在使用javac的过程中�
 
 #### @Accessors
 作用于类, 使 bean 支持链式风格
+这个注解要搭配@Getter与@Setter使用，用来修改默认的setter与getter方法的形式
+
+@Accessors有三个参数可以使用
+
+- chain 链式的形式
+- fluent 流式的形式
+- prefix 生成指定前缀的属性的getter与setter方法，并且生成的getter与setter方法时会去除前缀
+
+
 ```
 @Accessors(chain = true)
 @Setter
@@ -83,10 +92,74 @@ Student student = new Student()
         .setName("zs");
 ```
 这样就完成了一个对于 bean 来讲很友好的链式操作
+```
+@Accessors(fluent = true)
+@Setter
+@Getter
+public class Student {
+    private String name;
+    private int age;
+}
+```
+测试代码：
+```
+Student student = new Student()
+        .age(24)
+        .name("zs");
+```
+
+@Accessors(prefix = “f”) 意义不大, 略
 
 #### @ToString
 作用于类，覆盖默认的toString()方法，可以通过of属性限定显示某些字段，通过exclude属性排除某些字段
-![snipaste_20190919111020.jpg](snipaste_20190919111020.jpg)
+```
+import lombok.ToString;
+
+@ToString
+public class Demo {
+    private static int post = 272500;//静态字段它是不输出,毕竟静态的东西并不属于对象本身
+    private final int finalVal = 10;
+    private transient String name = "aa";
+    private int age;
+
+    public static void main(String[] args) {
+        Demo demo = new Demo();
+        System.out.println(demo); //Demo(finalVal=10, age=0)
+    }
+}
+```
+编译后:
+```
+public class Demo {
+    private static int post = 272500;
+    private final int finalVal = 10;
+    private transient String name = "aa";
+    private int age;
+
+    public Demo() {
+    }
+
+    public static void main(String[] args) {
+        Demo demo = new Demo();
+        System.out.println(demo);
+    }
+
+    public String toString() {
+        StringBuilder var10000 = (new StringBuilder()).append("Demo(finalVal=");
+        this.getClass();
+        return var10000.append(10).append(", name=").append(this.name).append(", age=").append(this.age).append(")").toString();
+    }
+}
+```
+有些关键的属性，可以控制toString的输出，我们可以了解一下：
+```
+@ToString(
+        includeFieldNames = true, //是否使用字段名
+        exclude = {"name"}, //排除某些字段
+        of = {"age"}, //只使用某些字段
+        callSuper = true //是否让父类字段也参与 默认false
+)
+```
 
 #### @EqualsAndHashCode
 作用于类，覆盖默认的equals和hashCode
@@ -104,6 +177,114 @@ staticName属性一旦设定，将采用静态方法的方式生成实例，acce
 
 **@RequiredArgsConstructor**
 生成包含final和@NonNull注解的成员变量的构造器；
+```
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class Demo {
+    private final int finalVal = 10;
+
+    @NonNull
+    private String name;
+    @NonNull
+    private int age;
+}
+```
+编译后：
+```
+import java.beans.ConstructorProperties;
+import lombok.NonNull;
+
+public class Demo {
+    private final int finalVal = 10;
+    @NonNull
+    private String name;
+    @NonNull
+    private int age;
+
+    @ConstructorProperties({"name", "age"})
+    public Demo(@NonNull String name, @NonNull int age) {
+        if (name == null) {
+            throw new NullPointerException("name");
+        } else {
+            this.name = name;
+            this.age = age;
+        }
+    }
+}
+```
+解释：该注解会识别@nonNull字段，然后以该字段为元素产生一个构造函数。备注：如果所有字段都没有@nonNull注解，那效果同NoArgsConstructor
+
+**@AllArgsConstructor**
+```
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class Parent {
+    private Integer id;
+}
+
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class Parent {
+    private Integer id;
+}
+```
+编译后的两个class文件如下：
+```
+public class Parent {
+    private Integer id;
+
+    public Parent() {
+    }
+}
+
+import java.beans.ConstructorProperties;
+
+public class Demo extends Parent {
+    private String name;
+    private int age;
+
+    @ConstructorProperties({"name", "age"})
+    public Demo(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+```
+可见, **此注解并不会把父类的属性id拿到Demo的构造器里面去，这是需要注意的地方。并且它也没有默认的构造器了**
+
+```
+@AllArgsConstructor(access = AccessLevel.PROTECTED, staticName = "test")
+public class Demo {
+	private final int finalVal = 10;
+    private String name;
+    private int age;
+}
+```
+生成如下：
+```
+public class Demo {
+	private final int finalVal = 10;
+    private String name;
+    private int age;
+
+    private Demo(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    protected static Demo test(String name, int age) {
+        return new Demo(name, age);
+    }
+}
+```
+看出来的效果为：可以指定生成的构造器的访问权限。但是，**如果指定了一个静态方法，那么构造器会自动会被private，只通过静态方法对外提供访问**，并且我们发现final的属性值，是不会放进构造函数里面的。
+
+
+
 
 再回过头来看刚刚的 Student，很多时候，我们去写 Student 这个 bean 的时候，他会有一些必输字段，比如 Student 中的 name 字段，一般处理的方式是将 name 字段包装成一个构造方法，只有传入 name 这样的构造方法，才能创建一个 Student 对象。
 
@@ -192,27 +373,173 @@ public class Student {
     private int age;
 }
 ```
+编译后:
+```
+public class Student {
+    private String name;
+    private int age;
+
+    Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public static Student.StudentBuilder builder() {
+        return new Student.StudentBuilder();
+    }
+
+    public static class StudentBuilder {
+        private String name;
+        private int age;
+
+        StudentBuilder() {
+        }
+
+        public Student.StudentBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Student.StudentBuilder age(int age) {
+            this.age = age;
+            return this;
+        }
+
+        public Student build() {
+            return new Student(this.name, this.age);
+        }
+
+        public String toString() {
+            return "Student.StudentBuilder(name=" + this.name + ", age=" + this.age + ")";
+        }
+    }
+}
+```
 调用方式：
 ```
 Student student = Student.builder().name("zs").age(24).build();
 ```
+注意: 上面没有加 @Getter 和 @Setter, 编译后就没有相应的 accessor, 故读取不到相应值, 故在使用 @Builder 时, 建议加上 @Getter 和 @Setter
+
 
 #### @Log
 作用于类上，生成日志变量。针对不同的日志实现产品，有不同的注解：
-![snipaste_20190919111720.jpg](snipaste_20190919111720.jpg)
+```
+@CommonsLog
+private static final org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(LogExample.class);
+@JBossLog
+private static final org.jboss.logging.Logger log = org.jboss.logging.Logger.getLogger(LogExample.class);
+@Log
+private static final java.util.logging.Logger log = java.util.logging.Logger.getLogger(LogExample.class.getName());
+@Log4j
+private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LogExample.class);
+@Log4j2
+private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(LogExample.class);
+@Slf4j
+private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LogExample.class);
+@XSlf4j
+private static final org.slf4j.ext.XLogger log = org.slf4j.ext.XLoggerFactory.getXLogger(LogExample.class);
+```
+这个注解还是非常有用的，特别是Slf4j这个，在平时开发中挺有用的
+```
+@Slf4j
+class Parent {
+}
+```
+编译后：
+```
+class Parent {
+    private static final Logger log = LoggerFactory.getLogger(Parent.class);
+
+    Parent() {
+    }
+}
+```
 
 
 ### 其他重要注解
 
 #### @Cleanup
-自动关闭资源，针对实现了java.io.Closeable接口的对象有效，如：典型的IO流对象
-![snipaste_20190919111821.jpg](snipaste_20190919111821.jpg)
-编译后结果如下：
-![snipaste_20190919111856.jpg](snipaste_20190919111856.jpg)
+自动关闭资源，针对实现了java.io.Closeable接口的对象有效，默认是调用资源的close()方法。如果该资源有其它关闭方法，可使用@Cleanup(“methodName”)来指定要调用的方法，就用输入输出流来举个例子吧
+```
+public static void main(String[] args) throws Exception {
+    @Cleanup InputStream in = new FileInputStream(args[0]);
+    @Cleanup OutputStream out = new FileOutputStream(args[1]);
+    byte[] b = new byte[1024];
+    while (true) {
+        int r = in.read(b);
+        if (r == -1) break;
+        out.write(b, 0, r);
+    }
+}
+```
+编译后：
+```
+public static void main(String[] args) throws Exception {
+    FileInputStream in = new FileInputStream(args[0]);
+
+    try {
+        FileOutputStream out = new FileOutputStream(args[1]);
+
+        try {
+            byte[] b = new byte[1024];
+
+            while(true) {
+                int r = in.read(b);
+                if (r == -1) {
+                    return;
+                }
+
+                out.write(b, 0, r);
+            }
+        } finally {
+            if (Collections.singletonList(out).get(0) != null) {
+                out.close();
+            }
+
+        }
+    } finally {
+        if (Collections.singletonList(in).get(0) != null) {
+            in.close();
+        }
+
+    }
+}
+```
 
 #### @SneakyThrows
-可以对受检异常进行捕捉并抛出，可以改写上述的main方法如下：
-![snipaste_20190919112006.jpg](snipaste_20190919112006.jpg)
+这个注解用在方法上，可以将方法中的代码用try-catch语句包裹起来，捕获异常并在catch中用Lombok.sneakyThrow(e)把异常抛出，可以使用@SneakyThrows(Exception.class)的形式指定抛出哪种异常
+```
+ @SneakyThrows(UnsupportedEncodingException.class)
+    public String utf8ToString(byte[] bytes) {
+        return new String(bytes, "UTF-8");
+    }
+```
+编译后：
+```
+@SneakyThrows(UnsupportedEncodingException.class)
+    public String utf8ToString(byte[] bytes) {
+        try{
+            return new String(bytes, "UTF-8");
+        }catch(UnsupportedEncodingException uee){
+            throw Lombok.sneakyThrow(uee);
+        }
+    }
+```
+这里有必要贴出来Lombok.sneakyThrow的代码：
+```
+ public static RuntimeException sneakyThrow(Throwable t) {
+        if (t == null) {
+            throw new NullPointerException("t");
+        } else {
+            return (RuntimeException)sneakyThrow0(t);
+        }
+    }
+
+    private static <T extends Throwable> T sneakyThrow0(Throwable t) throws T {
+        throw t;
+    }
+```
 
 #### @Synchronized
 作用于方法级别，可以替换synchronize关键字或lock锁，用处不大。
