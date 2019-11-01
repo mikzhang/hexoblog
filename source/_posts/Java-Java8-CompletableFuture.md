@@ -8,7 +8,6 @@ tags:
 ---
 
 
-
 Future基础知识：[Java并发（6）带返回结果的任务执行](http://www.cnblogs.com/shijiaqi1066/p/3412331.html)
 Guava的Future：[Guava Future](http://www.cnblogs.com/shijiaqi1066/p/5745295.html)
 Netty的Future：[Netty Future与Promise](http://www.cnblogs.com/shijiaqi1066/p/4804875.html)
@@ -42,7 +41,6 @@ public static CompletableFuture<Void> runAsync(Runnable runnable, Executor execu
 
 例：创建一个已经有结果值的CompletableFuture。
 ```
-// 创建
 CompletableFuture<String> future = CompletableFuture.completedFuture("a future value");
 ```
 
@@ -77,22 +75,17 @@ join方法：返回计算的结果或者抛出一个unchecked异常(CompletionEx
 例：获取Future的结果值。
 ```
 // 使用get
-{
-    CompletableFuture<String> future = CompletableFuture.completedFuture("a future value");
-    String string = future.get();
-    System.out.println(string);
-}
+CompletableFuture<String> future = CompletableFuture.completedFuture("a future value");
+String string = future.get();
+System.out.println(string);
 
 // 使用join
-{
-    CompletableFuture<String> future = CompletableFuture.supplyAsync(()->{
-        return "haha";
-    });
- 
-    String join = future.join();
-    System.out.println(join);
-}
-``` 
+CompletableFuture<String> future = CompletableFuture.supplyAsync(()->{
+    return "haha";
+});
+String join = future.join();
+System.out.println(join);
+```
 
 ## 连接异步任务
 
@@ -226,7 +219,7 @@ CompletableFuture<Integer> f0 = CompletableFuture.supplyAsync(()->{
     } catch (InterruptedException e) {
         e.printStackTrace();
     }
-        return 2;
+    return 2;
 });
  
 CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(()->{
@@ -239,7 +232,7 @@ CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(()->{
 });
  
 // 提供一个异步算子。使用future的计算结果。
-CompletableFuture<Void> f= f0.thenAcceptBothAsync(f1,(Integer x,Integer y) -> {
+CompletableFuture<Void> f= f0.thenAcceptBothAsync(f1,(x, y) -> {
     System.out.println("两个future都完成，才计算算子。");
     System.out.println(x*y);
 });
@@ -261,7 +254,7 @@ CompletableFuture<Integer> f0 = CompletableFuture.supplyAsync(()->{
     } catch (InterruptedException e) {
         e.printStackTrace();
     }
-        return 2;
+    return 2;
 });
  
 CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(()->{
@@ -378,7 +371,7 @@ CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(()->{
     return 1;
 });
 
-CompletableFuture<Void> f = f0.acceptEither(f1, (Integer i)->{
+CompletableFuture<Void> f = f0.acceptEither(f1, (i)->{
     System.out.println("task:" + i);  // 打印：task:1
 });
 
@@ -518,8 +511,7 @@ public CompletableFuture<T> exceptionally(Function<Throwable,? extends T> fn);
 ```
 CompletableFuture<String> f = CompletableFuture.supplyAsync(()->{
     return 100/0;
-})
-.exceptionally(ex -> {
+}).exceptionally(ex -> {
     ex.printStackTrace();
     return 0;
 }).thenApply((i)-> "run:" + i.toString());
