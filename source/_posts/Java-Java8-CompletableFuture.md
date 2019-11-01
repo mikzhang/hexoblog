@@ -96,7 +96,6 @@ join方法：返回计算的结果或者抛出一个unchecked异常(CompletionEx
 ## 连接异步任务
 
 完成完一个任务后继续执行一个异步任务
-
 ```
 // thenRun 处理 Runnable
 public CompletableFuture<Void> thenRun(Runnable action);
@@ -159,6 +158,7 @@ future1.join();
 ## 组合两个异步任务
 
 ### thenCompose方法
+
 接着上一个CompletableFuture的结果执行一个异步任务，最新的异步任务返回一个新的CompletableFuture。
 
 具体方法：
@@ -431,6 +431,7 @@ System.out.println((t1-t0)/1000);   // 打印：1
 ```
 
 ### allOf方法
+
 将多个CompletableFuture组合为一个CompletableFuture，所有CompletableFuture有了结果，则该方法的返回值也会得到结果。
 ```
 public static CompletableFuture<Void> allOf(CompletableFuture<?>... cfs);
@@ -474,6 +475,7 @@ System.out.println((t1-t0)/1000);   // 打印：3
 ```
 
 ## 完成时执行任务
+
 当一系列的任务计算结果完成或者抛出异常的时候，我们可以执行指定的任务
 
 ```
@@ -491,8 +493,8 @@ CompletableFuture<Integer> future = CompletableFuture.supplyAsync(()->{
         throw new RuntimeException(e);
     }
     return new Random().nextInt(1000);
-}).whenComplete((Integer i, Throwable t)->{
-    System.out.println("任务结果值：" + i);
+}).whenComplete((i, throwable)->{
+    System.out.println("任务结果值：" + throwable);
 });
 
 // 阻塞
@@ -500,6 +502,7 @@ future.get();
 ```
 
 ## 异常处理
+
 使用CompletableFuture编排异步任务在处理异常的时候，有几种方式：
 
 1. 在异步任务中使用try...catch...处理异常。
@@ -509,6 +512,7 @@ future.get();
 ```
 public CompletableFuture<T> exceptionally(Function<Throwable,? extends T> fn);
 ```
+
 例：
 ```
 CompletableFuture<String> f = CompletableFuture.supplyAsync(()->{
@@ -517,7 +521,7 @@ CompletableFuture<String> f = CompletableFuture.supplyAsync(()->{
 .exceptionally(ex -> {
     ex.printStackTrace();
     return 0;
-}).thenApply((Integer i)-> "run:" + i.toString());
+}).thenApply((i)-> "run:" + i.toString());
 
 String r = f.join();
 System.out.println(r);

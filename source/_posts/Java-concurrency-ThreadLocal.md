@@ -416,7 +416,7 @@ To help deal with very large and long-lived usages, the hash table entries use W
 
 每次使用完ThreadLocal，都调用它的remove()方法，清除数据。
 
-在使用线程池的情况下，没有及时清理ThreadLocal，不仅是内存泄漏的问题，更严重的是可能导致业务逻辑出现问题。所以，使用ThreadLocal就跟加锁完要解锁一样，用完就清理。
+**在使用线程池的情况下，没有及时清理ThreadLocal，不仅是内存泄漏的问题，更严重的是可能导致业务逻辑出现问题**(由于ThreadLocal是以当前线程为key，所以如果前后有两条请求发到后台，并且这两条请求都是使用的线程池里面的同一个线程, 若不清理则之前请求的数据还在ThreadLocal中,则会出现业务逻辑问题)。所以，使用ThreadLocal就跟加锁完要解锁一样，用完就清理。
 
 ```
 ThreadLocal<Session> threadLocal = new ThreadLocal<Session>();
