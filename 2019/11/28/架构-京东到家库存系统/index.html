@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="库存系统难破题？京东到家来分享库存系统数据流转 库存系统数据流转图解释说明： 库存系统的数据流转，指的都是销售库存的数据流转，在京东到家还有自营类业务板块，即上图中提到的城市仓，由于它涉及到采购入库及盘盈盘亏等问题, 所以会由一套 WMS 系统来支撑。 京东到家设计初衷就是希望商家下的商品各门店共享，带来的问题就是商家新建一个商品时，需要推送到商家下所有的门店中，即所有的门店均可以看到这个商品。或">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ran&#39;s Blog">
+<meta property="og:url" content="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/index.html">
+<meta property="og:site_name" content="Ran&#39;s Blog">
+<meta property="og:description" content="库存系统难破题？京东到家来分享库存系统数据流转 库存系统数据流转图解释说明： 库存系统的数据流转，指的都是销售库存的数据流转，在京东到家还有自营类业务板块，即上图中提到的城市仓，由于它涉及到采购入库及盘盈盘亏等问题, 所以会由一套 WMS 系统来支撑。 京东到家设计初衷就是希望商家下的商品各门店共享，带来的问题就是商家新建一个商品时，需要推送到商家下所有的门店中，即所有的门店均可以看到这个商品。或">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/b4c7b06acfd04290ae949e77751557f3.jpeg">
+<meta property="og:image" content="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/053a21792d714ae992bae86ca146c662.jpeg">
+<meta property="og:image" content="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/d8b425d8e20a41829ee6b0ef3408f86d.jpeg">
+<meta property="og:image" content="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/45ea66020e2d462690831c4906042c3b.jpeg">
+<meta property="og:image" content="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/a6c71c7b8ab84c0591f0091b1b848038.jpeg">
+<meta property="og:image" content="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/a9715822bbbc40af8f5dcf06d4ab1348.jpeg">
+<meta property="og:image" content="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/0e717ef8a61a4b1c965e1f9755a80373.jpeg">
+<meta property="og:image" content="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/cbbf1248853a49f6bcebd79fdab5c4e7.jpeg">
+<meta property="og:image" content="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/cc4347b772d24c0886ae80499d31d66e.jpeg">
+<meta property="og:image" content="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/dd4342740bce4a549129c70c1e6dabc0.jpeg">
+<meta property="og:updated_time" content="2019-11-28T09:37:27.100Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ran&#39;s Blog">
+<meta name="twitter:description" content="库存系统难破题？京东到家来分享库存系统数据流转 库存系统数据流转图解释说明： 库存系统的数据流转，指的都是销售库存的数据流转，在京东到家还有自营类业务板块，即上图中提到的城市仓，由于它涉及到采购入库及盘盈盘亏等问题, 所以会由一套 WMS 系统来支撑。 京东到家设计初衷就是希望商家下的商品各门店共享，带来的问题就是商家新建一个商品时，需要推送到商家下所有的门店中，即所有的门店均可以看到这个商品。或">
+<meta name="twitter:image" content="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/b4c7b06acfd04290ae949e77751557f3.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/"/>
+
+
+
+
+
+  <title> | Ran's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ran's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://mikzhang.github.io/2019/11/28/架构-京东到家库存系统/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ran">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ran's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-28T09:37:27+00:00">
+                2019-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="库存系统难破题？京东到家来分享"><a href="#库存系统难破题？京东到家来分享" class="headerlink" title="库存系统难破题？京东到家来分享"></a>库存系统难破题？京东到家来分享</h1><h2 id="库存系统数据流转"><a href="#库存系统数据流转" class="headerlink" title="库存系统数据流转"></a>库存系统数据流转</h2><p><img src="b4c7b06acfd04290ae949e77751557f3.jpeg" alt="b4c7b06acfd04290ae949e77751557f3.jpeg"></p>
+<p>库存系统数据流转图解释说明：</p>
+<p>库存系统的数据流转，指的都是销售库存的数据流转，在京东到家还有自营类业务板块，即上图中提到的城市仓，由于它涉及到采购入库及盘盈盘亏等问题, 所以会由一套 WMS 系统来支撑。</p>
+<p>京东到家设计初衷就是希望商家下的商品各门店共享，带来的问题就是商家新建一个商品时，需要推送到商家下所有的门店中，即所有的门店均可以看到这个商品。或者商家新建一个门店时，需要将商家下所有的商品均推送到这个新建的门店中，所以这采用了 MQ 技术进行异步化批量处理。</p>
+<p>写到这里，相信对大家对库存系统有了初步的了解，从上图来看功能上其实并不复杂，但是他面临的技术复杂度却是相当高的，比如秒杀品在高并发的情况下如何防止超卖。</p>
+<p>另外库存系统还不是一个纯技术的系统，需要结合用户的行为特点来考虑，比如下文中提到什么时间进行库存的扣减最合适，我们先抛出几个问题和大家一起探讨下，如有不妥之处，欢迎大家拍砖。</p>
+<h2 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h2><h3 id="库存什么时候进行预占-或者扣减-呢"><a href="#库存什么时候进行预占-或者扣减-呢" class="headerlink" title="库存什么时候进行预占 (或者扣减) 呢"></a>库存什么时候进行预占 (或者扣减) 呢</h3><p>商家销售的商品数量是有限的，用户下单后商品会被扣减，我们可以怎么实现呢？</p>
+<p>举个例子： 一件商品有 1000 个库存，现在有 1000 个用户，每个用户计划同时购买 1000 个。</p>
+<ul>
+<li>实现方案 1：如果用户加入购物车时进行库存预占，那么将只能有 1 个用户将 1000 个商品加入购物车。</li>
+<li>实现方案 2：如果用户提交订单时进行库存预占，那么将也只能有 1 个用户将 1000 个商品提单成功，其它的人均提示“库存不足，提单失败”。</li>
+<li>实现方案 3：如果用户提交订单 &amp; 支付成功时进行库存预占，那么这 1000 个人都能生成订单，但是只有 1 个人可以支付成功，其它的订单均会被自动取消。</li>
+</ul>
+<p>京东到家目前采用的是 方案 2，理由如下：</p>
+<p>用户可能只是暂时加入购物车，并不表示用户最终会提单并支付。</p>
+<p>所以在购物车进行库存校验并预占，会造成其它真正想买的用户不能加入购物车的情况，但是之前加车的用户一直不付款，最终损失的是公司。</p>
+<p>方案 3 会造成生成 1000 个订单，无论是在支付前校验库存还是在支付成功后再检验库存，都会造成用户准备好支付条件后却会出现 99.9% 的系统取消订单的概率，也就是说会给 99.9% 的用户体验到不爽的感觉。</p>
+<p>数据表明用户提交订单不支付的占比是非常小的（相对于加入购物车不购买的行为），目前京东到家给用户预留的最长支付时间是 30 分钟，超过 30 分钟订单自动取消，预占的库存自动释放。</p>
+<p>综上所述，方案 2 也可能由于用户下单预占库存但最终未支付，造成库存 30 分钟后才能被其它用户使用的情况，但是相较于方案 1，方案 3 无疑是折中的最好方案。</p>
+<h3 id="重复提交订单的问题"><a href="#重复提交订单的问题" class="headerlink" title="重复提交订单的问题"></a>重复提交订单的问题</h3><p>重复提交订单造成的库存重复扣减的后果是比较严重的。比如商家设置有 1000 件商品，而实际情况可能卖了 900 件就提示用户无货了，给商家造成无形的损失</p>
+<p>可能出现重复提交订单的情况：</p>
+<ol>
+<li>用户善意行为：app 上用户单击“提交订单”按钮后由于后端接口没有返回，用户以为没有操作成功会再次单击“提交订单”按钮</li>
+<li>用户恶意行为：黑客直接刷提单接口，绕过 App 端防重提交功能</li>
+<li>提单系统重试：比如提单系统为了提高系统的可用性，在第一次调用库存系统扣减接口超时后会重试再次提交扣减请求</li>
+</ol>
+<p>好了，既然问题根源缕清楚了，我们一一对症下药</p>
+<ol>
+<li>用户善意行为：App 侧在用户第一次单击“提交订单”按钮后对按钮进行置灰，禁止再次提交订单</li>
+<li>用户恶意行为：采用令牌机制，用户每次进入结算页，提单系统会颁发一个令牌 ID（全局唯一），当用户点击“提交订单”按钮时发起的网络请求中会带上这个令牌 ID, 这个时候提单系统会优先进行令牌 ID 验证，令牌 ID 存在 &amp; 令牌 ID 访问次数 =1 的话才会放行处理后续逻辑，否则直接返回</li>
+<li>提单系统重试：这种情况则需要后端系统（比如库存系统）来保证接口的幂等性，每次调用库存系统时均带上订单号，库存系统会基于订单号增加一个分布式事务锁。</li>
+</ol>
+<p>伪代码如下：<br><img src="053a21792d714ae992bae86ca146c662.jpeg" alt="053a21792d714ae992bae86ca146c662.jpeg"></p>
+<h3 id="库存数据的回滚机制如何做"><a href="#库存数据的回滚机制如何做" class="headerlink" title="库存数据的回滚机制如何做"></a>库存数据的回滚机制如何做</h3><p>需要库存回滚的场景也是比较多的，比如：</p>
+<ol>
+<li>用户未支付：用户下单后后悔了</li>
+<li>用户支付后取消：用户下单 &amp; 支付后后悔了</li>
+<li>风控取消：风控识别到异常行为，强制取消订单</li>
+<li>耦合系统故障：比如提交订单时提单系统 T1 同时会调用积分扣减系统 X1、库存扣减系统 X2、优惠券系统 X3，假如 X1、X2 成功后，调用 X3 失败，需要回滚用户积分与商家库存。</li>
+</ol>
+<p>其中场景 1、2、3 比较类似，都会造成订单取消，订单中心取消后会发送 MQ 出来，各个系统保证自己能够正确消费订单取消 MQ 即可。</p>
+<p>而场景 4 订单其实尚未生成，相对来说要复杂些，如上面提到的，提单系统 T1 需要主动发起库存系统 X2、优惠券系统 X3 的回滚请求（入参必须带上订单号），X2、X3 回滚接口需要支持幂等性。</p>
+<p>其实针对场景 4，还存在一种极端情况，如果提单系统 T1 准备回滚时自身也宕机了，那么库存系统 X2、优惠券系统 X3 就必须依靠自己来完成回滚操作了，也就是说具备自我数据健康检查的能力，具体来说怎么实现呢？</p>
+<p>可以利用当前订单号所属的订单尚未生成的特点，可以通过 worker 机制，每次捞取 40 分钟（这里的 40 一定要大于容忍用户的支付时间）前的订单，调用订单中心查询订单的状态，确保不是已取消的，否则进行自我数据的回滚。</p>
+<p>多人同时购买 1 件商品，如何安全地库存扣减？</p>
+<p>现实中同一件商品可能会出现多人同时购买的情况，我们可以如何做到并发安全呢？</p>
+<p>伪代码片段 1：<br><img src="d8b425d8e20a41829ee6b0ef3408f86d.jpeg" alt="d8b425d8e20a41829ee6b0ef3408f86d.jpeg"></p>
+<p>伪代码片段 1 的设计思想是所有的请求过来之后首先加锁，强制其串行化处理，可见其效率一定不高。</p>
+<p>伪代码片段 2：<br><img src="45ea66020e2d462690831c4906042c3b.jpeg" alt="45ea66020e2d462690831c4906042c3b.jpeg"></p>
+<p>这段代码只是在 where 条件里增加了and stockNum&gt;=”+requestBuyNum即可防止超卖的行为，达到了与上述伪代码 1 的功能。</p>
+<p>如果商品是促销品（比如参与了秒杀的商品）并发扣减的机率会更高，那么数据库的压力会更高，这个时候还可以怎么做呢?</p>
+<p>海量的用户秒杀请求，本质上是一个排序，先到先得。但是如此之多的请求，注定了有些人是抢不到的，可以在进入上述伪代码 Dao 层之前增加一个计数器进行控制，比如有 50% 的流量将直接告诉其抢购失败，伪代码如下：</p>
+<p><img src="a6c71c7b8ab84c0591f0091b1b848038.jpeg" alt="a6c71c7b8ab84c0591f0091b1b848038.jpeg"></p>
+<p>另外同一个用户，不允许多次抢购同一件商品，我们又该如何做呢?</p>
+<p><img src="a9715822bbbc40af8f5dcf06d4ab1348.jpeg" alt="a9715822bbbc40af8f5dcf06d4ab1348.jpeg"></p>
+<p>如果同一个用户拥有不同的帐号，来抢购同一件商品，上面的策略就失效了。一些公司在发展早期几乎是没有限制的，很容易就可以注册很多个账号。也即是网络所谓的“僵尸账号”，数量庞大，如果我们使用几万个“僵尸号”混进去抢购，这样就可以大大提升我们中奖的概率，那我们如何应对呢？</p>
+<p><img src="0e717ef8a61a4b1c965e1f9755a80373.jpeg" alt="0e717ef8a61a4b1c965e1f9755a80373.jpeg"></p>
+<h3 id="库存系统的核心表结构设计"><a href="#库存系统的核心表结构设计" class="headerlink" title="库存系统的核心表结构设计"></a>库存系统的核心表结构设计</h3><p>下面列出了库存系统的核心表结构，提供出来供大家在工作中能够有所参考。</p>
+<p><img src="cbbf1248853a49f6bcebd79fdab5c4e7.jpeg" alt="cbbf1248853a49f6bcebd79fdab5c4e7.jpeg"></p>
+<p>库存主表，命名规则：stock_center_00~99 库存主表</p>
+<p><img src="cc4347b772d24c0886ae80499d31d66e.jpeg" alt="cc4347b772d24c0886ae80499d31d66e.jpeg"></p>
+<p>库存流水表，命名规则：stock_center_flow_00~99 库存流水表</p>
+<p><img src="dd4342740bce4a549129c70c1e6dabc0.jpeg" alt="dd4342740bce4a549129c70c1e6dabc0.jpeg"></p>
+<p>库存批量操作日志表，命名规则：batch_upload_log 库存批量操作日志表</p>
+<p>ref:<br><a href="https://www.cnblogs.com/davidwang456/articles/10251560.html" target="_blank" rel="external">库存系统难破题？京东到家来分享</a></p>
+<p>ref:<br><a href="https://www.cnblogs.com/davidwang456/articles/10251560.html" target="_blank" rel="external">https://www.cnblogs.com/davidwang456/articles/10251560.html</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果这篇文章帮助了你, 请不吝回报</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.png" alt="Ran WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Ran Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/21/Java-Java8-Optional/" rel="next" title="Java-Java8-Optional">
+                <i class="fa fa-chevron-left"></i> Java-Java8-Optional
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ran" />
+          <p class="site-author-name" itemprop="name">Ran</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">191</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#库存系统难破题？京东到家来分享"><span class="nav-number">1.</span> <span class="nav-text">库存系统难破题？京东到家来分享</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#库存系统数据流转"><span class="nav-number">1.1.</span> <span class="nav-text">库存系统数据流转</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方案"><span class="nav-number">1.2.</span> <span class="nav-text">方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#库存什么时候进行预占-或者扣减-呢"><span class="nav-number">1.2.1.</span> <span class="nav-text">库存什么时候进行预占 (或者扣减) 呢</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重复提交订单的问题"><span class="nav-number">1.2.2.</span> <span class="nav-text">重复提交订单的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#库存数据的回滚机制如何做"><span class="nav-number">1.2.3.</span> <span class="nav-text">库存数据的回滚机制如何做</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#库存系统的核心表结构设计"><span class="nav-number">1.2.4.</span> <span class="nav-text">库存系统的核心表结构设计</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ran</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

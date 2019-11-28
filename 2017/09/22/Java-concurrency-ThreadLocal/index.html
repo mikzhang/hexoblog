@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,concurrency,ThreadLocal," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="本文为 ThreadLocal 整理和总结">
+<meta name="keywords" content="Java,concurrency,ThreadLocal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java-concurrency-ThreadLocal">
+<meta property="og:url" content="http://mikzhang.github.io/2017/09/22/Java-concurrency-ThreadLocal/index.html">
+<meta property="og:site_name" content="Ran&#39;s Blog">
+<meta property="og:description" content="本文为 ThreadLocal 整理和总结">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-concurrency-ThreadLocal/WX20190524-1701152x.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-concurrency-ThreadLocal/WX20190524-1714532x.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-concurrency-ThreadLocal/WX20190524-1737182x.png">
+<meta property="og:updated_time" content="2019-11-28T09:37:26.856Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java-concurrency-ThreadLocal">
+<meta name="twitter:description" content="本文为 ThreadLocal 整理和总结">
+<meta name="twitter:image" content="http://mikzhang.github.io/2017/09/22/Java-concurrency-ThreadLocal/WX20190524-1701152x.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mikzhang.github.io/2017/09/22/Java-concurrency-ThreadLocal/"/>
+
+
+
+
+
+  <title>Java-concurrency-ThreadLocal | Ran's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ran's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://mikzhang.github.io/2017/09/22/Java-concurrency-ThreadLocal/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ran">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ran's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java-concurrency-ThreadLocal</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-22T00:00:00+00:00">
+                2017-09-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文为 ThreadLocal 整理和总结</p>
+<a id="more"></a>
+<h2 id="ThreadLocal是什么"><a href="#ThreadLocal是什么" class="headerlink" title="ThreadLocal是什么"></a>ThreadLocal是什么</h2><p>ThreadLocal是一个本地线程副本变量工具类。主要用于将私有线程和该线程存放的副本对象做一个映射，各个线程之间的变量互不干扰，在高并发场景下，可以实现无状态的调用，特别适用于各个线程依赖不通的变量值完成操作的场景。</p>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>下图为ThreadLocal的内部结构图<br><img src="WX20190524-1701152x.png" alt="WX20190524-1701152x.png"></p>
+<p>从上面的结构图，我们已经窥见ThreadLocal的核心机制：</p>
+<ul>
+<li>每个Thread线程内部都有一个Map(ThreadLocalMap)。</li>
+<li>Map里面存储线程本地对象（key(threadlocal)）和线程的变量副本（value）</li>
+<li>但是，Thread内部的Map是由ThreadLocal维护的，由ThreadLocal负责向map获取和设置线程的变量值。</li>
+</ul>
+<p>所以对于不同的线程，每次获取副本值时，别的线程并不能获取到当前线程的副本值，形成了副本的隔离，互不干扰。<br>Thread线程内部的Map在类中描述如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">public class Thread implements Runnable &#123;</div><div class="line">    /* ThreadLocal values pertaining to this thread. This map is maintained</div><div class="line">     * by the ThreadLocal class. */</div><div class="line">    ThreadLocal.ThreadLocalMap threadLocals = null;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="深入解析ThreadLocal"><a href="#深入解析ThreadLocal" class="headerlink" title="深入解析ThreadLocal"></a>深入解析ThreadLocal</h2><p>ThreadLocal类提供如下几个核心方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public T get()</div><div class="line">public void set(T value)</div><div class="line">public void remove()</div></pre></td></tr></table></figure></p>
+<ul>
+<li>get()方法用于获取当前线程的副本变量值。</li>
+<li>set()方法用于保存当前线程的副本变量值。</li>
+<li>initialValue()为当前线程初始副本变量值。</li>
+<li>remove()方法移除当前前程的副本变量值。</li>
+</ul>
+<h3 id="get"><a href="#get" class="headerlink" title="get()"></a>get()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Returns the value in the current thread&apos;s copy of this</div><div class="line"> * thread-local variable.  If the variable has no value for the</div><div class="line"> * current thread, it is first initialized to the value returned</div><div class="line"> * by an invocation of the &#123;@link #initialValue&#125; method.</div><div class="line"> *</div><div class="line"> * @return the current thread&apos;s value of this thread-local</div><div class="line"> */</div><div class="line">public T get() &#123;</div><div class="line">    Thread t = Thread.currentThread();</div><div class="line">    ThreadLocalMap map = getMap(t);</div><div class="line">    if (map != null) &#123;</div><div class="line">        ThreadLocalMap.Entry e = map.getEntry(this);</div><div class="line">        if (e != null)</div><div class="line">            return (T)e.value;</div><div class="line">    &#125;</div><div class="line">    return setInitialValue();</div><div class="line">&#125;</div><div class="line"></div><div class="line">ThreadLocalMap getMap(Thread t) &#123;</div><div class="line">    return t.threadLocals;</div><div class="line">&#125;</div><div class="line"></div><div class="line">private T setInitialValue() &#123;</div><div class="line">    T value = initialValue();</div><div class="line">    Thread t = Thread.currentThread();</div><div class="line">    ThreadLocalMap map = getMap(t);</div><div class="line">    if (map != null)</div><div class="line">        map.set(this, value);</div><div class="line">    else</div><div class="line">        createMap(t, value);</div><div class="line">    return value;</div><div class="line">&#125;</div><div class="line"></div><div class="line">protected T initialValue() &#123;</div><div class="line">    return null;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>步骤：</p>
+<ol>
+<li>获取当前线程的ThreadLocalMap对象threadLocals</li>
+<li>从map中获取线程存储的K-V Entry节点。</li>
+<li>从Entry节点获取存储的Value副本值返回。</li>
+<li>map为空的话返回初始值null，即线程变量副本为null，在使用时需要注意判断NullPointerException。</li>
+</ol>
+<h3 id="set"><a href="#set" class="headerlink" title="set()"></a>set()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Sets the current thread&apos;s copy of this thread-local variable</div><div class="line"> * to the specified value.  Most subclasses will have no need to</div><div class="line"> * override this method, relying solely on the &#123;@link #initialValue&#125;</div><div class="line"> * method to set the values of thread-locals.</div><div class="line"> *</div><div class="line"> * @param value the value to be stored in the current thread&apos;s copy of</div><div class="line"> *        this thread-local.</div><div class="line"> */</div><div class="line">public void set(T value) &#123;</div><div class="line">    Thread t = Thread.currentThread();</div><div class="line">    ThreadLocalMap map = getMap(t);</div><div class="line">    if (map != null)</div><div class="line">        map.set(this, value);</div><div class="line">    else</div><div class="line">        createMap(t, value);</div><div class="line">&#125;</div><div class="line"></div><div class="line">ThreadLocalMap getMap(Thread t) &#123;</div><div class="line">    return t.threadLocals;</div><div class="line">&#125;</div><div class="line"></div><div class="line">void createMap(Thread t, T firstValue) &#123;</div><div class="line">    t.threadLocals = new ThreadLocalMap(this, firstValue);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>步骤：</p>
+<ol>
+<li>获取当前线程的成员变量map</li>
+<li>map非空，则重新将ThreadLocal和新的value副本放入到map中。</li>
+<li>map空，则对线程的成员变量ThreadLocalMap进行初始化创建，并将ThreadLocal和value副本放入map中。</li>
+</ol>
+<h3 id="remove"><a href="#remove" class="headerlink" title="remove()"></a>remove()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Removes the current thread&apos;s value for this thread-local</div><div class="line"> * variable.  If this thread-local variable is subsequently</div><div class="line"> * &#123;@linkplain #get read&#125; by the current thread, its value will be</div><div class="line"> * reinitialized by invoking its &#123;@link #initialValue&#125; method,</div><div class="line"> * unless its value is &#123;@linkplain #set set&#125; by the current thread</div><div class="line"> * in the interim.  This may result in multiple invocations of the</div><div class="line"> * &lt;tt&gt;initialValue&lt;/tt&gt; method in the current thread.</div><div class="line"> *</div><div class="line"> * @since 1.5</div><div class="line"> */</div><div class="line">public void remove() &#123;</div><div class="line"> ThreadLocalMap m = getMap(Thread.currentThread());</div><div class="line"> if (m != null)</div><div class="line">     m.remove(this);</div><div class="line">&#125;</div><div class="line"></div><div class="line">ThreadLocalMap getMap(Thread t) &#123;</div><div class="line">    return t.threadLocals;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>remove方法比较简单，不做赘述。</p>
+<p>ThreadLocalMap贯穿始终, 那每个线程中的ThreadLoalMap究竟是什么?</p>
+<h2 id="ThreadLoalMap"><a href="#ThreadLoalMap" class="headerlink" title="ThreadLoalMap"></a>ThreadLoalMap</h2><p>ThreadLocalMap是ThreadLocal的内部类，没有实现Map接口，用独立的方式实现了Map的功能，其内部的Entry也独立实现。</p>
+<p><img src="WX20190524-1714532x.png" alt="WX20190524-1714532x.png"></p>
+<p>在ThreadLocalMap中，也是用Entry来保存K-V结构数据的。但是Entry中key只能是ThreadLocal对象，这点被Entry的构造方法已经限定死了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">static class Entry extends WeakReference&lt;ThreadLocal&gt; &#123;</div><div class="line">    /** The value associated with this ThreadLocal. */</div><div class="line">    Object value;</div><div class="line"></div><div class="line">    Entry(ThreadLocal k, Object v) &#123;</div><div class="line">        super(k);</div><div class="line">        value = v;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Entry继承自WeakReference（弱引用，生命周期只能存活到下次GC前），但只有Key是弱引用类型的，Value并非弱引用。</p>
+<p>ThreadLocalMap的成员变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">static class ThreadLocalMap &#123;</div><div class="line">    /**</div><div class="line">     * The initial capacity -- MUST be a power of two.</div><div class="line">     */</div><div class="line">    private static final int INITIAL_CAPACITY = 16;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * The table, resized as necessary.</div><div class="line">     * table.length MUST always be a power of two.</div><div class="line">     */</div><div class="line">    private Entry[] table;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * The number of entries in the table.</div><div class="line">     */</div><div class="line">    private int size = 0;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * The next size value at which to resize.</div><div class="line">     */</div><div class="line">    private int threshold; // Default to 0</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="hash冲突"><a href="#hash冲突" class="headerlink" title="hash冲突"></a>hash冲突</h2><p>先看看ThreadLoalMap中插入一个key-value的实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">private void set(ThreadLocal&lt;?&gt; key, Object value) &#123;</div><div class="line">    Entry[] tab = table;</div><div class="line">    int len = tab.length;</div><div class="line">    int i = key.threadLocalHashCode &amp; (len-1);</div><div class="line"></div><div class="line">    for (Entry e = tab[i];</div><div class="line">         e != null;</div><div class="line">         e = tab[i = nextIndex(i, len)]) &#123;</div><div class="line">        ThreadLocal&lt;?&gt; k = e.get();</div><div class="line"></div><div class="line">        if (k == key) &#123;</div><div class="line">            e.value = value;</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (k == null) &#123;</div><div class="line">            replaceStaleEntry(key, value, i);</div><div class="line">            return;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    tab[i] = new Entry(key, value);</div><div class="line">    int sz = ++size;</div><div class="line">    if (!cleanSomeSlots(i, sz) &amp;&amp; sz &gt;= threshold)</div><div class="line">        rehash();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>和HashMap的最大的不同在于，ThreadLocalMap结构非常简单，没有next引用，也就是说ThreadLocalMap中解决Hash冲突的方式并非链表的方式，而是采用线性探测的方式，所谓线性探测，就是根据初始key的hashcode值确定元素在table数组中的位置，如果发现这个位置上已经有其他key值的元素被占用，则利用固定的算法寻找一定步长的下个位置，依次判断，直至找到能够存放的位置。</p>
+<p>ThreadLocalMap解决Hash冲突的方式就是简单的步长加1或减1，寻找下一个相邻的位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Increment i modulo len.</div><div class="line"> */</div><div class="line">private static int nextIndex(int i, int len) &#123;</div><div class="line">    return ((i + 1 &lt; len) ? i + 1 : 0);</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Decrement i modulo len.</div><div class="line"> */</div><div class="line">private static int prevIndex(int i, int len) &#123;</div><div class="line">    return ((i - 1 &gt;= 0) ? i - 1 : len - 1);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>显然ThreadLocalMap采用线性探测的方式解决Hash冲突的效率很低，如果有大量不同的ThreadLocal对象放入map中时发送冲突，或者发生二次冲突，则效率很低。</p>
+<p><strong>所以这里引出的良好建议是：每个线程只存一个变量，这样的话所有的线程存放到map中的Key都是相同的ThreadLocal，如果一个线程要保存多个变量，就需要创建多个ThreadLocal，多个ThreadLocal放入Map中时会极大的增加Hash冲突的可能。</strong></p>
+<h2 id="内存泄露"><a href="#内存泄露" class="headerlink" title="内存泄露"></a>内存泄露</h2><p>先看看Entry的实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">static class Entry extends WeakReference&lt;ThreadLocal&lt;?&gt;&gt; &#123;</div><div class="line">    /** The value associated with this ThreadLocal. */</div><div class="line">    Object value;</div><div class="line"></div><div class="line">    Entry(ThreadLocal&lt;?&gt; k, Object v) &#123;</div><div class="line">        super(k);</div><div class="line">        value = v;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>看图</p>
+<p><img src="WX20190524-1737182x.png" alt="WX20190524-1737182x.png"></p>
+<p>由于ThreadLocalMap的key是弱引用，而Value是强引用。这就导致了一个问题，ThreadLocal在没有外部对象强引用时，发生GC时弱引用Key会被回收，而Value不会回收，如果创建ThreadLocal的线程一直持续运行，那么这个Entry对象中的value就有可能一直得不到回收，发生内存泄露。</p>
+<p>ThreadLocal在ThreadLocalMap中是以一个弱引用身份被Entry中的Key引用的，因此如果ThreadLocal没有外部强引用来引用它，那么ThreadLocal会在下次JVM垃圾收集时被回收。这个时候就会出现Entry中Key已经被回收，出现一个null Key的情况，外部读取ThreadLocalMap中的元素是无法通过null Key来找到Value的。因此如果当前线程的生命周期很长，一直存在，那么其内部的ThreadLocalMap对象也一直生存下来，这些null key就存在一条强引用链的关系一直存在：Thread –》 ThreadLocalMap –》 Entry –》 Value，这条强引用链会导致Entry不会回收，Value也不会回收，但Entry中的Key却已经被回收的情况，造成内存泄漏。<br>但是JVM团队已经考虑到这样的情况，并做了一些措施来保证ThreadLocal尽量不会内存泄漏：在ThreadLocal的get()、set()、remove()方法调用的时候会清除掉线程ThreadLocalMap中所有Entry中Key为null的Value，并将整个Entry设置为null，利于下次内存回收。</p>
+<p>再次看ThreadLocal的get()方法底层实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public T get() &#123;</div><div class="line">    Thread t = Thread.currentThread();</div><div class="line">    ThreadLocalMap map = getMap(t);</div><div class="line">    if (map != null) &#123;</div><div class="line">        ThreadLocalMap.Entry e = map.getEntry(this);</div><div class="line">        if (e != null)</div><div class="line">            return (T)e.value;</div><div class="line">    &#125;</div><div class="line">    return setInitialValue();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在调用map.getEntry(this)时，内部会判断key是否为null，继续看map.getEntry(this)源码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">private Entry getEntry(ThreadLocal key) </div><div class="line">    int i = key.threadLocalHashCode &amp; (table.length - 1);</div><div class="line">    Entry e = table[i];</div><div class="line">    if (e != null &amp;&amp; e.get() == key)</div><div class="line">        return e;</div><div class="line">    else</div><div class="line">        return getEntryAfterMiss(key, i, e);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在getEntry方法中，如果Entry中的key发现是null，会继续调用getEntryAfterMiss(key, i, e)方法，其内部回做回收必要的设置，继续看内部源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">private Entry getEntryAfterMiss(ThreadLocal key, int i, Entry e) &#123;</div><div class="line">    Entry[] tab = table;</div><div class="line">    int len = tab.length;</div><div class="line"></div><div class="line">    while (e != null) &#123;</div><div class="line">        ThreadLocal k = e.get();</div><div class="line">        if (k == key)</div><div class="line">            return e;</div><div class="line">        if (k == null)</div><div class="line">            expungeStaleEntry(i);</div><div class="line">        else</div><div class="line">            i = nextIndex(i, len);</div><div class="line">        e = tab[i];</div><div class="line">    &#125;</div><div class="line">    return null;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意k == null这里，继续调用了expungeStaleEntry(i)方法，expunge的意思是擦除，删除的意思，见名知意，在来看expungeStaleEntry方法的内部实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">private int expungeStaleEntry(int staleSlot) &#123;</div><div class="line">    Entry[] tab = table;</div><div class="line">    int len = tab.length;</div><div class="line"></div><div class="line">    // expunge entry at staleSlot（意思是，删除value，设置为null便于下次回收）</div><div class="line">    tab[staleSlot].value = null;</div><div class="line">    tab[staleSlot] = null;</div><div class="line">    size--;</div><div class="line"></div><div class="line">    // Rehash until we encounter null</div><div class="line">    Entry e;</div><div class="line">    int i;</div><div class="line">    for (i = nextIndex(staleSlot, len);</div><div class="line">         (e = tab[i]) != null;</div><div class="line">         i = nextIndex(i, len)) &#123;</div><div class="line">        ThreadLocal k = e.get();</div><div class="line">        if (k == null) &#123;</div><div class="line">            e.value = null;</div><div class="line">            tab[i] = null;</div><div class="line">            size--;</div><div class="line">        &#125; else &#123;</div><div class="line">            int h = k.threadLocalHashCode &amp; (len - 1);</div><div class="line">            if (h != i) &#123;</div><div class="line">                tab[i] = null;</div><div class="line"></div><div class="line">                // Unlike Knuth 6.4 Algorithm R, we must scan until</div><div class="line">                // null because multiple entries could have been stale.</div><div class="line">                while (tab[h] != null)</div><div class="line">                    h = nextIndex(h, len);</div><div class="line">                tab[h] = e;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    return i;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意这里，将当前Entry删除后，会继续循环往下检查是否有key为null的节点，如果有则一并删除，防止内存泄漏。<br>但这样也并不能保证ThreadLocal不会发生内存泄漏，例如：</p>
+<ul>
+<li>使用static的ThreadLocal，延长了ThreadLocal的生命周期，可能导致的内存泄漏。</li>
+<li>分配使用了ThreadLocal又不再调用get()、set()、remove()方法，那么就会导致内存泄漏。</li>
+</ul>
+<h3 id="why-弱引用"><a href="#why-弱引用" class="headerlink" title="why 弱引用"></a>why 弱引用</h3><p>从表面上看，发生内存泄漏，是因为Key使用了弱引用类型。但其实是因为整个Entry的key为null后，没有主动清除value导致。很多文章大多分析ThreadLocal使用了弱引用会导致内存泄漏，但为什么使用弱引用而不是强引用？</p>
+<p>官方文档的说法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">To help deal with very large and long-lived usages, the hash table entries use WeakReferences for keys.</div><div class="line">为了处理非常大和生命周期非常长的线程，哈希表使用弱引用作为 key。</div></pre></td></tr></table></figure>
+<p>下面我们分两种情况讨论：</p>
+<ul>
+<li>key 使用强引用：引用的ThreadLocal的对象被回收了，但是ThreadLocalMap还持有ThreadLocal的强引用，如果没有手动删除，ThreadLocal不会被回收，导致Entry内存泄漏。</li>
+<li>key 使用弱引用：引用的ThreadLocal的对象被回收了，由于ThreadLocalMap持有ThreadLocal的弱引用，即使没有手动删除，ThreadLocal也会被回收。value在下一次ThreadLocalMap调用set,get，remove的时候会被清除。<br>比较两种情况，我们可以发现：由于ThreadLocalMap的生命周期跟Thread一样长，如果都没有手动删除对应key，都会导致内存泄漏，但是使用弱引用可以多一层保障：弱引用ThreadLocal不会内存泄漏，对应的value在下一次ThreadLocalMap调用set,get,remove的时候会被清除。</li>
+</ul>
+<p>因此，ThreadLocal内存泄漏的根源是：由于ThreadLocalMap的生命周期跟Thread一样长，如果没有手动删除对应key的value就会导致内存泄漏，而不是因为弱引用。</p>
+<h3 id="如何避免内存泄露"><a href="#如何避免内存泄露" class="headerlink" title="如何避免内存泄露"></a>如何避免内存泄露</h3><p>综合上面的分析，我们可以理解ThreadLocal内存泄漏的前因后果，那么怎么避免内存泄漏呢？</p>
+<p>每次使用完ThreadLocal，都调用它的remove()方法，清除数据。</p>
+<p><strong>在使用线程池的情况下，没有及时清理ThreadLocal，不仅是内存泄漏的问题，更严重的是可能导致业务逻辑出现问题</strong>(由于ThreadLocal是以当前线程为key，所以如果前后有两条请求发到后台，并且这两条请求都是使用的线程池里面的同一个线程, 若不清理则之前请求的数据还在ThreadLocal中,则会出现业务逻辑问题)。所以，使用ThreadLocal就跟加锁完要解锁一样，用完就清理。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">ThreadLocal&lt;Session&gt; threadLocal = new ThreadLocal&lt;Session&gt;();</div><div class="line">try &#123;</div><div class="line">    threadLocal.set(new Session(1, &quot;Misout的博客&quot;));</div><div class="line">    // 其它业务逻辑</div><div class="line">&#125; finally &#123;</div><div class="line">    threadLocal.remove();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>还记得Hibernate的session获取场景吗？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">private static final ThreadLocal&lt;Session&gt; threadLocal = new ThreadLocal&lt;Session&gt;();</div><div class="line"></div><div class="line">//获取Session</div><div class="line">public static Session getCurrentSession()&#123;</div><div class="line">    Session session =  threadLocal.get();</div><div class="line">    //判断Session是否为空，如果为空，将创建一个session，并设置到本地线程变量中</div><div class="line">    try &#123;</div><div class="line">        if(session ==null&amp;&amp;!session.isOpen())&#123;</div><div class="line">            if(sessionFactory==null)&#123;</div><div class="line">                rbuildSessionFactory();// 创建Hibernate的SessionFactory</div><div class="line">            &#125;else&#123;</div><div class="line">                session = sessionFactory.openSession();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        threadLocal.set(session);</div><div class="line">    &#125; catch (Exception e) &#123;</div><div class="line">        // TODO: handle exception</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return session;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>为什么？每个线程访问数据库都应当是一个独立的Session会话，如果多个线程共享同一个Session会话，有可能其他线程关闭连接了，当前线程再执行提交时就会出现会话已关闭的异常，导致系统异常。此方式能避免线程争抢Session，提高并发下的安全性。<br>使用ThreadLocal的典型场景正如上面的数据库连接管理，线程会话管理等场景，只适用于独立变量副本的情况，如果变量为全局共享的，则不适用在高并发下使用。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>每个ThreadLocal只能保存一个变量副本，如果想要上线一个线程能够保存多个副本以上，就需要创建多个ThreadLocal。</li>
+<li>ThreadLocal内部的ThreadLocalMap键为弱引用，会有内存泄漏的风险。</li>
+<li>适用于无状态，副本变量独立后不影响业务逻辑的高并发场景。如果如果业务逻辑强依赖于副本变量，则不适合用ThreadLocal解决，需要另寻解决方案。</li>
+</ul>
+<p>ref:<br><a href="https://www.jianshu.com/p/98b68c97df9b" target="_blank" rel="external">https://www.jianshu.com/p/98b68c97df9b</a><br><a href="https://www.jianshu.com/p/a1cd61fa22da" target="_blank" rel="external">https://www.jianshu.com/p/a1cd61fa22da</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果这篇文章帮助了你, 请不吝回报</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.png" alt="Ran WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Ran Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/concurrency/" rel="tag"># concurrency</a>
+          
+            <a href="/tags/ThreadLocal/" rel="tag"># ThreadLocal</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/22/Java-concurrency-TreiberStack无锁并发/" rel="next" title="Java-TreiberStack无锁并发">
+                <i class="fa fa-chevron-left"></i> Java-TreiberStack无锁并发
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/22/Java-concurrency-ThreadLocal-设计思想/" rel="prev" title="Java-concurrency-ThreadLocal-设计思想">
+                Java-concurrency-ThreadLocal-设计思想 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ran" />
+          <p class="site-author-name" itemprop="name">Ran</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">191</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLocal是什么"><span class="nav-number">1.</span> <span class="nav-text">ThreadLocal是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据结构"><span class="nav-number">2.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深入解析ThreadLocal"><span class="nav-number">3.</span> <span class="nav-text">深入解析ThreadLocal</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#get"><span class="nav-number">3.1.</span> <span class="nav-text">get()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set"><span class="nav-number">3.2.</span> <span class="nav-text">set()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#remove"><span class="nav-number">3.3.</span> <span class="nav-text">remove()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLoalMap"><span class="nav-number">4.</span> <span class="nav-text">ThreadLoalMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hash冲突"><span class="nav-number">5.</span> <span class="nav-text">hash冲突</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存泄露"><span class="nav-number">6.</span> <span class="nav-text">内存泄露</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#why-弱引用"><span class="nav-number">6.1.</span> <span class="nav-text">why 弱引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何避免内存泄露"><span class="nav-number">6.2.</span> <span class="nav-text">如何避免内存泄露</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用场景"><span class="nav-number">7.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ran</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

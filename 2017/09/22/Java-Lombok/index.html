@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,Lombok," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Lombok是一款Java开发插件，使得Java开发者可以通过其定义的一些注解来消除业务工程中冗长和繁琐的代码，尤其对于简单的Java模型对象（POJO）。在开发环境中使用Lombok插件后，Java开发人员可以节省出重复构建，诸如hashCode和equals这样的方法以及各种业务对象模型的accessor和ToString等方法的大量时间。对于这些方法，它能够在编译源代码期间自动帮我们生成这些">
+<meta name="keywords" content="Java,Lombok">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java-Lombok">
+<meta property="og:url" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/index.html">
+<meta property="og:site_name" content="Ran&#39;s Blog">
+<meta property="og:description" content="Lombok是一款Java开发插件，使得Java开发者可以通过其定义的一些注解来消除业务工程中冗长和繁琐的代码，尤其对于简单的Java模型对象（POJO）。在开发环境中使用Lombok插件后，Java开发人员可以节省出重复构建，诸如hashCode和equals这样的方法以及各种业务对象模型的accessor和ToString等方法的大量时间。对于这些方法，它能够在编译源代码期间自动帮我们生成这些">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127165952.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127170040.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20190919110013.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20190919110114.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127172613.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127165358.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127165559.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127170329.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127170633.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127171503.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127171543.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127171650.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127171722.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127171758.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127171843.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20190919111133.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/Xnip20190919111444.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127172220.jpg">
+<meta property="og:updated_time" content="2019-11-28T09:37:26.820Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java-Lombok">
+<meta name="twitter:description" content="Lombok是一款Java开发插件，使得Java开发者可以通过其定义的一些注解来消除业务工程中冗长和繁琐的代码，尤其对于简单的Java模型对象（POJO）。在开发环境中使用Lombok插件后，Java开发人员可以节省出重复构建，诸如hashCode和equals这样的方法以及各种业务对象模型的accessor和ToString等方法的大量时间。对于这些方法，它能够在编译源代码期间自动帮我们生成这些">
+<meta name="twitter:image" content="http://mikzhang.github.io/2017/09/22/Java-Lombok/snipaste_20191127165952.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mikzhang.github.io/2017/09/22/Java-Lombok/"/>
+
+
+
+
+
+  <title>Java-Lombok | Ran's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ran's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://mikzhang.github.io/2017/09/22/Java-Lombok/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ran">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ran's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java-Lombok</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-22T00:00:00+00:00">
+                2017-09-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Lombok是一款Java开发插件，使得Java开发者可以通过其定义的一些注解来消除业务工程中冗长和繁琐的代码，尤其对于简单的Java模型对象（POJO）。在开发环境中使用Lombok插件后，Java开发人员可以节省出重复构建，诸如hashCode和equals这样的方法以及各种业务对象模型的accessor和ToString等方法的大量时间。对于这些方法，它能够在编译源代码期间自动帮我们生成这些方法，并没有如反射那样降低程序的性能。</p>
+<p>官网的介绍：Project Lombok is a java library that automatically plugs into your editor and build tools, spicing up your java. Never write another getter or equals method again. Early access to future java features such as val, and much more.</p>
+<p><strong>Bean 的对比</strong><br>传统的 POJO 类是这样的<br><img src="snipaste_20191127165952.jpg" alt="snipaste_20191127165952.jpg"></p>
+<p>通过Lombok改造后的 POJO 类是这样的<br><img src="snipaste_20191127170040.jpg" alt="snipaste_20191127170040.jpg"></p>
+<a id="more"></a>
+<h2 id="Lombok的安装"><a href="#Lombok的安装" class="headerlink" title="Lombok的安装"></a>Lombok的安装</h2><h3 id="引入相应的maven包"><a href="#引入相应的maven包" class="headerlink" title="引入相应的maven包"></a>引入相应的maven包</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;lombok&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;1.18.2-RELEASE&lt;/version&gt;</div><div class="line">    &lt;scope&gt;provided&lt;/scope&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+<p>Lombok的scope=provided，说明它只在编译阶段生效，不需要打入包中。事实正是如此，Lombok在编译期将带Lombok注解的Java文件正确编译为完整的Class文件。</p>
+<h3 id="添加IDE工具对Lombok的支持"><a href="#添加IDE工具对Lombok的支持" class="headerlink" title="添加IDE工具对Lombok的支持"></a>添加IDE工具对Lombok的支持</h3><p>普通的包在引用之后一般的 IDE 都能够自动识别语法，但是 Lombok 的这些注解，一般的 IDE 都无法自动识别，因此如果要使用 Lombok 的话还需要配合安装相应的插件来支持 IDE 的编译，防止IDE 的自动检查报错，下面以 IntelliJ IDEA 举例安装插件。</p>
+<p>IDEA中引入Lombok支持如下：<br>点击File– Settings设置界面，安装Lombok插件<br><img src="snipaste_20190919110013.jpg" alt="snipaste_20190919110013.jpg"></p>
+<p>点击File– Settings设置界面，开启 AnnocationProcessors：<br><img src="snipaste_20190919110114.jpg" alt="snipaste_20190919110114.jpg"><br>开启该项是为了让Lombok注解在编译阶段起到作用</p>
+<h2 id="Lombok实现原理"><a href="#Lombok实现原理" class="headerlink" title="Lombok实现原理"></a>Lombok实现原理</h2><p>自从Java 6起，javac就支持“JSR 269 Pluggable Annotation Processing API”规范，只要程序实现了该API，就能在javac运行的时候得到调用。</p>
+<p>Lombok就是一个实现了”JSR 269 API”的程序。在使用javac的过程中，它产生作用的具体流程如下：</p>
+<ol>
+<li>javac对源代码进行分析，生成一棵抽象语法树(AST)</li>
+<li>javac编译过程中调用实现了JSR 269的Lombok程序</li>
+<li>此时Lombok就对第一步骤得到的AST进行处理，找到Lombok注解所在类对应的语法树(AST)，然后修改该语法树(AST)，增加Lombok注解定义的相应树节点</li>
+<li>javac使用修改后的抽象语法树(AST)生成字节码文件</li>
+</ol>
+<p><img src="snipaste_20191127172613.jpg" alt="snipaste_20191127172613.jpg"></p>
+<p>查看下图，@Data的实现，我们发现这个注解是应用在编译阶段的<br><img src="snipaste_20191127165358.jpg" alt="snipaste_20191127165358.jpg"></p>
+<p>这和我们大多数使用的注解，如 Spring 的注解（在运行时，通过反射来实现业务逻辑）是有很大差别的，如Spring 的@RestController 注解<br><img src="snipaste_20191127165559.jpg" alt="snipaste_20191127165559.jpg"></p>
+<h2 id="Lombok注解的使用"><a href="#Lombok注解的使用" class="headerlink" title="Lombok注解的使用"></a>Lombok注解的使用</h2><h3 id="POJO类常用注解"><a href="#POJO类常用注解" class="headerlink" title="POJO类常用注解"></a>POJO类常用注解</h3><h4 id="Getter-Setter"><a href="#Getter-Setter" class="headerlink" title="@Getter/@Setter"></a>@Getter/@Setter</h4><ol>
+<li>作用类上，生成所有成员变量的getter/setter方法；</li>
+<li>作用于成员变量上，生成该成员变量的getter/setter方法。可以设定访问权限及是否懒加载等。</li>
+</ol>
+<p><img src="snipaste_20191127170329.jpg" alt="snipaste_20191127170329.jpg"><br>成员变量name指定生成set方法，并且访问权限为protected； 当把该注解应用在类上，默认为所有非静态成员变量生成 get 和 set 方法，也可以通过 AccessLevel.NONE 手动禁止生成get或set方法，如下图<br><img src="snipaste_20191127170633.jpg" alt="snipaste_20191127170633.jpg"></p>
+<h4 id="Accessors"><a href="#Accessors" class="headerlink" title="@Accessors"></a>@Accessors</h4><p>作用于类, 使 bean 支持链式风格<br>这个注解要搭配@Getter与@Setter使用，用来修改默认的setter与getter方法的形式</p>
+<p>@Accessors有三个参数可以使用</p>
+<ul>
+<li>chain 链式的形式</li>
+<li>fluent 流式的形式</li>
+<li>prefix 生成指定前缀的属性的getter与setter方法，并且生成的getter与setter方法时会去除前缀</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">@Accessors(chain = true)</div><div class="line">@Setter</div><div class="line">@Getter</div><div class="line">public class Student &#123;</div><div class="line">    private String name;</div><div class="line">    private int age;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>测试代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Student student = new Student()</div><div class="line">        .setAge(24)</div><div class="line">        .setName(&quot;zs&quot;);</div></pre></td></tr></table></figure></p>
+<p>这样就完成了一个对于 bean 来讲很友好的链式操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">@Accessors(fluent = true)</div><div class="line">@Setter</div><div class="line">@Getter</div><div class="line">public class Student &#123;</div><div class="line">    private String name;</div><div class="line">    private int age;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>测试代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Student student = new Student()</div><div class="line">        .age(24)</div><div class="line">        .name(&quot;zs&quot;);</div></pre></td></tr></table></figure></p>
+<p>@Accessors(prefix = “f”) 意义不大, 略</p>
+<h4 id="ToString"><a href="#ToString" class="headerlink" title="@ToString"></a>@ToString</h4><p>作用于类，覆盖默认的toString()方法，可以通过of属性限定显示某些字段，通过exclude属性排除某些字段<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">import lombok.ToString;</div><div class="line"></div><div class="line">@ToString</div><div class="line">public class Demo &#123;</div><div class="line">    private static int post = 272500;//静态字段它是不输出,毕竟静态的东西并不属于对象本身</div><div class="line">    private final int finalVal = 10;</div><div class="line">    private transient String name = &quot;aa&quot;;</div><div class="line">    private int age;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        Demo demo = new Demo();</div><div class="line">        System.out.println(demo); //Demo(finalVal=10, age=0)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>编译后:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">public class Demo &#123;</div><div class="line">    private static int post = 272500;</div><div class="line">    private final int finalVal = 10;</div><div class="line">    private transient String name = &quot;aa&quot;;</div><div class="line">    private int age;</div><div class="line"></div><div class="line">    public Demo() &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        Demo demo = new Demo();</div><div class="line">        System.out.println(demo);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public String toString() &#123;</div><div class="line">        StringBuilder var10000 = (new StringBuilder()).append(&quot;Demo(finalVal=&quot;);</div><div class="line">        this.getClass();</div><div class="line">        return var10000.append(10).append(&quot;, name=&quot;).append(this.name).append(&quot;, age=&quot;).append(this.age).append(&quot;)&quot;).toString();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>有些关键的属性，可以控制toString的输出，我们可以了解一下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@ToString(</div><div class="line">        includeFieldNames = true, //是否使用字段名</div><div class="line">        exclude = &#123;&quot;name&quot;&#125;, //排除某些字段</div><div class="line">        of = &#123;&quot;age&quot;&#125;, //指定某些字段</div><div class="line">        callSuper = true //是否让父类字段也参与 默认false</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<h4 id="EqualsAndHashCode"><a href="#EqualsAndHashCode" class="headerlink" title="@EqualsAndHashCode"></a>@EqualsAndHashCode</h4><p>作用于类，使用该注解，lombok会为我们生成 equals(Object other) 和 hashcode() 方法，包括所有非静态属性和非transient的属性，同样该注解也可以通过 exclude 属性排除某些字段，of 属性指定某些字段，也可以通过 callSuper 属性在重写的方法中使用父类的字段，这样我们可以更灵活的定义bean的比对，如下图：<br><img src="snipaste_20191127171503.jpg" alt="snipaste_20191127171503.jpg"><br>查看编译后的Employee.class文件，如下图：<br><img src="snipaste_20191127171543.jpg" alt="snipaste_20191127171543.jpg"></p>
+<h4 id="NonNull"><a href="#NonNull" class="headerlink" title="@NonNull"></a>@NonNull</h4><p>该注解需应用在方法或构造器的参数上或属性上，用来判断参数的合法性，默认抛出 NullPointerException 异常<br><img src="snipaste_20191127171650.jpg" alt="snipaste_20191127171650.jpg"><br>查看NonNullExample.class文件，会为我们抛出空指针异常，如下图：<br><img src="snipaste_20191127171722.jpg" alt="snipaste_20191127171722.jpg"><br>当然我们可以通过指定异常类型抛出其他异常，lombok.nonNull.exceptionType = [NullPointerException | IllegalArgumentException] , 为实现此功能我们需要在项目的根目录新建lombok.config文件：<br><img src="snipaste_20191127171758.jpg" alt="snipaste_20191127171758.jpg"><br>重新编译NonNullExample类，已经为我们抛出非法参数异常：<br><img src="snipaste_20191127171843.jpg" alt="snipaste_20191127171843.jpg"></p>
+<h4 id="NoArgsConstructor-RequiredArgsConstructor-AllArgsConstructor"><a href="#NoArgsConstructor-RequiredArgsConstructor-AllArgsConstructor" class="headerlink" title="@NoArgsConstructor, @RequiredArgsConstructor, @AllArgsConstructor"></a>@NoArgsConstructor, @RequiredArgsConstructor, @AllArgsConstructor</h4><p>作用于类上，用于生成构造函数。有staticName、access等属性。</p>
+<p>staticName属性一旦设定，将采用静态方法的方式生成实例，access属性可以限定访问权限。</p>
+<p><strong>@NoArgsConstructor</strong><br>生成无参构造器；</p>
+<p><strong>@RequiredArgsConstructor</strong><br>生成包含final和@NonNull注解的成员变量的构造器；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">import lombok.NonNull;</div><div class="line">import lombok.RequiredArgsConstructor;</div><div class="line"></div><div class="line">@RequiredArgsConstructor</div><div class="line">public class Demo &#123;</div><div class="line">    private final int finalVal = 10;</div><div class="line"></div><div class="line">    @NonNull</div><div class="line">    private String name;</div><div class="line">    @NonNull</div><div class="line">    private int age;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>编译后：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">import java.beans.ConstructorProperties;</div><div class="line">import lombok.NonNull;</div><div class="line"></div><div class="line">public class Demo &#123;</div><div class="line">    private final int finalVal = 10;</div><div class="line">    @NonNull</div><div class="line">    private String name;</div><div class="line">    @NonNull</div><div class="line">    private int age;</div><div class="line"></div><div class="line">    @ConstructorProperties(&#123;&quot;name&quot;, &quot;age&quot;&#125;)</div><div class="line">    public Demo(@NonNull String name, @NonNull int age) &#123;</div><div class="line">        if (name == null) &#123;</div><div class="line">            throw new NullPointerException(&quot;name&quot;);</div><div class="line">        &#125; else &#123;</div><div class="line">            this.name = name;</div><div class="line">            this.age = age;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>解释：该注解会识别@nonNull字段，然后以该字段为元素产生一个构造函数。备注：如果所有字段都没有@nonNull注解，那效果同NoArgsConstructor</p>
+<p><strong>@AllArgsConstructor</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">import lombok.NoArgsConstructor;</div><div class="line"></div><div class="line">@NoArgsConstructor</div><div class="line">public class Parent &#123;</div><div class="line">    private Integer id;</div><div class="line">&#125;</div><div class="line"></div><div class="line">import lombok.NoArgsConstructor;</div><div class="line"></div><div class="line">@NoArgsConstructor</div><div class="line">public class Parent &#123;</div><div class="line">    private Integer id;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>编译后的两个class文件如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">public class Parent &#123;</div><div class="line">    private Integer id;</div><div class="line"></div><div class="line">    public Parent() &#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">import java.beans.ConstructorProperties;</div><div class="line"></div><div class="line">public class Demo extends Parent &#123;</div><div class="line">    private String name;</div><div class="line">    private int age;</div><div class="line"></div><div class="line">    @ConstructorProperties(&#123;&quot;name&quot;, &quot;age&quot;&#125;)</div><div class="line">    public Demo(String name, int age) &#123;</div><div class="line">        this.name = name;</div><div class="line">        this.age = age;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可见, <strong>此注解并不会把父类的属性id拿到Demo的构造器里面去，这是需要注意的地方。并且它也没有默认的构造器了</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@AllArgsConstructor(access = AccessLevel.PROTECTED, staticName = &quot;test&quot;)</div><div class="line">public class Demo &#123;</div><div class="line">	private final int finalVal = 10;</div><div class="line">    private String name;</div><div class="line">    private int age;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>生成如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public class Demo &#123;</div><div class="line">	private final int finalVal = 10;</div><div class="line">    private String name;</div><div class="line">    private int age;</div><div class="line"></div><div class="line">    private Demo(String name, int age) &#123;</div><div class="line">        this.name = name;</div><div class="line">        this.age = age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    protected static Demo test(String name, int age) &#123;</div><div class="line">        return new Demo(name, age);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>看出来的效果为：可以指定生成的构造器的访问权限。但是，<strong>如果指定了一个静态方法，那么构造器会自动会被private，只通过静态方法对外提供访问</strong>，并且我们发现final的属性值，是不会放进构造函数里面的。</p>
+<p>再回过头来看刚刚的 Student，很多时候，我们去写 Student 这个 bean 的时候，他会有一些必输字段，比如 Student 中的 name 字段，一般处理的方式是将 name 字段包装成一个构造方法，只有传入 name 这样的构造方法，才能创建一个 Student 对象。</p>
+<p>接上上边的静态构造方法和必传参数的构造方法，使用 lombok 将更改成如下写法（@RequiredArgsConstructor 和 @NonNull）:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@Accessors(chain = true)</div><div class="line">@Setter</div><div class="line">@Getter</div><div class="line">@RequiredArgsConstructor(staticName = &quot;ofName&quot;)</div><div class="line">public class Student &#123;</div><div class="line">    @NonNull private String name;</div><div class="line">    private int age;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>测试代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Student student = Student.ofName(&quot;zs&quot;);</div></pre></td></tr></table></figure></p>
+<p>这样构建出的 bean 语义是否要比直接 new 一个含参的构造方法(包含  name 的构造方法)要好很多。<br>当然他仍然是支持链式调用的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Student student = Student.ofName(&quot;zs&quot;).setAge(24);</div></pre></td></tr></table></figure></p>
+<p><strong>@AllArgsConstructor</strong><br>生成全参构造器。</p>
+<p><img src="snipaste_20190919111133.jpg" alt="snipaste_20190919111133.jpg"></p>
+<p>编译后结果：<br><img src="Xnip20190919111444.png" alt="Xnip20190919111444.png"></p>
+<h4 id="Data"><a href="#Data" class="headerlink" title="@Data"></a>@Data</h4><p>作用于类上，是以下注解的集合：</p>
+<ul>
+<li>@ToString</li>
+<li>@EqualsAndHashCode</li>
+<li>@Getter</li>
+<li>@Setter</li>
+<li>@RequiredArgsConstructor</li>
+</ul>
+<p><img src="snipaste_20191127172220.jpg" alt="snipaste_20191127172220.jpg"></p>
+<h4 id="Builder"><a href="#Builder" class="headerlink" title="@Builder"></a>@Builder</h4><p>作用于类上，将类转变为建造者模式</p>
+<p>看一下 Student 这个类的原始 builder 状态:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">@Getter</div><div class="line">@Setter</div><div class="line">public class Student &#123;</div><div class="line">    private String name;</div><div class="line">    private int age;</div><div class="line"></div><div class="line">    public static Builder builder()&#123;</div><div class="line">            return new Builder();</div><div class="line">    &#125;</div><div class="line">    public static class Builder&#123;</div><div class="line">            private String name;</div><div class="line">            private int age;</div><div class="line">            public Builder name(String name)&#123;</div><div class="line">                    this.name = name;</div><div class="line">                    return this;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            public Builder age(int age)&#123;</div><div class="line">                    this.age = age;</div><div class="line">                    return this;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            public Student build()&#123;</div><div class="line">                    Student student = new Student();</div><div class="line">                    student.setAge(age);</div><div class="line">                    student.setName(name);</div><div class="line">                    return student;</div><div class="line">            &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>调用方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Student student = Student.builder().name(&quot;zs&quot;).age(24).build();</div></pre></td></tr></table></figure></p>
+<p>这样的 builder 代码，让我是在恶心难受，于是我打算用 lombok 重构这段代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@Builder</div><div class="line">public class Student &#123;</div><div class="line">    private String name;</div><div class="line">    private int age;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>编译后:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">public class Student &#123;</div><div class="line">    private String name;</div><div class="line">    private int age;</div><div class="line"></div><div class="line">    Student(String name, int age) &#123;</div><div class="line">        this.name = name;</div><div class="line">        this.age = age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static Student.StudentBuilder builder() &#123;</div><div class="line">        return new Student.StudentBuilder();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static class StudentBuilder &#123;</div><div class="line">        private String name;</div><div class="line">        private int age;</div><div class="line"></div><div class="line">        StudentBuilder() &#123;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        public Student.StudentBuilder name(String name) &#123;</div><div class="line">            this.name = name;</div><div class="line">            return this;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        public Student.StudentBuilder age(int age) &#123;</div><div class="line">            this.age = age;</div><div class="line">            return this;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        public Student build() &#123;</div><div class="line">            return new Student(this.name, this.age);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        public String toString() &#123;</div><div class="line">            return &quot;Student.StudentBuilder(name=&quot; + this.name + &quot;, age=&quot; + this.age + &quot;)&quot;;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>调用方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Student student = Student.builder().name(&quot;zs&quot;).age(24).build();</div></pre></td></tr></table></figure></p>
+<p>注意: 上面没有加 @Getter 和 @Setter, 编译后就没有相应的 accessor, 故读取不到相应值, 故在使用 @Builder 时, 建议加上 @Getter 和 @Setter</p>
+<h4 id="Log"><a href="#Log" class="headerlink" title="@Log"></a>@Log</h4><p>作用于类上，生成日志变量。针对不同的日志实现产品，有不同的注解：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">@CommonsLog</div><div class="line">private static final org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(LogExample.class);</div><div class="line">@JBossLog</div><div class="line">private static final org.jboss.logging.Logger log = org.jboss.logging.Logger.getLogger(LogExample.class);</div><div class="line">@Log</div><div class="line">private static final java.util.logging.Logger log = java.util.logging.Logger.getLogger(LogExample.class.getName());</div><div class="line">@Log4j</div><div class="line">private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LogExample.class);</div><div class="line">@Log4j2</div><div class="line">private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(LogExample.class);</div><div class="line">@Slf4j</div><div class="line">private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LogExample.class);</div><div class="line">@XSlf4j</div><div class="line">private static final org.slf4j.ext.XLogger log = org.slf4j.ext.XLoggerFactory.getXLogger(LogExample.class);</div></pre></td></tr></table></figure></p>
+<p>这个注解还是非常有用的，特别是Slf4j这个，在平时开发中挺有用的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@Slf4j</div><div class="line">class Parent &#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>编译后：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">class Parent &#123;</div><div class="line">    private static final Logger log = LoggerFactory.getLogger(Parent.class);</div><div class="line"></div><div class="line">    Parent() &#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="其他重要注解"><a href="#其他重要注解" class="headerlink" title="其他重要注解"></a>其他重要注解</h3><h4 id="Cleanup"><a href="#Cleanup" class="headerlink" title="@Cleanup"></a>@Cleanup</h4><p>自动关闭资源，针对实现了java.io.Closeable接口的对象有效，默认是调用资源的close()方法。如果该资源有其它关闭方法，可使用@Cleanup(“methodName”)来指定要调用的方法，就用输入输出流来举个例子吧<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public static void main(String[] args) throws Exception &#123;</div><div class="line">    @Cleanup InputStream in = new FileInputStream(args[0]);</div><div class="line">    @Cleanup OutputStream out = new FileOutputStream(args[1]);</div><div class="line">    byte[] b = new byte[1024];</div><div class="line">    while (true) &#123;</div><div class="line">        int r = in.read(b);</div><div class="line">        if (r == -1) break;</div><div class="line">        out.write(b, 0, r);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>编译后：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">public static void main(String[] args) throws Exception &#123;</div><div class="line">    FileInputStream in = new FileInputStream(args[0]);</div><div class="line"></div><div class="line">    try &#123;</div><div class="line">        FileOutputStream out = new FileOutputStream(args[1]);</div><div class="line"></div><div class="line">        try &#123;</div><div class="line">            byte[] b = new byte[1024];</div><div class="line"></div><div class="line">            while(true) &#123;</div><div class="line">                int r = in.read(b);</div><div class="line">                if (r == -1) &#123;</div><div class="line">                    return;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                out.write(b, 0, r);</div><div class="line">            &#125;</div><div class="line">        &#125; finally &#123;</div><div class="line">            if (Collections.singletonList(out).get(0) != null) &#123;</div><div class="line">                out.close();</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125;</div><div class="line">    &#125; finally &#123;</div><div class="line">        if (Collections.singletonList(in).get(0) != null) &#123;</div><div class="line">            in.close();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>其实在 JDK1.7 之后就有了 try-with-resource，不用我们显式的关闭流, 也可使用之。</p>
+<h4 id="SneakyThrows"><a href="#SneakyThrows" class="headerlink" title="@SneakyThrows"></a>@SneakyThrows</h4><p>这个注解用在方法上，可以将方法中的代码用try-catch语句包裹起来，捕获异常并在catch中用Lombok.sneakyThrow(e)把异常抛出，可以使用@SneakyThrows(Exception.class)的形式指定抛出哪种异常<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@SneakyThrows(UnsupportedEncodingException.class)</div><div class="line">   public String utf8ToString(byte[] bytes) &#123;</div><div class="line">       return new String(bytes, &quot;UTF-8&quot;);</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>编译后：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@SneakyThrows(UnsupportedEncodingException.class)</div><div class="line">    public String utf8ToString(byte[] bytes) &#123;</div><div class="line">        try&#123;</div><div class="line">            return new String(bytes, &quot;UTF-8&quot;);</div><div class="line">        &#125;catch(UnsupportedEncodingException uee)&#123;</div><div class="line">            throw Lombok.sneakyThrow(uee);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>这里有必要贴出来Lombok.sneakyThrow的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public static RuntimeException sneakyThrow(Throwable t) &#123;</div><div class="line">       if (t == null) &#123;</div><div class="line">           throw new NullPointerException(&quot;t&quot;);</div><div class="line">       &#125; else &#123;</div><div class="line">           return (RuntimeException)sneakyThrow0(t);</div><div class="line">       &#125;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   private static &lt;T extends Throwable&gt; T sneakyThrow0(Throwable t) throws T &#123;</div><div class="line">       throw t;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<h4 id="Synchronized"><a href="#Synchronized" class="headerlink" title="@Synchronized"></a>@Synchronized</h4><p>作用于方法级别，可以替换synchronize关键字或lock锁，用处不大。</p>
+<p>ref:<br><a href="https://mp.weixin.qq.com/s?__biz=MzI3NjU2ODA5Mg==&amp;mid=2247484565&amp;idx=2&amp;sn=6cc229f530f3961f80d9f1208deff427&amp;scene=21#wechat_redirect" target="_blank" rel="external">IDEA中用好Lombok，撸码效率至少提升5倍</a><br><a href="https://mp.weixin.qq.com/s/hOa-LBNsqwQscPGy7t7Jzg" target="_blank" rel="external">Lombok 使用详解，简化Java编程</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果这篇文章帮助了你, 请不吝回报</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.png" alt="Ran WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Ran Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Lombok/" rel="tag"># Lombok</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/22/Java-Polymorphism-switch/" rel="next" title="Java-Polymorphism-switch">
+                <i class="fa fa-chevron-left"></i> Java-Polymorphism-switch
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/22/Java-Java8-CompletableFuture/" rel="prev" title="Java-Java8-CompletableFuture">
+                Java-Java8-CompletableFuture <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ran" />
+          <p class="site-author-name" itemprop="name">Ran</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">191</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lombok的安装"><span class="nav-number">1.</span> <span class="nav-text">Lombok的安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#引入相应的maven包"><span class="nav-number">1.1.</span> <span class="nav-text">引入相应的maven包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加IDE工具对Lombok的支持"><span class="nav-number">1.2.</span> <span class="nav-text">添加IDE工具对Lombok的支持</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lombok实现原理"><span class="nav-number">2.</span> <span class="nav-text">Lombok实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lombok注解的使用"><span class="nav-number">3.</span> <span class="nav-text">Lombok注解的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#POJO类常用注解"><span class="nav-number">3.1.</span> <span class="nav-text">POJO类常用注解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Getter-Setter"><span class="nav-number">3.1.1.</span> <span class="nav-text">@Getter/@Setter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Accessors"><span class="nav-number">3.1.2.</span> <span class="nav-text">@Accessors</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ToString"><span class="nav-number">3.1.3.</span> <span class="nav-text">@ToString</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EqualsAndHashCode"><span class="nav-number">3.1.4.</span> <span class="nav-text">@EqualsAndHashCode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NonNull"><span class="nav-number">3.1.5.</span> <span class="nav-text">@NonNull</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NoArgsConstructor-RequiredArgsConstructor-AllArgsConstructor"><span class="nav-number">3.1.6.</span> <span class="nav-text">@NoArgsConstructor, @RequiredArgsConstructor, @AllArgsConstructor</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Data"><span class="nav-number">3.1.7.</span> <span class="nav-text">@Data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Builder"><span class="nav-number">3.1.8.</span> <span class="nav-text">@Builder</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Log"><span class="nav-number">3.1.9.</span> <span class="nav-text">@Log</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他重要注解"><span class="nav-number">3.2.</span> <span class="nav-text">其他重要注解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cleanup"><span class="nav-number">3.2.1.</span> <span class="nav-text">@Cleanup</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SneakyThrows"><span class="nav-number">3.2.2.</span> <span class="nav-text">@SneakyThrows</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Synchronized"><span class="nav-number">3.2.3.</span> <span class="nav-text">@Synchronized</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ran</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

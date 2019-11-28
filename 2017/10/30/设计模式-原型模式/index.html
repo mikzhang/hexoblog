@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="设计模式," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="在阎宏博士的《JAVA与模式》一书中开头是这样描述原型（Prototype）模式的: 原型模式属于对象的创建模式。通过给出一个原型对象来指明所有创建的对象的类型，然后用复制这个原型对象的办法创建出更多同类型的对象。这就是选型模式的用意。">
+<meta name="keywords" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式-原型模式">
+<meta property="og:url" content="http://mikzhang.github.io/2017/10/30/设计模式-原型模式/index.html">
+<meta property="og:site_name" content="Ran&#39;s Blog">
+<meta property="og:description" content="在阎宏博士的《JAVA与模式》一书中开头是这样描述原型（Prototype）模式的: 原型模式属于对象的创建模式。通过给出一个原型对象来指明所有创建的对象的类型，然后用复制这个原型对象的办法创建出更多同类型的对象。这就是选型模式的用意。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://mikzhang.github.io/2017/10/30/设计模式-原型模式/download.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/10/30/设计模式-原型模式/download1.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/10/30/设计模式-原型模式/download2.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/10/30/设计模式-原型模式/download3.png">
+<meta property="og:updated_time" content="2019-11-28T09:37:27.108Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式-原型模式">
+<meta name="twitter:description" content="在阎宏博士的《JAVA与模式》一书中开头是这样描述原型（Prototype）模式的: 原型模式属于对象的创建模式。通过给出一个原型对象来指明所有创建的对象的类型，然后用复制这个原型对象的办法创建出更多同类型的对象。这就是选型模式的用意。">
+<meta name="twitter:image" content="http://mikzhang.github.io/2017/10/30/设计模式-原型模式/download.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mikzhang.github.io/2017/10/30/设计模式-原型模式/"/>
+
+
+
+
+
+  <title>设计模式-原型模式 | Ran's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ran's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://mikzhang.github.io/2017/10/30/设计模式-原型模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ran">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ran's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">设计模式-原型模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-30T00:00:00+00:00">
+                2017-10-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在阎宏博士的《JAVA与模式》一书中开头是这样描述原型（Prototype）模式的:</p>
+<p>原型模式属于对象的创建模式。通过给出一个原型对象来指明所有创建的对象的类型，然后用复制这个原型对象的办法创建出更多同类型的对象。这就是选型模式的用意。</p>
+<a id="more"></a>
+<h2 id="原型模式的结构"><a href="#原型模式的结构" class="headerlink" title="原型模式的结构"></a>原型模式的结构</h2><p>原型模式要求对象实现一个可以“克隆”自身的接口，这样就可以通过复制一个实例对象本身来创建一个新的实例。这样一来，通过原型实例创建新的对象，就不再需要关心这个实例本身的类型，只要实现了克隆自身的方法，就可以通过这个方法来获取新的对象，而无须再去通过new来创建。</p>
+<p>原型模式有两种表现形式:（1）简单形式、（2）登记形式，这两种表现形式仅仅是原型模式的不同实现。</p>
+<h3 id="简单形式的原型模式"><a href="#简单形式的原型模式" class="headerlink" title="简单形式的原型模式"></a>简单形式的原型模式</h3><img src="/2017/10/30/设计模式-原型模式/download.png" alt="download.png" title="">
+<p>这种形式涉及到三个角色:</p>
+<ol>
+<li>客户(Client)角色:客户类提出创建对象的请求。</li>
+<li>抽象原型(Prototype)角色:这是一个抽象角色，通常由一个Java接口或Java抽象类实现。此角色给出所有的具体原型类所需的接口。</li>
+<li>具体原型（Concrete Prototype）角色:被复制的对象。此角色需要实现抽象的原型角色所要求的接口。</li>
+</ol>
+<p>源代码<br>抽象原型角色<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Prototype</span></span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 克隆自身的方法</div><div class="line">     * <span class="doctag">@return</span> 一个从自身克隆出来的对象</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">clone</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>具体原型角色<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcretePrototype1</span> <span class="keyword">implements</span> <span class="title">Prototype</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> Prototype <span class="title">clone</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">//最简单的克隆，新建一个自身对象，由于没有属性就不再复制值了</span></div><div class="line">        Prototype prototype = <span class="keyword">new</span> ConcretePrototype1();</div><div class="line">        <span class="keyword">return</span> prototype;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcretePrototype2</span> <span class="keyword">implements</span> <span class="title">Prototype</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> Prototype <span class="title">clone</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">//最简单的克隆，新建一个自身对象，由于没有属性就不再复制值了</span></div><div class="line">        Prototype prototype = <span class="keyword">new</span> ConcretePrototype2();</div><div class="line">        <span class="keyword">return</span> prototype;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>客户端角色<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 持有需要使用的原型接口对象</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> Prototype prototype;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 构造方法，传入需要使用的原型接口对象</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Client</span><span class="params">(Prototype prototype)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.prototype = prototype;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">operation</span><span class="params">(Prototype example)</span></span>&#123;</div><div class="line">        <span class="comment">//需要创建原型接口的对象</span></div><div class="line">        Prototype copyPrototype = prototype.clone();</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="登记形式的原型模式"><a href="#登记形式的原型模式" class="headerlink" title="登记形式的原型模式"></a>登记形式的原型模式</h3><img src="/2017/10/30/设计模式-原型模式/download1.png" alt="download1.png" title="">
+<p>作为原型模式的第二种形式，它多了一个原型管理器(PrototypeManager)角色，该角色的作用是:创建具体原型类的对象，并记录每一个被创建的对象。</p>
+<p>源代码</p>
+<p>抽象原型角色<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Prototype</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> Prototype <span class="title">clone</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>具体原型角色<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcretePrototype1</span> <span class="keyword">implements</span> <span class="title">Prototype</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line">    <span class="function"><span class="keyword">public</span> Prototype <span class="title">clone</span><span class="params">()</span></span>&#123;</div><div class="line">        ConcretePrototype1 prototype = <span class="keyword">new</span> ConcretePrototype1();</div><div class="line">        prototype.setName(<span class="keyword">this</span>.name);</div><div class="line">        <span class="keyword">return</span> prototype;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"Now in Prototype1 , name = "</span> + <span class="keyword">this</span>.name;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcretePrototype2</span> <span class="keyword">implements</span> <span class="title">Prototype</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line">    <span class="function"><span class="keyword">public</span> Prototype <span class="title">clone</span><span class="params">()</span></span>&#123;</div><div class="line">        ConcretePrototype2 prototype = <span class="keyword">new</span> ConcretePrototype2();</div><div class="line">        prototype.setName(<span class="keyword">this</span>.name);</div><div class="line">        <span class="keyword">return</span> prototype;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"Now in Prototype2 , name = "</span> + <span class="keyword">this</span>.name;</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>原型管理器角色保持一个聚集，作为对所有原型对象的登记，这个角色提供必要的方法，供外界增加新的原型对象和取得已经登记过的原型对象。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PrototypeManager</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 用来记录原型的编号和原型实例的对应关系</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String,Prototype&gt; map = <span class="keyword">new</span> HashMap&lt;String,Prototype&gt;();</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 私有化构造方法，避免外部创建实例</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">PrototypeManager</span><span class="params">()</span></span>&#123;&#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 向原型管理器里面添加或是修改某个原型注册</div><div class="line">     * <span class="doctag">@param</span> prototypeId 原型编号</div><div class="line">     * <span class="doctag">@param</span> prototype    原型实例</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setPrototype</span><span class="params">(String prototypeId , Prototype prototype)</span></span>&#123;</div><div class="line">        map.put(prototypeId, prototype);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 从原型管理器里面删除某个原型注册</div><div class="line">     * <span class="doctag">@param</span> prototypeId 原型编号</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">removePrototype</span><span class="params">(String prototypeId)</span></span>&#123;</div><div class="line">        map.remove(prototypeId);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 获取某个原型编号对应的原型实例</div><div class="line">     * <span class="doctag">@param</span> prototypeId    原型编号</div><div class="line">     * <span class="doctag">@return</span>    原型编号对应的原型实例</div><div class="line">     * <span class="doctag">@throws</span> Exception    如果原型编号对应的实例不存在，则抛出异常</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> Prototype <span class="title">getPrototype</span><span class="params">(String prototypeId)</span> <span class="keyword">throws</span> Exception</span>&#123;</div><div class="line">        Prototype prototype = map.get(prototypeId);</div><div class="line">        <span class="keyword">if</span>(prototype == <span class="keyword">null</span>)&#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"您希望获取的原型还没有注册或已被销毁"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> prototype;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>客户端角色<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[]args)</span></span>&#123;</div><div class="line">        <span class="keyword">try</span>&#123;</div><div class="line">            Prototype p1 = <span class="keyword">new</span> ConcretePrototype1();</div><div class="line">            PrototypeManager.setPrototype(<span class="string">"p1"</span>, p1);</div><div class="line">            <span class="comment">//获取原型来创建对象</span></div><div class="line">            Prototype p3 = PrototypeManager.getPrototype(<span class="string">"p1"</span>).clone();</div><div class="line">            p3.setName(<span class="string">"张三"</span>);</div><div class="line">            System.out.println(<span class="string">"第一个实例:"</span> + p3);</div><div class="line">            <span class="comment">//有人动态的切换了实现</span></div><div class="line">            Prototype p2 = <span class="keyword">new</span> ConcretePrototype2();</div><div class="line">            PrototypeManager.setPrototype(<span class="string">"p1"</span>, p2);</div><div class="line">            <span class="comment">//重新获取原型来创建对象</span></div><div class="line">            Prototype p4 = PrototypeManager.getPrototype(<span class="string">"p1"</span>).clone();</div><div class="line">            p4.setName(<span class="string">"李四"</span>);</div><div class="line">            System.out.println(<span class="string">"第二个实例:"</span> + p4);</div><div class="line">            <span class="comment">//有人注销了这个原型</span></div><div class="line">            PrototypeManager.removePrototype(<span class="string">"p1"</span>);</div><div class="line">            <span class="comment">//再次获取原型来创建对象</span></div><div class="line">            Prototype p5 = PrototypeManager.getPrototype(<span class="string">"p1"</span>).clone();</div><div class="line">            p5.setName(<span class="string">"王五"</span>);</div><div class="line">            System.out.println(<span class="string">"第三个实例:"</span> + p5);</div><div class="line">        &#125;<span class="keyword">catch</span>(Exception e)&#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="两种形式的比较"><a href="#两种形式的比较" class="headerlink" title="两种形式的比较"></a>两种形式的比较</h3><p>简单形式和登记形式的原型模式各有其长处和短处。</p>
+<p>如果需要创建的原型对象数目较少而且比较固定的话，可以采取第一种形式。在这种情况下，原型对象的引用可以由客户端自己保存。</p>
+<p>如果要创建的原型对象数目不固定的话，可以采取第二种形式。在这种情况下，客户端不保存对原型对象的引用，这个任务被交给管理员对象。在复制一个原型对象之前，客户端可以查看管理员对象是否已经有一个满足要求的原型对象。如果有，可以直接从管理员类取得这个对象引用；如果没有，客户端就需要自行复制此原型对象。</p>
+<h2 id="Java中的克隆方法"><a href="#Java中的克隆方法" class="headerlink" title="Java中的克隆方法"></a>Java中的克隆方法</h2><p>Java的所有类都是从java.lang.Object类继承而来的，而Object类提供protected Object clone()方法对对象进行复制，子类当然也可以把这个方法置换掉，提供满足自己需要的复制方法。对象的复制有一个基本问题，就是对象通常都有对其他的对象的引用。当使用Object类的clone()方法来复制一个对象时，此对象对其他对象的引用也同时会被复制一份</p>
+<p>Java语言提供的Cloneable接口只起一个作用，就是在运行时期通知Java虚拟机可以安全地在这个类上使用clone()方法。通过调用这个clone()方法可以得到一个对象的复制。由于Object类本身并不实现Cloneable接口，因此如果所考虑的类没有实现Cloneable接口时，调用clone()方法会抛出CloneNotSupportedException异常。</p>
+<h3 id="克隆满足的条件"><a href="#克隆满足的条件" class="headerlink" title="克隆满足的条件"></a>克隆满足的条件</h3><p>clone()方法将对象复制了一份并返还给调用者。所谓“复制”的含义与clone()方法是怎么实现的。一般而言，clone()方法满足以下的描述:</p>
+<ol>
+<li>对任何的对象x，都有:x.clone()!=x。换言之，克隆对象与原对象不是同一个对象。</li>
+<li>对任何的对象x，都有:x.clone().getClass() == x.getClass()，换言之，克隆对象与原对象的类型一样。</li>
+<li>如果对象x的equals()方法定义其恰当的话，那么x.clone().equals(x)应当成立的。</li>
+</ol>
+<p>在JAVA语言的API中，凡是提供了clone()方法的类，都满足上面的这些条件。JAVA语言的设计师在设计自己的clone()方法时，也应当遵守着三个条件。一般来说，上面的三个条件中的前两个是必需的，而第三个是可选的。</p>
+<h3 id="浅克隆和深克隆"><a href="#浅克隆和深克隆" class="headerlink" title="浅克隆和深克隆"></a>浅克隆和深克隆</h3><p>无论你是自己实现克隆方法，还是采用Java提供的克隆方法，都存在一个浅度克隆和深度克隆的问题。</p>
+<ul>
+<li>浅度克隆  只负责克隆按值传递的数据（比如基本数据类型、String类型），而不复制它所引用的对象，换言之，所有的对其他对象的引用都仍然指向原来的对象。</li>
+<li>深度克隆  除了浅度克隆要克隆的值外，还负责克隆引用类型的数据。那些引用其他对象的变量将指向被复制过的新对象，而不再是原有的那些被引用的对象。换言之，深度克隆把要复制的对象所引用的对象都复制了一遍，而这种对被引用到的对象的复制叫做间接复制。</li>
+</ul>
+<p>深度克隆要深入到多少层，是一个不易确定的问题。在决定以深度克隆的方式复制一个对象的时候，必须决定对间接复制的对象时采取浅度克隆还是继续采用深度克隆。因此，在采取深度克隆时，需要决定多深才算深。此外，在深度克隆的过程中，很可能会出现循环引用的问题，必须小心处理。</p>
+<h3 id="利用序列化实现深度克隆"><a href="#利用序列化实现深度克隆" class="headerlink" title="利用序列化实现深度克隆"></a>利用序列化实现深度克隆</h3><p>把对象写到流里的过程是序列化(Serialization)过程；而把对象从流中读出来的过程则叫反序列化(Deserialization)过程。应当指出的是，写到流里的是对象的一个拷贝，而原对象仍然存在于JVM里面。</p>
+<p>在Java语言里深度克隆一个对象，常常可以先使对象实现Serializable接口，然后把对象（实际上只是对象的拷贝）写到一个流里（序列化），再从流里读回来（反序列化），便可以重建对象。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span>  Object <span class="title">deepClone</span><span class="params">()</span> <span class="keyword">throws</span> IOException, ClassNotFoundException</span>&#123;</div><div class="line">    <span class="comment">//将对象写到流里</span></div><div class="line">    ByteArrayOutputStream bos = <span class="keyword">new</span> ByteArrayOutputStream();</div><div class="line">    ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(bos);</div><div class="line">    oos.writeObject(<span class="keyword">this</span>);</div><div class="line">    <span class="comment">//从流里读回来</span></div><div class="line">    ByteArrayInputStream bis = <span class="keyword">new</span> ByteArrayInputStream(bos.toByteArray());</div><div class="line">    ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(bis);</div><div class="line">    <span class="keyword">return</span> ois.readObject();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这样做的前提就是对象以及对象内部所有引用到的对象都是可序列化的，否则，就需要仔细考察那些不可序列化的对象可否设成transient，从而将之排除在复制过程之外。</p>
+<p>浅度克隆显然比深度克隆更容易实现，因为Java语言的所有类都会继承一个clone()方法，而这个clone()方法所做的正式浅度克隆。</p>
+<p>有一些对象，比如线程(Thread)对象或Socket对象，是不能简单复制或共享的。不管是使用浅度克隆还是深度克隆，只要涉及这样的间接对象，就必须把间接对象设成transient而不予复制；或者由程序自行创建出相当的同种对象，权且当做复制件使用。</p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>孙大圣的身外身本领如果在Java语言里使用原型模式来实现的话，会怎么样呢？首先，齐天大圣(The Greatest Sage)即TheGreatestSage类扮演客户角色。齐天大圣持有一个猢狲（Monkey）的实例，而猢狲就是大圣本尊。Monkey类具有继承自java.lang.Object的clone()方法，因此，可以通过调用这个克隆方法来复制一个Monkey实例。</p>
+<p>孙大圣本人用TheGreatestSage类代表<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TheGreatestSage</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> Monkey monkey = <span class="keyword">new</span> Monkey();</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">change</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">//克隆大圣本尊</span></div><div class="line">        Monkey copyMonkey = (Monkey)monkey.clone();</div><div class="line">        System.out.println(<span class="string">"大圣本尊的生日是:"</span> + monkey.getBirthDate());</div><div class="line">        System.out.println(<span class="string">"克隆的大圣的生日是:"</span> + monkey.getBirthDate());</div><div class="line">        System.out.println(<span class="string">"大圣本尊跟克隆的大圣是否为同一个对象 "</span> + (monkey == copyMonkey));</div><div class="line">        System.out.println(<span class="string">"大圣本尊持有的金箍棒 跟 克隆的大圣持有的金箍棒是否为同一个对象？ "</span> + (monkey.getStaff() == copyMonkey.getStaff()));</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[]args)</span></span>&#123;</div><div class="line">        TheGreatestSage sage = <span class="keyword">new</span> TheGreatestSage();</div><div class="line">        sage.change();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>大圣本尊由Monkey类代表，这个类扮演具体原型角色<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Monkey</span> <span class="keyword">implements</span> <span class="title">Cloneable</span> </span>&#123;</div><div class="line">    <span class="comment">//身高</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> height;</div><div class="line">    <span class="comment">//体重</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> weight;</div><div class="line">    <span class="comment">//生日</span></div><div class="line">    <span class="keyword">private</span> Date birthDate;</div><div class="line">    <span class="comment">//金箍棒</span></div><div class="line">    <span class="keyword">private</span> GoldRingedStaff staff;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 构造函数</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Monkey</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.birthDate = <span class="keyword">new</span> Date();</div><div class="line">        <span class="keyword">this</span>.staff = <span class="keyword">new</span> GoldRingedStaff();</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 克隆方法</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">clone</span><span class="params">()</span></span>&#123;</div><div class="line">        Monkey temp = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            temp = (Monkey) <span class="keyword">super</span>.clone();</div><div class="line">        &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; <span class="keyword">finally</span> &#123;</div><div class="line">            <span class="keyword">return</span> temp;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getHeight</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> height;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setHeight</span><span class="params">(<span class="keyword">int</span> height)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.height = height;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getWeight</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> weight;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setWeight</span><span class="params">(<span class="keyword">int</span> weight)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.weight = weight;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> Date <span class="title">getBirthDate</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> birthDate;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBirthDate</span><span class="params">(Date birthDate)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.birthDate = birthDate;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> GoldRingedStaff <span class="title">getStaff</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> staff;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStaff</span><span class="params">(GoldRingedStaff staff)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.staff = staff;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>大圣还持有一个金箍棒的实例，金箍棒类GoldRingedStaff<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GoldRingedStaff</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> height = <span class="number">100.0f</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> diameter = <span class="number">10.0f</span>;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 增长行为，每次调用长度和半径增加一倍</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.diameter *= <span class="number">2</span>;</div><div class="line">        <span class="keyword">this</span>.height *= <span class="number">2</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 缩小行为，每次调用长度和半径减少一半</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shrink</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.diameter /= <span class="number">2</span>;</div><div class="line">        <span class="keyword">this</span>.height /= <span class="number">2</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>当运行TheGreatestSage类时，首先创建大圣本尊对象，而后浅度克隆大圣本尊对象。程序在运行时打印出的信息如下:<br><img src="/2017/10/30/设计模式-原型模式/download2.png" alt="download2.png" title=""><br>可以看出，首先，复制的大圣本尊具有和原始的大圣本尊对象一样的birthDate，而本尊对象不相等，这表明他们二者是克隆关系；其次，复制的大圣本尊所持有的金箍棒和原始的大圣本尊所持有的金箍棒为同一个对象。这表明二者所持有的金箍棒根本是一根，而不是两根。</p>
+<p>正如前面所述，继承自java.lang.Object类的clone()方法是浅克隆。换言之，齐天大圣的所有化身所持有的金箍棒引用全都是指向一个对象的，这与《西游记》中的描写并不一致。要纠正这一点，就需要考虑使用深克隆。</p>
+<p>为做到深度克隆，所有需要复制的对象都需要实现java.io.Serializable接口。</p>
+<p>孙大圣的源代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TheGreatestSage</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> Monkey monkey = <span class="keyword">new</span> Monkey();</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">change</span><span class="params">()</span> <span class="keyword">throws</span> IOException, ClassNotFoundException</span>&#123;</div><div class="line">        Monkey copyMonkey = (Monkey)monkey.deepClone();</div><div class="line">        System.out.println(<span class="string">"大圣本尊的生日是:"</span> + monkey.getBirthDate());</div><div class="line">        System.out.println(<span class="string">"克隆的大圣的生日是:"</span> + monkey.getBirthDate());</div><div class="line">        System.out.println(<span class="string">"大圣本尊跟克隆的大圣是否为同一个对象 "</span> + (monkey == copyMonkey));</div><div class="line">        System.out.println(<span class="string">"大圣本尊持有的金箍棒 跟 克隆的大圣持有的金箍棒是否为同一个对象？ "</span> + (monkey.getStaff() == copyMonkey.getStaff()));</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[]args)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException</span>&#123;</div><div class="line">        TheGreatestSage sage = <span class="keyword">new</span> TheGreatestSage();</div><div class="line">        sage.change();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在大圣本尊Monkey类里面，有两个克隆方法，一个是clone()，也即浅克隆；另一个是deepClone()，也即深克隆。在深克隆方法里，大圣本尊对象（一个拷贝）被序列化，然后又被反序列化。反序列化的对象就成了一个深克隆的结果。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Monkey</span> <span class="keyword">implements</span> <span class="title">Cloneable</span>,<span class="title">Serializable</span> </span>&#123;</div><div class="line">    <span class="comment">//身高</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> height;</div><div class="line">    <span class="comment">//体重</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> weight;</div><div class="line">    <span class="comment">//生日</span></div><div class="line">    <span class="keyword">private</span> Date birthDate;</div><div class="line">    <span class="comment">//金箍棒</span></div><div class="line">    <span class="keyword">private</span> GoldRingedStaff staff;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 构造函数</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Monkey</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.birthDate = <span class="keyword">new</span> Date();</div><div class="line">        staff = <span class="keyword">new</span> GoldRingedStaff();</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 克隆方法</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">clone</span><span class="params">()</span></span>&#123;</div><div class="line">        Monkey temp = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            temp = (Monkey) <span class="keyword">super</span>.clone();</div><div class="line">        &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</div><div class="line">            <span class="comment">// TODO Auto-generated catch block</span></div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; <span class="keyword">finally</span> &#123;</div><div class="line">            <span class="keyword">return</span> temp;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span>  Object <span class="title">deepClone</span><span class="params">()</span> <span class="keyword">throws</span> IOException, ClassNotFoundException</span>&#123;</div><div class="line">        <span class="comment">//将对象写到流里</span></div><div class="line">        ByteArrayOutputStream bos = <span class="keyword">new</span> ByteArrayOutputStream();</div><div class="line">        ObjectOutputStream oos = <span class="keyword">new</span> ObjectOutputStream(bos);</div><div class="line">        oos.writeObject(<span class="keyword">this</span>);</div><div class="line">        <span class="comment">//从流里读回来</span></div><div class="line">        ByteArrayInputStream bis = <span class="keyword">new</span> ByteArrayInputStream(bos.toByteArray());</div><div class="line">        ObjectInputStream ois = <span class="keyword">new</span> ObjectInputStream(bis);</div><div class="line">        <span class="keyword">return</span> ois.readObject();</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getHeight</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> height;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setHeight</span><span class="params">(<span class="keyword">int</span> height)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.height = height;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getWeight</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> weight;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setWeight</span><span class="params">(<span class="keyword">int</span> weight)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.weight = weight;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> Date <span class="title">getBirthDate</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> birthDate;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBirthDate</span><span class="params">(Date birthDate)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.birthDate = birthDate;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> GoldRingedStaff <span class="title">getStaff</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> staff;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStaff</span><span class="params">(GoldRingedStaff staff)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.staff = staff;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到，大圣本尊持有一个金箍棒（GoldRingedStaff）的实例。在大圣复制件里面，此金箍棒实例是原大圣本尊对象所持有的金箍棒对象的一个拷贝。在大圣本尊对象被序列化和反序列化时，它所持有的金箍棒对象也同时被序列化和反序列化，这使得复制的大圣的金箍棒和原大圣本尊对象所持有的金箍棒对象是两个独立的对象。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GoldRingedStaff</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> height = <span class="number">100.0f</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> diameter = <span class="number">10.0f</span>;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 增长行为，每次调用长度和半径增加一倍</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.diameter *= <span class="number">2</span>;</div><div class="line">        <span class="keyword">this</span>.height *= <span class="number">2</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 缩小行为，每次调用长度和半径减少一半</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shrink</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.diameter /= <span class="number">2</span>;</div><div class="line">        <span class="keyword">this</span>.height /= <span class="number">2</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>运行结果:<br><img src="/2017/10/30/设计模式-原型模式/download3.png" alt="download3.png" title=""><br>从运行的结果可以看出，大圣的金箍棒和他的身外之身的金箍棒是不同的对象。这是因为使用了深克隆，从而把大圣本尊所引用的对象也都复制了一遍，其中也包括金箍棒。</p>
+<h2 id="原型模式的优点"><a href="#原型模式的优点" class="headerlink" title="原型模式的优点"></a>原型模式的优点</h2><p>原型模式允许在运行时动态改变具体的实现类型。原型模式可以在运行期间，由客户来注册符合原型接口的实现类型，也可以动态地改变具体的实现类型，看起来接口没有任何变化，但其实运行的已经是另外一个类实例了。因为克隆一个原型就类似于实例化一个类。</p>
+<h2 id="原型模式的缺点"><a href="#原型模式的缺点" class="headerlink" title="原型模式的缺点"></a>原型模式的缺点</h2><p>原型模式最主要的缺点是每一个类都必须配备一个克隆方法。配备克隆方法需要对类的功能进行通盘考虑，这对于全新的类来说不是很难，而对于已经有的类不一定很容易，特别是当一个类引用不支持序列化的间接对象，或者引用含有循环结构的时候。</p>
+<p>ref: <a href="http://www.cnblogs.com/java-my-life/archive/2012/04/11/2439387.html" target="_blank" rel="external">http://www.cnblogs.com/java-my-life/archive/2012/04/11/2439387.html</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果这篇文章帮助了你, 请不吝回报</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.png" alt="Ran WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Ran Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/30/设计模式-策底理解单例模式/" rel="next" title="设计模式-策底理解单例模式">
+                <i class="fa fa-chevron-left"></i> 设计模式-策底理解单例模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/30/设计模式-单例模式/" rel="prev" title="设计模式-单例模式">
+                设计模式-单例模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ran" />
+          <p class="site-author-name" itemprop="name">Ran</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">191</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原型模式的结构"><span class="nav-number">1.</span> <span class="nav-text">原型模式的结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单形式的原型模式"><span class="nav-number">1.1.</span> <span class="nav-text">简单形式的原型模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#登记形式的原型模式"><span class="nav-number">1.2.</span> <span class="nav-text">登记形式的原型模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两种形式的比较"><span class="nav-number">1.3.</span> <span class="nav-text">两种形式的比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java中的克隆方法"><span class="nav-number">2.</span> <span class="nav-text">Java中的克隆方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#克隆满足的条件"><span class="nav-number">2.1.</span> <span class="nav-text">克隆满足的条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#浅克隆和深克隆"><span class="nav-number">2.2.</span> <span class="nav-text">浅克隆和深克隆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用序列化实现深度克隆"><span class="nav-number">2.3.</span> <span class="nav-text">利用序列化实现深度克隆</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例"><span class="nav-number">3.</span> <span class="nav-text">实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原型模式的优点"><span class="nav-number">4.</span> <span class="nav-text">原型模式的优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原型模式的缺点"><span class="nav-number">5.</span> <span class="nav-text">原型模式的缺点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ran</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,concurrency," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Java-concurrency-Callback-JDK和Guava和Spring的不同实现">
+<meta name="keywords" content="Java,concurrency">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java-concurrency-Callback-JDK和Guava和Spring的不同实现">
+<meta property="og:url" content="http://mikzhang.github.io/2017/09/22/Java-concurrency-Callback-JDK和Guava和Spring的不同实现/index.html">
+<meta property="og:site_name" content="Ran&#39;s Blog">
+<meta property="og:description" content="Java-concurrency-Callback-JDK和Guava和Spring的不同实现">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-28T09:37:26.852Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java-concurrency-Callback-JDK和Guava和Spring的不同实现">
+<meta name="twitter:description" content="Java-concurrency-Callback-JDK和Guava和Spring的不同实现">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mikzhang.github.io/2017/09/22/Java-concurrency-Callback-JDK和Guava和Spring的不同实现/"/>
+
+
+
+
+
+  <title>Java-concurrency-Callback-JDK和Guava和Spring的不同实现 | Ran's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ran's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://mikzhang.github.io/2017/09/22/Java-concurrency-Callback-JDK和Guava和Spring的不同实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ran">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ran's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java-concurrency-Callback-JDK和Guava和Spring的不同实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-22T00:00:00+00:00">
+                2017-09-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Java-concurrency-Callback-JDK和Guava和Spring的不同实现</p>
+<a id="more"></a>
+<h2 id="概念先行"><a href="#概念先行" class="headerlink" title="概念先行"></a>概念先行</h2><p>随着移动互联网的蓬勃发展，手机App层出不穷，其业务也随之变得错综复杂。针对于开发人员来说，可能之前的一个业务只需要调取一次第三方接口以获取数据，而如今随着需求的增加，该业务需调取多个不同的第三方接口。通常，我们处理方法是让代码同步顺序的去调取这些接口。显然，调取接口数量的增加必然会造成响应时间的增加，势必会对系统性能造成一定影响。</p>
+<p>为了保证系统响应迅速，需要寻找一种方法能够使调取接口能够异步执行，而java正好提供了类似的方法，在java.util.concurrent中包含了Future相关的类，运用其中的一些类可以进行异步计算，以减少主线程的等待时间。比如启动一个main方法，main中又包含了若干个其它任务，在不使用java future的情况下，main方法中的任务会同步阻塞执行，一个执行完成后，才能去执行另一个；如果使用java future，则main方法中的任务会异步执行，main方法不用等待一个任务的执行完成，只需往下执行就行。一个任务的执行结果又该怎么获取呢?这里就需要用到Future接口中的isDone()方法来判断任务是否执行完，如果完成完成则可获取结果，如果没有完成则需要等待，可见虽然主线程中的多个任务是异步执行，但是无法确定任务什么时候执行完成，只能通过不断去监听以获取结果，所以这里是阻塞的。这样，可能某一个任务执行时间很长会拖累整个主任务的执行。</p>
+<p>针对这样的情况，google对java.util.concurrent中的许多类进行封装，最终产生了google guava框架，其中com.google.common.util中的ListenableFuture就是本文要叙述的重点。查看com.google.common.util，发现其中的很多类都是对java.util.concurrent的封装，以增加特有的方法。ListenableFuture扩展了future方法，增加了addListener方法，该方法可以监听线程，并通过回调函数来获取结果，达到线程之间异步非阻塞执行。</p>
+<p>首先，了解下同步、异步、阻塞、非阻塞相关概念；其次，简单介绍java future和guava future相关技术，并通过示例代码进一步对其进行理解；最后，对java future和guava future进行比较。</p>
+<p><strong>同步、异步、阻塞、非阻塞</strong></p>
+<p>同步：所谓同步，就是在发出一个功能调用时，在没有得到结果之前，该调用就不返回。也就是必须一件一件事做,等前一件做完了才能做下一件事。</p>
+<p>异步：异步的概念和同步相对。当一个异步过程调用发出后，调用者不能立刻得到结果。实际处理这个调用的部件在完成后，通过状态、通知和回调来通知调用者。</p>
+<p>阻塞：阻塞调用是指调用结果返回之前，当前线程会被挂起（线程进入非可执行状态，在这个状态下，cpu不会给线程分配时间片，即线程暂停运行）。函数只有在得到结果之后才会返回。</p>
+<p>非阻塞：非阻塞和阻塞的概念相对应，指在不能立刻得到结果之前，该函数不会阻塞当前线程，而会立刻返回。</p>
+<h2 id="关于异步回调"><a href="#关于异步回调" class="headerlink" title="关于异步回调"></a>关于异步回调</h2><h3 id="Java自带的Future-Callback"><a href="#Java自带的Future-Callback" class="headerlink" title="Java自带的Future-Callback"></a>Java自带的Future-Callback</h3><h4 id="Java-Future"><a href="#Java-Future" class="headerlink" title="Java  Future"></a>Java  Future</h4><p><strong>Executors创建线程池的几种常见方式</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">类名</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">newCachedThreadPool</td>
+<td style="text-align:left">缓存型池子，先查看池中有没有以前建立的线程，如果有，就reuse；如果没有，就建一个新的线程加入池中。缓存型池子通常用于执行一些生存期很短的异步型任务。因此在一些面向连接的daemon型SERVER中用得不多。能reuse的线程，必须是timeout IDLE内的池中线程，缺省timeout为60s，超过这个IDLE时长，线程实例将被终止并移出池子。注意：放入CachedThreadPool的线程超过TIMEOUT不活动，其会自动被终止。</td>
+</tr>
+<tr>
+<td style="text-align:left">newFixedThreadPool</td>
+<td style="text-align:left">和cacheThreadPool类似，有可用的线程就使用，但不能随时建新的线程。其独特之处：任意时间点，最多只能有固定数目的活动线程存在，此时如果有新的线程要建立，只能放在另外的队列中等待，直到当前的线程中某个线程终止直接被移出池子。cache池和fixed池调用的是同一个底层池，只不过参数不同:fixed池线程数固定，并且是0秒IDLE（无IDLE）。所以FixedThreadPool多数针对一些很稳定很固定的正规并发线程，多用于服务器。cache池线程数支持0-Integer.MAX_VALUE(显然完全没考虑主机的资源承受能力)，60秒IDLE。</td>
+</tr>
+<tr>
+<td style="text-align:left">ScheduledThreadPool</td>
+<td style="text-align:left">调度型线程池。这个池子里的线程可以按schedule依次delay执行，或周期执行。</td>
+</tr>
+<tr>
+<td style="text-align:left">SingleThreadExecutor</td>
+<td style="text-align:left">单例线程，任意时间池中只能有一个线程。用的是和cache池和fixed池相同的底层池，但线程数目是1-1,0秒IDLE（无IDLE）。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Executors创建线程池源码</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">//调用newCachedThreadPool方法，可以创建一个缓冲型线程池，而在改方法中通过传参创建一个ThreadPoolExecutor，我么你会很奇怪明明返回的是一个ExecutorService，怎么会创建了一个ThreadPoolExecutor呢？</div><div class="line">public static ExecutorService newCachedThreadPool() &#123;</div><div class="line">        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,60L, </div><div class="line">                   TimeUnit.SECONDS, new SynchronousQueue&lt;Runnable());</div><div class="line">&#125;</div><div class="line"> </div><div class="line">// ThreadPoolExecutor继承了抽象的service类AbstractExecutorService</div><div class="line">public class ThreadPoolExecutor extends AbstractExecutorService &#123;&#125;</div><div class="line"> </div><div class="line">//AbstractExecutorService实现了ExecutorService接口</div><div class="line">public abstract class AbstractExecutorService implements ExecutorService &#123;&#125;</div><div class="line"> </div><div class="line">//所以ExecutorService其实是ThreadPoolExecutor的基类，这也就解释清楚了</div></pre></td></tr></table></figure></p>
+<p><strong>ExecutorService</strong><br>ExecutorService是一个接口，它继承了Executor，在原有execute方法的基础上新增了submit方法，传入一个任务，该方法能够返回一个Future对象，可以获取异步计算结果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">//ExecutorService继承了Executor，并扩展了新方法。</div><div class="line">public interface ExecutorService extends Executor &#123; &#125;</div><div class="line"> </div><div class="line">//Executor中的方法</div><div class="line">void execute(Runnable command);</div><div class="line"> </div><div class="line">//增加了submit方法，该方法传任务来获取Future对象，而Future对象中可以获取任务的执行结果</div><div class="line">&lt;T&gt; Future&lt;T&gt; submit(Callable&lt;T&gt; task);</div><div class="line">Future&lt;?&gt; submit(Runnable task);</div></pre></td></tr></table></figure></p>
+<p><strong>Future(获取异步计算结果)</strong><br>Future接口中有下表所示方法，可以获取当前正在执行的任务相关信息</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">方法</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">boolean cancel(boolean interruptIf)</td>
+<td style="text-align:left">取消任务的执行</td>
+</tr>
+<tr>
+<td style="text-align:left">boolean isCancelled()</td>
+<td style="text-align:left">任务是否已取消，任务正常完成前将其取消，返回 true</td>
+</tr>
+<tr>
+<td style="text-align:left">boolean isDone()</td>
+<td style="text-align:left">任务是否已完成，任务正常终止、异常或取消，返回true</td>
+</tr>
+<tr>
+<td style="text-align:left">V get()</td>
+<td style="text-align:left">等待任务结束，然后获取V类型的结果</td>
+</tr>
+<tr>
+<td style="text-align:left">V get(long timeout, TimeUnit unit)</td>
+<td style="text-align:left">获取结果，设置超时时间</td>
+</tr>
+</tbody>
+</table>
+<p><strong>FutureTask</strong></p>
+<p>Executor框架利用FutureTask来完成异步任务，并可以用来进行任何潜在的耗时的计算。一般FutureTask多用于耗时的计算，主线程可以在完成自己的任务后，再去获取结果。</p>
+<p>FutureTask包装了Callable和Runnable接口对象,提供对Future接口的基本实现，开始、取消计算、查询计算是否完成、获取计算结果。仅当计算完成时才能检索结果，当计算没有完成时，该方法会一直阻塞直到任务转入完成状态。一旦完成计算，不能够重新开始或取消计算。通过Excutor(线程池)来执行,也可传递给Thread对象执行。如果在主线程中需要执行比较耗时的操作时，但又不想阻塞主线程时，可以把这些作业交给Future对象在后台完成，当主线程将来需要时，就可以通过Future对象获得后台作业的计算结果或者执行状态。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">//通过传入任务来构造FutureTask</div><div class="line">public FutureTask(Callable&lt;V&gt; callable) &#123;&#125;</div><div class="line">public FutureTask(Runnable runnable, V result) &#123;&#125;</div><div class="line"> </div><div class="line">//FutureTask中同样有获取当前任务状态的方法</div><div class="line">public boolean isCancelled()&#123;&#125;</div><div class="line">public boolean isDone() &#123;&#125;</div><div class="line">public boolean cancel(boolean mayInterruptIfRunning) &#123;&#125;</div><div class="line"> </div><div class="line">//FutureTask实现RunnableFuture</div><div class="line">public class FutureTask&lt;V&gt; implements RunnableFuture&lt;V&gt; &#123;&#125;</div><div class="line"> </div><div class="line">//RunnableFuture继承Runnable和Future</div><div class="line">public interface RunnableFuture&lt;V&gt; extends Runnable, Future&lt;V&gt;</div></pre></td></tr></table></figure>
+<p><strong>示例代码</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div></pre></td><td class="code"><pre><div class="line">package future.java;</div><div class="line"> </div><div class="line">import java.util.Random;</div><div class="line">import java.util.concurrent.Callable;</div><div class="line">import java.util.concurrent.ExecutionException;</div><div class="line">import java.util.concurrent.ExecutorService;</div><div class="line">import java.util.concurrent.Executors;</div><div class="line">import java.util.concurrent.Future;</div><div class="line"> </div><div class="line">public class TestFuture &#123;</div><div class="line">    // 创建线程池</div><div class="line">    final static ExecutorService service = Executors.newCachedThreadPool();</div><div class="line"> </div><div class="line">    public static void main(String[] args) throws InterruptedException, ExecutionException &#123;</div><div class="line">        Long t1 = System.currentTimeMillis();</div><div class="line"> </div><div class="line">        // 任务1</div><div class="line">        Future&lt;Boolean&gt; booleanTask = service.submit(new Callable&lt;Boolean&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public Boolean call() throws Exception &#123;</div><div class="line">                return true;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"> </div><div class="line">        while (true) &#123;</div><div class="line">            if (booleanTask.isDone() &amp;&amp; !booleanTask.isCancelled()) &#123;</div><div class="line">                //模拟耗时</div><div class="line">                Thread.sleep(500);</div><div class="line">                Boolean result = booleanTask.get();</div><div class="line">                System.err.println(&quot;BooleanTask: &quot; + result);</div><div class="line">                break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        // 任务2</div><div class="line">        Future&lt;String&gt; stringTask = service.submit(new Callable&lt;String&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public String call() throws Exception &#123;</div><div class="line">                return &quot;Hello World&quot;;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"> </div><div class="line">        while (true) &#123;</div><div class="line">            if (stringTask.isDone() &amp;&amp; !stringTask.isCancelled()) &#123;</div><div class="line">                String result = stringTask.get();</div><div class="line">                System.err.println(&quot;StringTask: &quot; + result);</div><div class="line">                break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"> </div><div class="line"> </div><div class="line"> </div><div class="line">        // 任务3</div><div class="line">        Future&lt;Integer&gt; integerTask = service.submit(new Callable&lt;Integer&gt;() &#123;</div><div class="line">            @Override</div><div class="line">            public Integer call() throws Exception &#123;</div><div class="line">                return new Random().nextInt(100);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"> </div><div class="line">        while (true) &#123;</div><div class="line">            if (integerTask.isDone() &amp;&amp; !integerTask.isCancelled()) &#123;</div><div class="line">                Integer result = integerTask.get();</div><div class="line">                System.err.println(&quot;IntegerTask: &quot; + result);</div><div class="line">                break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        // 执行时间</div><div class="line">        System.err.println(&quot;time: &quot; + (System.currentTimeMillis() - t1));</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Guava提供的ListenableFuture-Callback"><a href="#Guava提供的ListenableFuture-Callback" class="headerlink" title="Guava提供的ListenableFuture-Callback"></a>Guava提供的ListenableFuture-Callback</h3><p>ListenableFuture是可以监听的Future，它是对java原生Future的扩展增强。Future表示一个异步计算任务，当任务完成时可以得到计算结果。如果希望计算完成时马上就拿到结果展示给用户或者做另外的计算，就必须使用另一个线程不断的查询计算状态。这样做会使得代码复杂，且效率低下。如果使用ListenableFuture，Guava会帮助检测Future是否完成了，如果完成就自动调用回调函数，这样可以减少并发程序的复杂度。</p>
+<p><strong>多线程异步处理：常用类</strong></p>
+<ol>
+<li><strong>MoreExecutors</strong>    该类是final类型的工具类，提供了很多静态方法。例如listeningDecorator方法初始化ListeningExecutorService方法，使用此实例submit方法即可初始化ListenableFuture对象。</li>
+<li><strong>ListeningExecutorService</strong> 该类是对ExecutorService的扩展，重写ExecutorService类中的submit方法，返回ListenableFuture对象。</li>
+<li><strong>ListenableFuture</strong> 该接口扩展了Future接口，增加了addListener方法，该方法在给定的excutor上注册一个监听器，当计算完成时会马上调用该监听器。不能够确保监听器执行的顺序，但可以在计算完成时确保马上被调用。</li>
+<li><strong>FutureCallback</strong>    该接口提供了OnSuccess和OnFailuren方法。获取异步计算的结果并回调。</li>
+<li><strong>Futures</strong>    该类提供和很多实用的静态方法以供使用。</li>
+<li><strong>ListenableFutureTask</strong>    该类扩展了FutureTask类并实现ListenableFuture接口，增加了addListener方法。</li>
+</ol>
+<p><strong>代码示例</strong></p>
+<p>JayGuavaExecutors.java–基于Guava封装的线程池<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">package com.jay.util.tools.base;</div><div class="line"> </div><div class="line">import java.util.concurrent.SynchronousQueue;</div><div class="line">import java.util.concurrent.ThreadFactory;</div><div class="line">import java.util.concurrent.ThreadPoolExecutor;</div><div class="line">import java.util.concurrent.TimeUnit;</div><div class="line">import java.util.concurrent.atomic.AtomicInteger;</div><div class="line"> </div><div class="line">import com.google.common.util.concurrent.ListenableFuture;</div><div class="line">import com.google.common.util.concurrent.ListeningExecutorService;</div><div class="line">import com.google.common.util.concurrent.MoreExecutors;</div><div class="line"> </div><div class="line">/**</div><div class="line"> * 基于Guava封装的线程池</div><div class="line"> *</div><div class="line"> * @author hetiewei</div><div class="line"> * @date 2016年8月15日 上午11:16:54</div><div class="line"> *</div><div class="line"> */</div><div class="line">public class JayGuavaExecutors &#123;</div><div class="line">	public static final int DEFAULT_MAX_THREAD = 1000;</div><div class="line">	private static ListeningExecutorService defaultCompletedExecutorService = null;</div><div class="line">	private static final Object lock = new Object();</div><div class="line"> </div><div class="line">	public static ListeningExecutorService newCachedExecutorService(int maxThreadNumber, final String namePrefix) &#123;</div><div class="line">		return MoreExecutors.listeningDecorator(new ThreadPoolExecutor(0, maxThreadNumber, 60L, TimeUnit.SECONDS,</div><div class="line">				new SynchronousQueue&lt;Runnable&gt;(), new ThreadFactory() &#123;</div><div class="line"> </div><div class="line">					private final AtomicInteger poolNumber = new AtomicInteger(1);</div><div class="line"> </div><div class="line">					@Override</div><div class="line">					public Thread newThread(Runnable r) &#123;</div><div class="line">						Thread thread = new Thread(r, namePrefix + poolNumber.getAndIncrement());</div><div class="line">						return thread;</div><div class="line">					&#125;</div><div class="line">				&#125;));</div><div class="line"> </div><div class="line">	&#125;</div><div class="line"> </div><div class="line">	public static ListeningExecutorService newCachedExecutorService(String namePrefix) &#123;</div><div class="line">		return newCachedExecutorService(DEFAULT_MAX_THREAD, namePrefix);</div><div class="line">	&#125;</div><div class="line"> </div><div class="line">	public static ListeningExecutorService getDefaultCompletedExecutorService() &#123;</div><div class="line">		if (defaultCompletedExecutorService == null) &#123;</div><div class="line">			synchronized (lock) &#123;</div><div class="line">				if (defaultCompletedExecutorService == null) &#123;</div><div class="line">					defaultCompletedExecutorService = newCachedExecutorService(&quot;Completed-Callback-&quot;);</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		return defaultCompletedExecutorService;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>GuavaExecutorsTest.java 测试类<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div></pre></td><td class="code"><pre><div class="line">package com.jay.util.tools.base.test;</div><div class="line"> </div><div class="line">import java.util.Random;</div><div class="line">import java.util.concurrent.Callable;</div><div class="line"> </div><div class="line">import com.google.common.util.concurrent.FutureCallback;</div><div class="line">import com.google.common.util.concurrent.Futures;</div><div class="line">import com.google.common.util.concurrent.ListenableFuture;</div><div class="line">import com.jay.util.tools.base.JayGuavaExecutors;</div><div class="line"> </div><div class="line">public class GuavaExecutorsTest &#123;</div><div class="line"> </div><div class="line">	public static void main(String[] args) &#123;</div><div class="line">		Long t1 = System.currentTimeMillis();</div><div class="line"> </div><div class="line">		// 任务1</div><div class="line">		ListenableFuture&lt;Boolean&gt; booleanTask = JayGuavaExecutors.getDefaultCompletedExecutorService()</div><div class="line">				.submit(new Callable&lt;Boolean&gt;() &#123;</div><div class="line"> </div><div class="line">					@Override</div><div class="line">					public Boolean call() throws Exception &#123;</div><div class="line">						return true;</div><div class="line">					&#125;</div><div class="line"> </div><div class="line">				&#125;);</div><div class="line">		Futures.addCallback(booleanTask, new FutureCallback&lt;Boolean&gt;() &#123;</div><div class="line"> </div><div class="line">			@Override</div><div class="line">			public void onSuccess(Boolean result) &#123;</div><div class="line">				System.out.println(&quot;BooleanTask : &quot; + result);</div><div class="line">			&#125;</div><div class="line"> </div><div class="line">			@Override</div><div class="line">			public void onFailure(Throwable t) &#123;</div><div class="line">				System.out.println(&quot;BooleanTask 执行失败 【&quot; + t.getMessage() + &quot;】 &quot;);</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line"> </div><div class="line">		// 任务2</div><div class="line">		ListenableFuture&lt;String&gt; stringTask = JayGuavaExecutors.getDefaultCompletedExecutorService()</div><div class="line">				.submit(new Callable&lt;String&gt;() &#123;</div><div class="line">					@Override</div><div class="line">					public String call() throws Exception &#123;</div><div class="line">						return &quot;Hello World&quot;;</div><div class="line">					&#125;</div><div class="line">				&#125;);</div><div class="line"> </div><div class="line">		Futures.addCallback(stringTask, new FutureCallback&lt;String&gt;() &#123;</div><div class="line">			@Override</div><div class="line">			public void onSuccess(String result) &#123;</div><div class="line">				System.err.println(&quot;StringTask: &quot; + result);</div><div class="line">			&#125;</div><div class="line"> </div><div class="line">			@Override</div><div class="line">			public void onFailure(Throwable t) &#123;</div><div class="line">				System.err.println(&quot;StringTask 执行失败 【&quot; + t.getMessage() + &quot;】 &quot;);</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line"> </div><div class="line">		// 任务3</div><div class="line">		ListenableFuture&lt;Integer&gt; integerTask = JayGuavaExecutors.getDefaultCompletedExecutorService()</div><div class="line">				.submit(new Callable&lt;Integer&gt;() &#123;</div><div class="line">					@Override</div><div class="line">					public Integer call() throws Exception &#123;</div><div class="line">						return new Random().nextInt(100);</div><div class="line">					&#125;</div><div class="line">				&#125;);</div><div class="line">		Futures.addCallback(integerTask, new FutureCallback&lt;Integer&gt;() &#123;</div><div class="line">			@Override</div><div class="line">			public void onSuccess(Integer result) &#123;</div><div class="line">				try &#123;</div><div class="line">					Thread.sleep(500);</div><div class="line">				&#125; catch (InterruptedException e) &#123;</div><div class="line">					e.printStackTrace();</div><div class="line">				&#125;</div><div class="line">				System.err.println(&quot;IntegerTask: &quot; + result);</div><div class="line">			&#125;</div><div class="line"> </div><div class="line">			@Override</div><div class="line">			public void onFailure(Throwable t) &#123;</div><div class="line">				System.err.println(&quot;IntegerTask 执行失败 【&quot; + t.getMessage() + &quot;】 &quot;);</div><div class="line">			&#125;</div><div class="line">		&#125;);</div><div class="line"> </div><div class="line">		Long t2 = System.currentTimeMillis();</div><div class="line">		</div><div class="line">		 // 执行时间</div><div class="line">        System.err.println(&quot;time: &quot; + (t2 - t1));</div><div class="line">	&#125;</div><div class="line"> </div><div class="line">	public static void main1(String[] args) &#123;</div><div class="line">		for (int i = 0; i &lt; 10; i++) &#123;</div><div class="line">			JayGuavaExecutors.getDefaultCompletedExecutorService().submit(new Runnable() &#123;</div><div class="line"> </div><div class="line">				@Override</div><div class="line">				public void run() &#123;</div><div class="line">					System.out.println(&quot;xxxxx&quot;);</div><div class="line">					try &#123;</div><div class="line">						Thread.sleep(1000);</div><div class="line">					&#125; catch (InterruptedException e) &#123;</div><div class="line">						e.printStackTrace();</div><div class="line">					&#125;</div><div class="line">					System.out.println(&quot;xxxxx1&quot;);</div><div class="line">				&#125;</div><div class="line">			&#125;);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* result:</div><div class="line"></div><div class="line">BooleanTask : true</div><div class="line">StringTask: Hello World</div><div class="line">IntegerTask: 67</div><div class="line">time: 527</div><div class="line">*/</div></pre></td></tr></table></figure></p>
+<h2 id="Spring4提供的异步请求封装模板"><a href="#Spring4提供的异步请求封装模板" class="headerlink" title="Spring4提供的异步请求封装模板"></a>Spring4提供的异步请求封装模板</h2><p>ListenableFuture通过异步回调机制来实现请求的非阻塞。<br>通常情况下，客户端获取数据并不会只发送一次http请求，可能会有多个http请求。这样，使用上一篇博客中的方法，就会产生大量的冗余代码，因为请求处理的代码除了一些参数不同外，其它地方都大致相同。我们发现不同请求之间的区别在于：请求地址的不同、响应类型的不同，可能还会有额外请求参数的不同。我们可以将请求数据和响应数据进行封装，这样，只需要一个字段来标识每一次http请求属于哪一个业务就可以实现批量发送http请求，整个过程是异步非阻塞的，一旦获取到数据就会触发回调函数，进而获取到响应数据，最后再进行业务逻辑相关处理</p>
+<h3 id="RestTemplate简介"><a href="#RestTemplate简介" class="headerlink" title="RestTemplate简介"></a>RestTemplate简介</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>RestTemplate是Spring3.0中出现的新类，其可以简化HTTP服务器通信，处理HTTP连接，使应用程序代码通过提供url和响应类型(可能的模板变量)便可提取结果</p>
+<h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">//get方法</div><div class="line">//其中url为请求地址，responseType为响应类(需要自己依据响应格式来确定)</div><div class="line">//urlVariables为数组变量</div><div class="line">public &lt;T&gt; T getForObject(String url, Class&lt;T&gt; responseType, Object... urlVariables) throws RestClientException </div><div class="line"> </div><div class="line">//urlVariables为Map类型变量，其中key为请求字段名，value为请求字段值</div><div class="line">public &lt;T&gt; T getForObject(String url, Class&lt;T&gt; responseType, Map&lt;String, ?&gt; urlVariables)</div><div class="line"> </div><div class="line">public &lt;T&gt; T getForObject(URI url, Class&lt;T&gt; responseType) throws RestClientException</div><div class="line"> </div><div class="line">//ResponseEntity</div><div class="line">public &lt;T&gt; ResponseEntity&lt;T&gt; getForEntity(String url, Class&lt;T&gt; responseType, Object... urlVariables) throws RestClientException</div><div class="line"> </div><div class="line">public &lt;T&gt; ResponseEntity&lt;T&gt; getForEntity(String url, Class&lt;T&gt; responseType, Map&lt;String, ?&gt; urlVariables) throws RestClientException</div><div class="line"> </div><div class="line">public &lt;T&gt; ResponseEntity&lt;T&gt; getForEntity(URI url, Class&lt;T&gt; responseType) throws RestClientException </div><div class="line"> </div><div class="line"> </div><div class="line">//post</div><div class="line">public &lt;T&gt; T postForObject(String url, Object request, Class&lt;T&gt; responseType, Object... uriVariables) throws RestClientException</div><div class="line"> </div><div class="line">public &lt;T&gt; T postForObject(String url, Object request, Class&lt;T&gt; responseType, Map&lt;String, ?&gt; uriVariables) throws RestClientException</div><div class="line"> </div><div class="line">public &lt;T&gt; T postForObject(URI url, Object request, Class&lt;T&gt; responseType) throws RestClientException </div><div class="line"> </div><div class="line">public &lt;T&gt; ResponseEntity&lt;T&gt; postForEntity(String url, Object request, Class&lt;T&gt; responseType, Object... uriVariables) throws RestClientException</div><div class="line"> </div><div class="line">public &lt;T&gt; ResponseEntity&lt;T&gt; postForEntity(String url, Object request, Class&lt;T&gt; responseType, Map&lt;String, ?&gt; uriVariables) throws RestClientException</div><div class="line"> </div><div class="line">public &lt;T&gt; ResponseEntity&lt;T&gt; postForEntity(URI url, Object request, Class&lt;T&gt; responseType) throws RestClientException</div></pre></td></tr></table></figure>
+<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><p>Spring提供的RestTemplate可用于访问Rest服务的客户端，其提供了多种便捷访问远程Http服务的方法，能够大大提高客户端的编写效率，但其并没有实现异步调用的功能。下面将引入Spring4.0提供的AsyncRestTemplate，该类可实现异步非阻塞处理http请求</p>
+<h3 id="AsyncRestTemplate简介"><a href="#AsyncRestTemplate简介" class="headerlink" title="AsyncRestTemplate简介"></a>AsyncRestTemplate简介</h3><h4 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h4><p>AsyncRestTemplate是在Spring4.0中对RestTemplate进行扩展产生的新类，其为客户端提供了异步http请求处理的一种机制，通过返回ListenableFuture对象生成回调机制，以达到异步非阻塞发送http请求</p>
+<h4 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">//get</div><div class="line">public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getForEntity(String url, Class&lt;T&gt; responseType, Object... uriVariables) throws RestClientException</div><div class="line"> </div><div class="line">public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getForEntity(String url, Class&lt;T&gt; responseType, Map&lt;String, ?&gt; urlVariables) throws RestClientException</div><div class="line"> </div><div class="line">public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getForEntity(URI url, Class&lt;T&gt; responseType) throws RestClientException</div><div class="line"> </div><div class="line"> </div><div class="line">//post</div><div class="line">public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; postForEntity(String url, HttpEntity&lt;?&gt; request, Class&lt;T&gt; responseType, Object... uriVariables) throws RestClientException</div><div class="line"> </div><div class="line">public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; postForEntity(String url, HttpEntity&lt;?&gt; request, Class&lt;T&gt; responseType, Map&lt;String, ?&gt; uriVariables) throws RestClientException </div><div class="line"> </div><div class="line">public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; postForEntity(URI url, HttpEntity&lt;?&gt; request, Class&lt;T&gt; responseType) throws RestClientException</div></pre></td></tr></table></figure>
+<h4 id="说明-1"><a href="#说明-1" class="headerlink" title="说明"></a>说明</h4><p>相比于RestTemplate，AsyncRestTemplate通过回调机制能够很好地异步处理多个http请求，使得客户端在主方法中不必等待服务器响应，而是继续执行后续代码，这样就较大地提高了代码的执行效率，减少响应时间。</p>
+<h3 id="基于AsyncRestTemplate实现批量异步调用"><a href="#基于AsyncRestTemplate实现批量异步调用" class="headerlink" title="基于AsyncRestTemplate实现批量异步调用"></a>基于AsyncRestTemplate实现批量异步调用</h3><p>下面将介绍基于AsyncRestTemplate异步调用的轻量级框架，说框架有点吹牛皮的感觉，不过代码结构整体上看起来还是挺清晰的，如有不妥之处，请提供宝贵建议。其主要分为5个部分：业务标识、请求、响应，异步调用、请求处理。对应的类如下所示：</p>
+<ul>
+<li>业务标识：IEnum、UserEnum(具体业务标识)</li>
+<li>请求：BaseRequest、UserRequest(具体业务请求)、ConcreateWapper(请求包装)</li>
+<li>响应：BaseResponse、UserRequest（具体业务响应）</li>
+<li>异步调用：Templete、AbstractTemplete、AsynClientTemplete、CommonListenableCallBack</li>
+<li>请求处理：FutureTpDao</li>
+</ul>
+<p>先来个直观的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">public static void main(String[] args) &#123;  </div><div class="line">    AsyncRestTemplate template = new AsyncRestTemplate();  </div><div class="line">    //调用完后立即返回（没有阻塞）  </div><div class="line">    ListenableFuture&lt;ResponseEntity&lt;User&gt;&gt; future = template.getForEntity(&quot;http://localhost:9080/spring4/api&quot;, User.class);  </div><div class="line">    //设置异步回调  </div><div class="line">    future.addCallback(new ListenableFutureCallback&lt;ResponseEntity&lt;User&gt;&gt;() &#123;  </div><div class="line">        @Override  </div><div class="line">        public void onSuccess(ResponseEntity&lt;User&gt; result) &#123;  </div><div class="line">            System.out.println(&quot;======client get result : &quot; + result.getBody());  </div><div class="line">        &#125;  </div><div class="line">  </div><div class="line">        @Override  </div><div class="line">        public void onFailure(Throwable t) &#123;  </div><div class="line">            System.out.println(&quot;======client failure : &quot; + t);  </div><div class="line">        &#125;  </div><div class="line">    &#125;);  </div><div class="line">    System.out.println(&quot;==no wait&quot;);  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="业务标识（使用枚举类来标识业务请求）"><a href="#业务标识（使用枚举类来标识业务请求）" class="headerlink" title="业务标识（使用枚举类来标识业务请求）"></a>业务标识（使用枚举类来标识业务请求）</h4><p>使用枚举类能够比较好地标识具体业务，但是枚举类无法继承，这里通过定义一个空的接口IEnum对其进行抽象。可能看起来会有所不妥，但是也算是一种解决方法吧。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">//空的接口</div><div class="line">package acync;</div><div class="line"> </div><div class="line">public interface IEnum &#123;</div><div class="line">&#125;</div><div class="line"> </div><div class="line">//具体业务标识枚举类，实现了IEnum接口</div><div class="line">public enum UserEnum implements IEnum &#123;</div><div class="line">    ADD,</div><div class="line">    UPDATE,</div><div class="line">    DELETE,</div><div class="line">    MODIFY;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="请求"><a href="#请求" class="headerlink" title="请求"></a>请求</h4><p>通常情况下，客户端都是发送http请求（使用url的方式）来获取数据，这样，我们主需要获取请求的url地址即可。这里，定义接口BaseRequest提供build方法来构建请求接口，对于具体的业务请求只需实现接口并构建请求url即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">//基础请求接口，提供构建URL方法</div><div class="line">package acync;</div><div class="line"> </div><div class="line">public interface BaseRequest &#123;</div><div class="line">    public String build();</div><div class="line">&#125;</div><div class="line"> </div><div class="line"> </div><div class="line">//具体的请求类，依据业务情况自行构建URL地址</div><div class="line">package acync;</div><div class="line"> </div><div class="line">public class UserRequest implements BaseRequest &#123;</div><div class="line">    private static final String REQ_URL = &quot;http://www.126.com&quot;;</div><div class="line"> </div><div class="line">    @Override</div><div class="line">    public String build() &#123;</div><div class="line">        return REQ_URL;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="响应"><a href="#响应" class="headerlink" title="响应"></a>响应</h4><p>对于请求响应这里也是定义抽象类BaseResponse，提供status来表示请求的响应状态，而具体的业务响应只需要实现抽象类，自定义实现即可。（其中，BaseResponse抽象类可依据具体的业务框架来定义实现）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">//基础响应抽象类，提供状态码</div><div class="line">package acync;</div><div class="line"> </div><div class="line">import java.io.Serializable;</div><div class="line"> </div><div class="line">public abstract class  BaseResponse implements Serializable&#123;</div><div class="line">    private String status;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"> </div><div class="line">//具体业务响应类</div><div class="line">package acync;</div><div class="line"> </div><div class="line">public class UserResponse extends BaseResponse&#123;</div><div class="line">//TODO</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="异步调用"><a href="#异步调用" class="headerlink" title="异步调用"></a>异步调用</h4><p>下面的所列代码是整个请求的核心代码。首先，定义模版接口，接口中只提供了若干主要方法，从整体上看，方法的参数为业务请求类和响应类型，返回值为泛型类型的ListenableFuture对象；其次，定义抽象类和具体的实现类；最后，进过请求处理即可获取请求接口。这里不累赘，见下方代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div></pre></td><td class="code"><pre><div class="line">//异步调用模板接口</div><div class="line">package acync;</div><div class="line"> </div><div class="line">import java.util.Map;</div><div class="line"> </div><div class="line">import org.springframework.core.ParameterizedTypeReference;</div><div class="line">import org.springframework.http.ResponseEntity;</div><div class="line">import org.springframework.util.concurrent.ListenableFuture;</div><div class="line"> </div><div class="line">public interface Templete &#123;</div><div class="line">    &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getAsyncForObject(BaseRequest baserequest, Class&lt;T&gt; responseType) throws Exception;</div><div class="line"> </div><div class="line">    &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getAsyncForObject(BaseRequest baserequest,</div><div class="line">            ParameterizedTypeReference&lt;T&gt; responseType) throws Exception;</div><div class="line"> </div><div class="line">    &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getAsyncForObject(BaseRequest baserequest, Class&lt;T&gt; responseType,</div><div class="line">            Map&lt;String, ?&gt; uriVariables) throws Exception;</div><div class="line"> </div><div class="line">    &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getAsyncForObject(BaseRequest baserequest,</div><div class="line">            ParameterizedTypeReference&lt;T&gt; responseType, Map&lt;String, ?&gt; uriVariables) throws Exception;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"> </div><div class="line"></div><div class="line"> </div><div class="line"> </div><div class="line">//异步调用抽象类</div><div class="line">//这里仅仅提供少量的调取方法，可以自行扩展</div><div class="line"> </div><div class="line">package acync;</div><div class="line"> </div><div class="line">import java.util.Map;</div><div class="line">import org.springframework.core.ParameterizedTypeReference;</div><div class="line">import org.springframework.http.HttpMethod;</div><div class="line">import org.springframework.http.ResponseEntity;</div><div class="line">import org.springframework.util.concurrent.ListenableFuture;</div><div class="line">import org.springframework.web.client.AsyncRestTemplate;</div><div class="line"> </div><div class="line">public abstract class AbstractTemplete implements Templete&#123;</div><div class="line">    public AsyncRestTemplate asyncRestTemplate;</div><div class="line"> </div><div class="line">    @Override</div><div class="line">    public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getAsyncForObject(BaseRequest baserequest, Class&lt;T&gt; responseType)</div><div class="line">            throws Exception &#123;</div><div class="line">        String url = baserequest.build();</div><div class="line">        try &#123;</div><div class="line">            ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; t = asyncRestTemplate.getForEntity(url, responseType);</div><div class="line">            return t;</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            throw e;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    @Override</div><div class="line">    public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getAsyncForObject(BaseRequest baserequest,</div><div class="line">            ParameterizedTypeReference&lt;T&gt; responseType) throws Exception &#123;</div><div class="line">        String url = baserequest.build();</div><div class="line">        try &#123;</div><div class="line">            ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; t = asyncRestTemplate.exchange(url, HttpMethod.GET, null, responseType);</div><div class="line">            return t;</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            throw e;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    @Override</div><div class="line">    public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getAsyncForObject(BaseRequest baserequest, Class&lt;T&gt; responseType,</div><div class="line">            Map&lt;String, ?&gt; uriVariables) throws Exception &#123;</div><div class="line">        String url = baserequest.build();</div><div class="line">        ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; t = null;</div><div class="line">        try &#123;</div><div class="line">            t = asyncRestTemplate.exchange(url, HttpMethod.GET, null, responseType, uriVariables);</div><div class="line">            return t;</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            throw e;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    @Override</div><div class="line">    public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getAsyncForObject(BaseRequest baserequest,</div><div class="line">            ParameterizedTypeReference&lt;T&gt; responseType, Map&lt;String, ?&gt; uriVariables) throws Exception &#123;</div><div class="line">        String url = baserequest.build();</div><div class="line">        ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; t = null;</div><div class="line">        try &#123;</div><div class="line">            t = asyncRestTemplate.exchange(url, HttpMethod.GET, null, responseType, uriVariables);</div><div class="line">            return t;</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            throw e;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    abstract void setTemplete(AsyncRestTemplate asyncRestTemplate);</div><div class="line"> </div><div class="line">&#125;</div><div class="line"> </div><div class="line"> </div><div class="line"> </div><div class="line"></div><div class="line"> </div><div class="line"> </div><div class="line">// 具体的异步调用实现类</div><div class="line">package acync;</div><div class="line"> </div><div class="line">import java.util.Map;</div><div class="line">import org.springframework.core.ParameterizedTypeReference;</div><div class="line">import org.springframework.http.ResponseEntity;</div><div class="line">import org.springframework.util.concurrent.ListenableFuture;</div><div class="line">import org.springframework.web.client.AsyncRestTemplate;</div><div class="line"> </div><div class="line">public class AsynClientTemplete extends AbstractTemplete &#123;</div><div class="line"> </div><div class="line">    public AsynClientTemplete(AsyncRestTemplate template) &#123;</div><div class="line">        setTemplete(template);</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getAsyncForObject(BaseRequest baserequest, Class&lt;T&gt; responseType)</div><div class="line">            throws Exception &#123;</div><div class="line">        return super.getAsyncForObject(baserequest, responseType);</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getAsyncForObject(BaseRequest baserequest,</div><div class="line">            ParameterizedTypeReference&lt;T&gt; responseType) throws Exception &#123;</div><div class="line">        return super.getAsyncForObject(baserequest, responseType);</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getAsyncForObject(BaseRequest baserequest, Class&lt;T&gt; responseType,</div><div class="line">            Map&lt;String, ?&gt; uriVariables) throws Exception &#123;</div><div class="line">        return super.getAsyncForObject(baserequest, responseType, uriVariables);</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    public &lt;T&gt; ListenableFuture&lt;ResponseEntity&lt;T&gt;&gt; getAsyncForObject(BaseRequest baserequest,</div><div class="line">            ParameterizedTypeReference&lt;T&gt; responseType, Map&lt;String, ?&gt; uriVariables) throws Exception &#123;</div><div class="line">        return super.getAsyncForObject(baserequest, responseType, uriVariables);</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    @Override</div><div class="line">    void setTemplete(AsyncRestTemplate template) &#123;</div><div class="line">        asyncRestTemplate = template == null ? new AsyncRestTemplate() : template;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="请求处理"><a href="#请求处理" class="headerlink" title="请求处理"></a>请求处理</h4><p>上述四步都是为这一步做准备。请求处理这一步是请求的入口，在FutureTpDao中，通过getHttpData方法传入请求包装类ConcreateWapper，返回的Map对象MapIEnum, Object即为响应结果，只需依据具体的业务枚举类即可获取对应的业务请求数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div></pre></td><td class="code"><pre><div class="line">//包装了具体的请求信息</div><div class="line">//其中的每一个Concreate对应一个具体的请求，baseEnum对应业务标识，variables为请求的额外参数，request为请求类和响应类组成的map</div><div class="line"> </div><div class="line">package acync;</div><div class="line"> </div><div class="line">import java.util.ArrayList;</div><div class="line">import java.util.List;</div><div class="line">import java.util.Map;</div><div class="line"> </div><div class="line">public class ConcreateWapper &#123;</div><div class="line">    private List&lt;Concreate&gt; wrapper = new ArrayList&lt;Concreate&gt;();</div><div class="line"> </div><div class="line">    public ConcreateWapper()&#123;&#125;</div><div class="line"> </div><div class="line">    public void setParams(IEnum baseEnum, Map&lt;String, ?&gt; variables, Map&lt;BaseRequest, ?&gt; request) &#123;</div><div class="line">        wrapper.add(new Concreate(baseEnum, variables, request));</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    public List&lt;Concreate&gt; getWrapper() &#123;</div><div class="line">        return wrapper;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    public static class Concreate &#123;</div><div class="line">        private IEnum baseEnum;</div><div class="line">        private Map&lt;String, ?&gt; variables;</div><div class="line">        private Map&lt;BaseRequest, ?&gt; request;</div><div class="line"> </div><div class="line">        public Concreate(IEnum baseEnum, Map&lt;String, ?&gt; variables, Map&lt;BaseRequest, ?&gt; request) &#123;</div><div class="line">            this.baseEnum = baseEnum;</div><div class="line">            this.variables = variables;</div><div class="line">            this.request = request;</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        public IEnum getBaseEnum() &#123;</div><div class="line">            return baseEnum;</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        public void setBaseEnum(IEnum baseEnum) &#123;</div><div class="line">            this.baseEnum = baseEnum;</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        public Map&lt;String, ?&gt; getVariables() &#123;</div><div class="line">            return variables;</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        public void setVariables(Map&lt;String, ?&gt; variables) &#123;</div><div class="line">            this.variables = variables;</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        public Map&lt;BaseRequest, ?&gt; getRequest() &#123;</div><div class="line">            return request;</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        public void setRequest(Map&lt;BaseRequest, ?&gt; request) &#123;</div><div class="line">            this.request = request;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"> </div><div class="line"> </div><div class="line"> </div><div class="line"> </div><div class="line"> </div><div class="line"> </div><div class="line">//实现ListenableFutureCallback，实现回调功能</div><div class="line">package acync;</div><div class="line"> </div><div class="line">import java.util.Map;</div><div class="line">import java.util.concurrent.CountDownLatch;</div><div class="line">import org.springframework.http.ResponseEntity;</div><div class="line">import org.springframework.util.concurrent.ListenableFutureCallback;</div><div class="line"> </div><div class="line"> </div><div class="line">public class CommonListenableCallBack&lt;T&gt; implements ListenableFutureCallback&lt;T&gt; &#123;</div><div class="line">    private IEnum type;</div><div class="line">    private Map&lt;IEnum, Object&gt; resultValue;</div><div class="line">    private volatile CountDownLatch latch;</div><div class="line"> </div><div class="line">    public CommonListenableCallBack(IEnum type, Map&lt;IEnum, Object&gt; resultValue, CountDownLatch latch) &#123;</div><div class="line">        this.type = type;</div><div class="line">        this.resultValue = resultValue;</div><div class="line">        this.latch = latch;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    @Override</div><div class="line">    public void onSuccess(T result) &#123;</div><div class="line">        ResponseEntity&lt;T&gt; re = (ResponseEntity&lt;T&gt;) result;</div><div class="line">        if (re != null &amp;&amp; re.getBody() != null) &#123;</div><div class="line">            T body = re.getBody();</div><div class="line">            if (type != null) &#123;</div><div class="line">                resultValue.put(type, body);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        latch.countDown();</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    @Override</div><div class="line">    public void onFailure(Throwable ex) &#123;</div><div class="line">        latch.countDown();</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">&#125;</div><div class="line"> </div><div class="line"> </div><div class="line"> </div><div class="line"> </div><div class="line">//FutureTpDao的构造函数可以传入自定义的AsyncRestTemplate，不传的话就是默认的</div><div class="line">//其中的getHttpData()方法传入多个请求的包装类ConcreateWapper，返回数据组成的Map</div><div class="line">//其中Map中的key对应的是业务标识，value对应的是请求对应的结果类</div><div class="line"> </div><div class="line">package acync;</div><div class="line"> </div><div class="line">import java.util.HashMap;</div><div class="line">import java.util.Map;</div><div class="line">import java.util.concurrent.CountDownLatch;</div><div class="line">import org.springframework.core.ParameterizedTypeReference;</div><div class="line">import org.springframework.util.concurrent.ListenableFuture;</div><div class="line">import org.springframework.web.client.AsyncRestTemplate;</div><div class="line">import acync.ConcreateWapper.Concreate;</div><div class="line"> </div><div class="line">public class FutureTpDao &#123;</div><div class="line">    public AsynClientTemplete asynHttpClient;</div><div class="line"> </div><div class="line">    public FutureTpDao()&#123;</div><div class="line">        asynHttpClient = new AsynClientTemplete(null);</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    public FutureTpDao(AsyncRestTemplate tp) &#123;</div><div class="line">        asynHttpClient = new AsynClientTemplete(tp);</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    //获取数据</div><div class="line">    public Map&lt;IEnum, Object&gt; getHttpData(ConcreateWapper wapper) &#123;</div><div class="line">        if (wapper == null)</div><div class="line">            return new HashMap&lt;IEnum, Object&gt;();</div><div class="line">        final CountDownLatch latch = new CountDownLatch(wapper.getWrapper().size());</div><div class="line">        final Map&lt;IEnum, Object&gt; result = new HashMap&lt;IEnum, Object&gt;();</div><div class="line"> </div><div class="line">        if (wapper.getWrapper() != null) &#123;</div><div class="line">            for (final Concreate wp : wapper.getWrapper()) &#123;</div><div class="line">                try &#123;</div><div class="line">                    Map&lt;BaseRequest, ?&gt; requestMap = wp.getRequest();</div><div class="line">                    for (final BaseRequest tpRequestInfo : requestMap.keySet()) &#123;</div><div class="line">                        getHttpdata(wp, tpRequestInfo, latch, requestMap, result);</div><div class="line">                    &#125;</div><div class="line">                &#125; catch (Exception e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"> </div><div class="line">            try &#123;</div><div class="line">                latch.await();</div><div class="line">            &#125; catch (Exception e) &#123;</div><div class="line">                throw new RuntimeException(e.getMessage());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return result;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">   //发送http请求，获取请求结果</div><div class="line">    private void getHttpdata(Concreate wp, BaseRequest tpRequestInfo, CountDownLatch latch,</div><div class="line">            Map&lt;BaseRequest, ?&gt; requestMap, Map&lt;IEnum, Object&gt; result) throws Exception &#123;</div><div class="line">        ListenableFuture&lt;?&gt; statResponse = null;</div><div class="line"> </div><div class="line">        if (requestMap.get(tpRequestInfo) instanceof ParameterizedTypeReference&lt;?&gt;) &#123;</div><div class="line">            ParameterizedTypeReference&lt;?&gt; responseType = (ParameterizedTypeReference&lt;?&gt;) requestMap.get(tpRequestInfo);</div><div class="line">            statResponse = asynHttpClient.getAsyncForObject(tpRequestInfo, responseType, wp.getVariables());</div><div class="line">        &#125; else if (requestMap.get(tpRequestInfo) instanceof Class&lt;?&gt;) &#123;</div><div class="line">            Class&lt;?&gt; responseType = (Class&lt;?&gt;) requestMap.get(tpRequestInfo);</div><div class="line">            statResponse = asynHttpClient.getAsyncForObject(tpRequestInfo, responseType);</div><div class="line">        &#125; else &#123;</div><div class="line">            throw new RuntimeException(&quot;requestType error...&quot;);</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        addCallBack(statResponse, wp.getBaseEnum(), latch, result);</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    //增加回调</div><div class="line">    private &lt;T&gt; void addCallBack(ListenableFuture&lt;T&gt; statResponse, IEnum baseEnum, CountDownLatch latch,</div><div class="line">            Map&lt;IEnum, Object&gt; result) &#123;</div><div class="line">        if (statResponse != null) &#123;</div><div class="line">            statResponse.addCallback(new CommonListenableCallBack&lt;T&gt;(baseEnum, result, latch));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">package acync;</div><div class="line"> </div><div class="line">import java.util.HashMap;</div><div class="line">import java.util.Map;</div><div class="line"> </div><div class="line">/**</div><div class="line"> * 示例</div><div class="line"> * 示例仅仅是一个样板，无法运行</div><div class="line"> * 需要在web环境下运行，例如启动tomcat服务器并进行相关配置</div><div class="line"> * @author liqqc</div><div class="line"> *</div><div class="line"> */</div><div class="line">public class Demo &#123;</div><div class="line"> </div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        ConcreateWapper wapper = new ConcreateWapper();</div><div class="line"> </div><div class="line">        Map&lt;BaseRequest, Class&lt;? extends BaseResponse&gt;&gt; request = new HashMap&lt;BaseRequest, Class&lt;? extends BaseResponse&gt;&gt;();</div><div class="line">        request.put(new UserRequest(), new UserResponse().getClass());</div><div class="line">        wapper.setParams(UserEnum.ADD, null, request);</div><div class="line">        wapper.setParams(UserEnum.DELETE, null, request);</div><div class="line">        wapper.setParams(UserEnum.UPDATE, null, request);</div><div class="line">        wapper.setParams(UserEnum.MODIFY, null, request);</div><div class="line"> </div><div class="line">        FutureTpDao futureTpDao = new FutureTpDao();</div><div class="line">        Map&lt;IEnum, Object&gt; futureData = futureTpDao.getHttpData(wapper);</div><div class="line">        for (IEnum ienum : futureData.keySet()) &#123;</div><div class="line">            System.err.println(ienum + &quot;=&quot; + futureData.get(ienum));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>ref:<br><a href="https://blog.csdn.net/he90227/article/details/52210490" target="_blank" rel="external">https://blog.csdn.net/he90227/article/details/52210490</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果这篇文章帮助了你, 请不吝回报</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.png" alt="Ran WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Ran Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/concurrency/" rel="tag"># concurrency</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/22/Java-concurrency-ReentrantLock-Synchronized/" rel="next" title="Java-concurrency-ReentrantLock-Synchronized">
+                <i class="fa fa-chevron-left"></i> Java-concurrency-ReentrantLock-Synchronized
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/22/Java-concurrency-15种锁的介绍/" rel="prev" title="Java-concurrency-15种锁的介绍">
+                Java-concurrency-15种锁的介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ran" />
+          <p class="site-author-name" itemprop="name">Ran</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">191</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念先行"><span class="nav-number">1.</span> <span class="nav-text">概念先行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于异步回调"><span class="nav-number">2.</span> <span class="nav-text">关于异步回调</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java自带的Future-Callback"><span class="nav-number">2.1.</span> <span class="nav-text">Java自带的Future-Callback</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-Future"><span class="nav-number">2.1.1.</span> <span class="nav-text">Java  Future</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Guava提供的ListenableFuture-Callback"><span class="nav-number">2.2.</span> <span class="nav-text">Guava提供的ListenableFuture-Callback</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring4提供的异步请求封装模板"><span class="nav-number">3.</span> <span class="nav-text">Spring4提供的异步请求封装模板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RestTemplate简介"><span class="nav-number">3.1.</span> <span class="nav-text">RestTemplate简介</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义"><span class="nav-number">3.1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法"><span class="nav-number">3.1.2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#说明"><span class="nav-number">3.1.3.</span> <span class="nav-text">说明</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AsyncRestTemplate简介"><span class="nav-number">3.2.</span> <span class="nav-text">AsyncRestTemplate简介</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#说明-1"><span class="nav-number">3.2.3.</span> <span class="nav-text">说明</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于AsyncRestTemplate实现批量异步调用"><span class="nav-number">3.3.</span> <span class="nav-text">基于AsyncRestTemplate实现批量异步调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#业务标识（使用枚举类来标识业务请求）"><span class="nav-number">3.3.1.</span> <span class="nav-text">业务标识（使用枚举类来标识业务请求）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#请求"><span class="nav-number">3.3.2.</span> <span class="nav-text">请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#响应"><span class="nav-number">3.3.3.</span> <span class="nav-text">响应</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#异步调用"><span class="nav-number">3.3.4.</span> <span class="nav-text">异步调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#请求处理"><span class="nav-number">3.3.5.</span> <span class="nav-text">请求处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#示例"><span class="nav-number">3.3.6.</span> <span class="nav-text">示例</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ran</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

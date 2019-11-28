@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="IO," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="本文介绍操作系统I/O工作原理，I/O设计，基本使用，开源项目中实现高性能I/O常见方法和实现，彻底搞懂高性能I/O之道。">
+<meta name="keywords" content="IO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="高性能网络IO">
+<meta property="og:url" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/index.html">
+<meta property="og:site_name" content="Ran&#39;s Blog">
+<meta property="og:description" content="本文介绍操作系统I/O工作原理，I/O设计，基本使用，开源项目中实现高性能I/O常见方法和实现，彻底搞懂高性能I/O之道。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128164447.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128164709.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128164810.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128164922.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128165259.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128165332.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128165647.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128165905.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128165943.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128170127.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128170510.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128170636.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128170941.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128171347.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128171430.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128172025.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128172334.jpg">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128173051.jpg">
+<meta property="og:updated_time" content="2019-11-28T09:37:27.116Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="高性能网络IO">
+<meta name="twitter:description" content="本文介绍操作系统I/O工作原理，I/O设计，基本使用，开源项目中实现高性能I/O常见方法和实现，彻底搞懂高性能I/O之道。">
+<meta name="twitter:image" content="http://mikzhang.github.io/2017/09/22/高性能网络IO/snipaste_20191128164447.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mikzhang.github.io/2017/09/22/高性能网络IO/"/>
+
+
+
+
+
+  <title>高性能网络IO | Ran's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ran's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://mikzhang.github.io/2017/09/22/高性能网络IO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ran">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ran's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">高性能网络IO</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-22T00:00:00+00:00">
+                2017-09-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IO/" itemprop="url" rel="index">
+                    <span itemprop="name">IO</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文介绍操作系统I/O工作原理，I/O设计，基本使用，开源项目中实现高性能I/O常见方法和实现，彻底搞懂高性能I/O之道。</p>
+<a id="more"></a>
+<h2 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h2><p>在介绍I/O原理之前，先重温几个基础概念：</p>
+<h3 id="操作系统与内核"><a href="#操作系统与内核" class="headerlink" title="操作系统与内核"></a>操作系统与内核</h3><p><img src="snipaste_20191128164447.jpg" alt="snipaste_20191128164447.jpg"></p>
+<p><strong>操作系统</strong>：管理计算机硬件与软件资源的系统软件内核：操作系统的核心软件，负责管理系统的进程、内存、设备驱动程序、文件和网络系统等等，为应用程序提供对计算机硬件的安全访问服务</p>
+<h3 id="内核空间和用户空间"><a href="#内核空间和用户空间" class="headerlink" title="内核空间和用户空间"></a>内核空间和用户空间</h3><p>为了避免用户进程直接操作内核，保证内核安全，操作系统将内存寻址空间划分为两部分：<strong>内核空间</strong>（Kernel-space），供内核程序使用; <strong>用户空间</strong>（User-space），供用户进程使用 为了安全，内核空间和用户空间是隔离的，即使用户的程序崩溃了，内核也不受影响</p>
+<h3 id="数据流"><a href="#数据流" class="headerlink" title="数据流"></a>数据流</h3><p><img src="snipaste_20191128164709.jpg" alt="snipaste_20191128164709.jpg"></p>
+<p>计算机中的数据是基于随着时间变换高低电压信号传输的，这些数据信号连续不断，有着固定的传输方向，类似水管中水的流动，因此抽象数据流(I/O流)的概念：<strong>指一组有顺序的、有起点和终点的字节集合，</strong></p>
+<p>抽象出数据流的作用：<strong>实现程序逻辑与底层硬件解耦</strong>，通过引入数据流作为程序与硬件设备之间的抽象层，面向通用的数据流输入输出接口编程，而不是具体硬件特性，程序和底层硬件可以独立灵活替换和扩展</p>
+<p><img src="snipaste_20191128164810.jpg" alt="snipaste_20191128164810.jpg"></p>
+<h2 id="I-O-工作原理"><a href="#I-O-工作原理" class="headerlink" title="I/O 工作原理"></a>I/O 工作原理</h2><h3 id="磁盘I-O"><a href="#磁盘I-O" class="headerlink" title="磁盘I/O"></a>磁盘I/O</h3><p>典型I/O读写磁盘工作原理如下：</p>
+<p><img src="snipaste_20191128164922.jpg" alt="snipaste_20191128164922.jpg"></p>
+<p><strong>tips</strong>: DMA：全称叫直接内存存取（Direct Memory Access），是一种允许外围设备（硬件子系统）直接访问系统主内存的机制。基于 DMA 访问方式，系统主内存与硬件设备的数据传输可以省去CPU 的全程调度</p>
+<p>值得注意的是：</p>
+<ul>
+<li>读写操作基于系统调用实现</li>
+<li>读写操作经过用户缓冲区，内核缓冲区，应用进程并不能直接操作磁盘</li>
+<li>应用进程读操作时需阻塞直到读取到数据</li>
+</ul>
+<h3 id="网络I-O"><a href="#网络I-O" class="headerlink" title="网络I/O"></a>网络I/O</h3><p>这里先以最经典的阻塞式I/O模型介绍：</p>
+<p><img src="snipaste_20191128165259.jpg" alt="snipaste_20191128165259.jpg"></p>
+<p><img src="snipaste_20191128165332.jpg" alt="snipaste_20191128165332.jpg"></p>
+<p>tips:recvfrom，经socket接收数据的函数</p>
+<p>值得注意的是：</p>
+<ul>
+<li>网络I/O读写操作经过用户缓冲区，Sokcet缓冲区</li>
+<li>服务端线程在从调用recvfrom开始到它返回有数据报准备好这段时间是阻塞的，recvfrom返回成功后，线程开始处理数据报</li>
+</ul>
+<h2 id="Java-I-O设计"><a href="#Java-I-O设计" class="headerlink" title="Java I/O设计"></a>Java I/O设计</h2><h3 id="I-O分类"><a href="#I-O分类" class="headerlink" title="I/O分类"></a>I/O分类</h3><p>Java中对数据流进行具体化和实现，关于Java数据流一般关注以下几个点：</p>
+<ul>
+<li>流的方向从外部到程序，称为输入流；从程序到外部，称为输出流</li>
+<li>流的数据单位程序以字节作为最小读写数据单元，称为字节流，以字符作为最小读写数据单元，称为字符流</li>
+<li>流的功能角色</li>
+</ul>
+<p><img src="snipaste_20191128165647.jpg" alt="snipaste_20191128165647.jpg"></p>
+<p>从/向一个特定的IO设备（如磁盘，网络）或者存储对象(如内存数组)读/写数据的流，称为<strong>节点流</strong>；</p>
+<p>对一个已有流进行连接和封装，通过封装后的流来实现数据的读/写功能，称为<strong>处理流</strong>(或称为过滤流)；</p>
+<h3 id="I-O操作接口"><a href="#I-O操作接口" class="headerlink" title="I/O操作接口"></a>I/O操作接口</h3><p>java.io包下有一堆I/O操作类，初学时看了容易搞不懂，其实仔细观察其中还是有规律：这些I/O操作类都是在<strong>继承4个基本抽象流的基础上，要么是节点流，要么是处理流</strong></p>
+<h4 id="四个基本抽象流"><a href="#四个基本抽象流" class="headerlink" title="四个基本抽象流"></a>四个基本抽象流</h4><p>java.io包中包含了流式I/O所需要的所有类，java.io包中有四个基本抽象流，分别处理字节流和字符流：</p>
+<ul>
+<li>InputStream</li>
+<li>OutputStream</li>
+<li>Reader</li>
+<li>Writer</li>
+</ul>
+<p><img src="snipaste_20191128165905.jpg" alt="snipaste_20191128165905.jpg"></p>
+<h4 id="节点流"><a href="#节点流" class="headerlink" title="节点流"></a>节点流</h4><p><img src="snipaste_20191128165943.jpg" alt="snipaste_20191128165943.jpg"></p>
+<p>节点流I/O类名由节点流类型 + 抽象流类型组成，常见节点类型有：</p>
+<ul>
+<li>File文件</li>
+<li>Piped 进程内线程通信管道</li>
+<li>ByteArray / CharArray (字节数组 / 字符数组)</li>
+<li>StringBuffer / String (字符串缓冲区 / 字符串)</li>
+</ul>
+<p>节点流的创建通常是在构造函数传入数据源，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">FileReader reader = new FileReader(new File(&quot;file.txt&quot;));</div><div class="line">FileWriter writer = new FileWriter(new File(&quot;file.txt&quot;));</div></pre></td></tr></table></figure>
+<h4 id="处理流"><a href="#处理流" class="headerlink" title="处理流"></a>处理流</h4><p><img src="snipaste_20191128170127.jpg" alt="snipaste_20191128170127.jpg"></p>
+<p>处理流I/O类名由对已有流封装的功能 + 抽象流类型组成，常见功能有：</p>
+<ul>
+<li><strong>缓冲</strong>：对节点流读写的数据提供了缓冲的功能，数据可以基于缓冲批量读写，提高效率。常见有BufferedInputStream、BufferedOutputStream</li>
+<li><strong>字节流转换为字符流</strong>：由InputStreamReader、OutputStreamWriter实现</li>
+<li><strong>字节流与基本类型数据相互转换</strong>：这里基本数据类型数据如int、long、short，由DataInputStream、DataOutputStream实现</li>
+<li><strong>字节流与对象实例相互转换</strong>：用于实现对象序列化，由ObjectInputStream、ObjectOutputStream实现</li>
+</ul>
+<p>处理流的应用了适配器/装饰模式，转换/扩展已有流，处理流的创建通常是在构造函数传入已有的节点流或处理流：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">FileOutputStream fileOutputStream = new FileOutputStream(&quot;file.txt&quot;);</div><div class="line">// 扩展提供缓冲写</div><div class="line">BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);</div><div class="line"> // 扩展提供提供基本数据类型写</div><div class="line">DataOutputStream out = new DataOutputStream(bufferedOutputStream);</div></pre></td></tr></table></figure>
+<h3 id="Java-NIO"><a href="#Java-NIO" class="headerlink" title="Java NIO"></a>Java NIO</h3><h4 id="标准I-O存在问题"><a href="#标准I-O存在问题" class="headerlink" title="标准I/O存在问题"></a>标准I/O存在问题</h4><p>Java NIO(New I/O)是一个可以替代标准Java I/O API的IO API(从Java 1.4开始)，Java NIO提供了与标准I/O不同的I/O工作方式，目的是为了解决标准 I/O存在的以下问题：</p>
+<p><strong>数据多次拷贝</strong></p>
+<p>标准I/O处理，完成一次完整的数据读写，至少需要从底层硬件读到内核空间，再读到用户文件，又从用户空间写入内核空间，再写入底层硬件</p>
+<p>此外，底层通过write、read等函数进行I/O系统调用时，需要传入数据所在缓冲区起始地址和长度由于JVM GC的存在，导致对象在堆中的位置往往会发生移动，移动后传入系统函数的地址参数就不是真正的缓冲区地址了</p>
+<p>可能导致读写出错，为了解决上面的问题，使用标准I/O进行系统调用时，还会额外导致一次数据拷贝：把数据从JVM的堆内拷贝到堆外的连续空间内存(堆外内存)</p>
+<p>所以总共经历6次数据拷贝，执行效率较低</p>
+<p><img src="snipaste_20191128170510.jpg" alt="snipaste_20191128170510.jpg"></p>
+<p><strong>操作阻塞</strong></p>
+<p>传统的网络I/O处理中，由于请求建立连接(connect)，读取网络I/O数据(read)，发送数据(send)等操作是线程阻塞的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">// 等待连接</div><div class="line">Socket socket = serverSocket.accept();</div><div class="line"></div><div class="line">// 连接已建立，读取请求消息</div><div class="line">StringBuilder req = new StringBuilder();</div><div class="line">byte[] recvByteBuf = new byte[1024];</div><div class="line">int len;</div><div class="line">while ((len = socket.getInputStream().read(recvByteBuf)) != -1) &#123;</div><div class="line">	req.append(new String(recvByteBuf, 0, len, StandardCharsets.UTF_8));</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 写入返回消息</div><div class="line">socket.getOutputStream().write((&quot;server response msg&quot;.getBytes()));</div><div class="line">socket.shutdownOutput();</div></pre></td></tr></table></figure>
+<p>以上面服务端程序为例，当请求连接已建立，读取请求消息，服务端调用read方法时，客户端数据可能还没就绪(例如客户端数据还在写入中或者传输中)，线程需要在read方法阻塞等待直到数据就绪</p>
+<p>为了实现服务端并发响应，每个连接需要独立的线程单独处理，当并发请求量大时为了维护连接，内存、线程切换开销过大</p>
+<p><img src="snipaste_20191128170636.jpg" alt="snipaste_20191128170636.jpg"></p>
+<h4 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h4><p><strong>Java NIO核心三大核心组件是Buffer(缓冲区)、Channel(通道)、Selector</strong></p>
+<p>Buffer提供了常用于I/O操作的字节缓冲区，常见的缓存区有ByteBuffer, CharBuffer, DoubleBuffer, FloatBuffer, IntBuffer, LongBuffer, ShortBuffer，分别对应基本数据类型: byte, char, double, float, int, long, short，下面介绍主要以最常用的ByteBuffer为例，Buffer底层支持Java堆外内存和堆内内存</p>
+<p><strong>堆外内存</strong>是指与堆内存相对应的，把内存对象分配在JVM堆以外的内存，这些内存直接受操作系统管理（而不是虚拟机，相比堆内内存，I/O操作中使用堆外内存的优势在于：</p>
+<ul>
+<li>不用被JVM GC线回收，减少GC线程资源占有</li>
+<li>在I/O系统调用时，直接操作堆外内存，可以节省一次堆外内存和堆内内存的复制</li>
+</ul>
+<p>ByteBuffer底层基于堆外内存的分配和释放基于malloc和free函数，对外allocateDirect方法可以申请分配堆外内存，并返回继承ByteBuffer类的DirectByteBuffer对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public static ByteBuffer allocateDirect(int capacity) &#123;</div><div class="line">    return new DirectByteBuffer(capacity);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>堆外内存的回收基于DirectByteBuffer的成员变量Cleaner类，提供clean方法可以用于主动回收，Netty中大部分堆外内存通过记录定位Cleaner的存在，主动调用clean方法来回收；另外，当DirectByteBuffer对象被GC时，关联的堆外内存也会被回收</p>
+<p>tips: JVM参数不建议设置-XX:+DisableExplicitGC，因为部分依赖Java NIO的框架(例如Netty)在内存异常耗尽时，会主动调用System.gc()，触发Full GC，回收DirectByteBuffer对象，作为回收堆外内存的最后保障机制，设置该参数之后会导致在该情况下堆外内存得不到清理</p>
+<p>堆外内存基于基础ByteBuffer类的DirectByteBuffer类成员变量：Cleaner对象，这个Cleaner对象会在合适的时候执行unsafe.freeMemory(address)，从而回收这块堆外内存</p>
+<p>Buffer可以见到理解为一组基本数据类型，存储地址连续的的数组，支持读写操作，对应读模式和写模式，通过几个变量来保存这个数据的当前位置状态：capacity、 position、 limit：</p>
+<ul>
+<li>capacity 缓冲区数组的总长度</li>
+<li>position 下一个要操作的数据元素的位置</li>
+<li>limit 缓冲区数组中不可操作的下一个元素的位置：limit &lt;= capacity</li>
+</ul>
+<p><img src="snipaste_20191128170941.jpg" alt="snipaste_20191128170941.jpg"></p>
+<h4 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h4><p>Channel(通道)的概念可以类比I/O流对象，NIO中I/O操作主要基于Channel：从Channel进行数据读取 ：创建一个缓冲区，然后请求Channel读取数据 从Channel进行数据写入 ：创建一个缓冲区，填充数据，请求Channel写入数据</p>
+<p>Channel和流非常相似，主要有以下几点区别：</p>
+<ul>
+<li>Channel可以读和写，而标准I/O流是单向的</li>
+<li>Channel可以异步读写，标准I/O流需要线程阻塞等待直到读写操作完成</li>
+<li>Channel总是基于缓冲区Buffer读写</li>
+</ul>
+<p>Java NIO中最重要的几个Channel的实现：</p>
+<ul>
+<li>FileChannel：用于文件的数据读写，基于FileChannel提供的方法能减少读写文件数据拷贝次数，后面会介绍</li>
+<li>DatagramChannel：用于UDP的数据读写</li>
+<li>SocketChannel：用于TCP的数据读写，代表客户端连接</li>
+<li>ServerSocketChannel: 监听TCP连接请求，每个请求会创建会一个SocketChannel，一般用于服务端</li>
+</ul>
+<p>基于标准I/O中，我们第一步可能要像下面这样获取输入流，按字节把磁盘上的数据读取到程序中，再进行下一步操作，而在NIO编程中，需要先获取Channel，再进行读写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">FileInputStream fileInputStream = new FileInputStream(&quot;test.txt&quot;);</div><div class="line">FileChannel channel = fileInputStream.channel();</div></pre></td></tr></table></figure>
+<p><strong>tips</strong>: FileChannel仅能运行在阻塞模式下，文件异步处理的 I/O 是在JDK 1.7 才被加入的 java.nio.channels.AsynchronousFileChannel</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">// server socket channel:</div><div class="line">ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();</div><div class="line">serverSocketChannel.bind(new InetSocketAddress(InetAddress.getLocalHost(), 9091));</div><div class="line"></div><div class="line">while (true) &#123;</div><div class="line">	SocketChannel socketChannel = serverSocketChannel.accept();</div><div class="line">	ByteBuffer buffer = ByteBuffer.allocateDirect(1024);</div><div class="line">	int readBytes = socketChannel.read(buffer);</div><div class="line">	if (readBytes &gt; 0) &#123;</div><div class="line">		// 从写数据到buffer翻转为从buffer读数据</div><div class="line">		buffer.flip();</div><div class="line">		byte[] bytes = new byte[buffer.remaining()];</div><div class="line">		buffer.get(bytes);</div><div class="line">		String body = new String(bytes, StandardCharsets.UTF_8);</div><div class="line">		System.out.println(&quot;server 收到：&quot; + body);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="Selector"><a href="#Selector" class="headerlink" title="Selector"></a>Selector</h4><p>Selector(选择器) ，它是Java NIO核心组件中的一个，用于检查一个或多个NIO Channel（通道）的状态是否处于可读、可写。实现单线程管理多个Channel，也就是可以管理多个网络连接</p>
+<p>Selector核心在于基于操作系统提供的I/O复用功能，单个线程可以同时监视多个连接描述符，一旦某个连接就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作，常见有select、poll、epoll等不同实现</p>
+<p><img src="snipaste_20191128171347.jpg" alt="snipaste_20191128171347.jpg"></p>
+<p><img src="snipaste_20191128171430.jpg" alt="snipaste_20191128171430.jpg"></p>
+<p>Java NIO Selector基本工作原理如下：</p>
+<ol>
+<li>初始化Selector对象，服务端ServerSocketChannel对象</li>
+<li>向Selector注册ServerSocketChannel的socket-accept事件</li>
+<li>线程阻塞于selector.select.，当有客户端请求服务端，线程退出阻塞</li>
+<li>基于selector获取所有就绪事件，此时先获取到socket-accept事件，向Selector注册客户端SocketChannel的数据就绪可读事件事件</li>
+<li>线程再次阻塞于selector.select.，当有客户端连接数据就绪，可读</li>
+<li>基于ByteBuffer读取客户端请求数据，然后写入响应数据，关闭channel</li>
+</ol>
+<p>示例如下，完整可运行代码已经上传<a href="https://github.com/caison/caison-blog-demo" target="_blank" rel="external">github</a>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line">Selector selector = Selector.open();</div><div class="line">ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();</div><div class="line">serverSocketChannel.bind(new InetSocketAddress(9091));</div><div class="line">// 配置通道为非阻塞模式</div><div class="line">serverSocketChannel.configureBlocking(false);</div><div class="line">// 注册服务端的socket-accept事件</div><div class="line">serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);</div><div class="line"></div><div class="line">while (true) &#123;</div><div class="line">	// selector.select()会一直阻塞，直到有channel相关操作就绪</div><div class="line">	selector.select();</div><div class="line">	// SelectionKey关联的channel都有就绪事件</div><div class="line">	Iterator&lt;SelectionKey&gt; keyIterator = selector.selectedKeys().iterator();</div><div class="line"></div><div class="line">	while (keyIterator.hasNext()) &#123;</div><div class="line">		SelectionKey key = keyIterator.next();</div><div class="line">		// 服务端socket-accept</div><div class="line">		if (key.isAcceptable()) &#123;</div><div class="line">			// 获取客户端连接的channel</div><div class="line">			SocketChannel clientSocketChannel = serverSocketChannel.accept();</div><div class="line">			// 设置为非阻塞模式</div><div class="line">			clientSocketChannel.configureBlocking(false);</div><div class="line">			// 注册监听该客户端channel可读事件，并为channel关联新分配的buffer</div><div class="line">			clientSocketChannel.register(selector, SelectionKey.OP_READ, ByteBuffer.allocateDirect(1024));</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		// channel可读</div><div class="line">		if (key.isReadable()) &#123;</div><div class="line">			SocketChannel socketChannel = (SocketChannel) key.channel();</div><div class="line">			ByteBuffer buf = (ByteBuffer) key.attachment();</div><div class="line"></div><div class="line">			int bytesRead;</div><div class="line">			StringBuilder reqMsg = new StringBuilder();</div><div class="line">			while ((bytesRead = socketChannel.read(buf)) &gt; 0) &#123;</div><div class="line">				// 从buf写模式切换为读模式</div><div class="line">				buf.flip();</div><div class="line">				int bufRemain = buf.remaining();</div><div class="line">				byte[] bytes = new byte[bufRemain];</div><div class="line">				buf.get(bytes, 0, bytesRead);</div><div class="line">				// 这里当数据包大于byteBuffer长度，有可能有粘包/拆包问题</div><div class="line">				reqMsg.append(new String(bytes, StandardCharsets.UTF_8));</div><div class="line">				buf.clear();</div><div class="line">			&#125;</div><div class="line">			System.out.println(&quot;服务端收到报文：&quot; + reqMsg.toString());</div><div class="line">			if (bytesRead == -1) &#123;</div><div class="line">				byte[] bytes = &quot;[这是服务回的报文的报文]&quot;.getBytes(StandardCharsets.UTF_8);</div><div class="line"></div><div class="line">				int length;</div><div class="line">				for (int offset = 0; offset &lt; bytes.length; offset += length) &#123;</div><div class="line">					length = Math.min(buf.capacity(), bytes.length - offset);</div><div class="line">					buf.clear();</div><div class="line">					buf.put(bytes, offset, length);</div><div class="line">					buf.flip();</div><div class="line">					socketChannel.write(buf);</div><div class="line">				&#125;</div><div class="line">				socketChannel.close();</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		// Selector不会自己从已selectedKeys中移除SelectionKey实例</div><div class="line">		// 必须在处理完通道时自己移除 下次该channel变成就绪时，Selector会再次将其放入selectedKeys中</div><div class="line">		keyIterator.remove();</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>tips: Java NIO基于Selector实现高性能网络I/O这块使用起来比较繁琐，使用不友好，一般业界使用基于Java NIO进行封装优化，扩展丰富功能的Netty框架来优雅实现</p>
+<h2 id="高性能I-O优化"><a href="#高性能I-O优化" class="headerlink" title="高性能I/O优化"></a>高性能I/O优化</h2><p>下面结合业界热门开源项目介绍高性能I/O的优化</p>
+<h3 id="零拷贝"><a href="#零拷贝" class="headerlink" title="零拷贝"></a>零拷贝</h3><p>零拷贝(zero copy)技术，用于在数据读写中减少甚至完全避免不必要的CPU拷贝，减少内存带宽的占用，提高执行效率，零拷贝有几种不同的实现原理，下面介绍常见开源项目中零拷贝实现</p>
+<h4 id="Kafka零拷贝"><a href="#Kafka零拷贝" class="headerlink" title="Kafka零拷贝"></a>Kafka零拷贝</h4><p>Kafka基于Linux 2.1内核提供，并在2.4 内核改进的的sendfile函数 + 硬件提供的DMA Gather Copy实现零拷贝，将文件通过socket传送</p>
+<p>函数通过一次系统调用完成了文件的传送，减少了原来read/write方式的模式切换。同时减少了数据的copy, sendfile的详细过程如下：</p>
+<p><img src="snipaste_20191128172025.jpg" alt="snipaste_20191128172025.jpg"></p>
+<p>基本流程如下：</p>
+<ol>
+<li>用户进程发起sendfile系统调用</li>
+<li>内核基于DMA Copy将文件数据从磁盘拷贝到内核缓冲区</li>
+<li>内核将内核缓冲区中的文件描述信息文件描述符，数据长度.拷贝到Socket缓冲区</li>
+<li>内核基于Socket缓冲区中的文件描述信息和DMA硬件提供的Gather Copy功能将内核缓冲区数据复制到网卡</li>
+<li>用户进程sendfile系统调用完成并返回</li>
+</ol>
+<p>相比传统的I/O方式，sendfile + DMA Gather Copy方式实现的零拷贝，数据拷贝次数从4次降为2次，系统调用从2次降为1次，用户进程上下文切换次数从4次变成2次DMA Copy，大大提高处理效率</p>
+<p>Kafka底层基于java.nio包下的FileChannel的transferTo：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public abstract long transferTo(long position, long count, WritableByteChannel target)</div></pre></td></tr></table></figure></p>
+<p>transferTo将FileChannel关联的文件发送到指定channel，当Comsumer消费数据，Kafka Server基于FileChannel将文件中的消息数据发送到SocketChannel</p>
+<h4 id="RocketMQ零拷贝"><a href="#RocketMQ零拷贝" class="headerlink" title="RocketMQ零拷贝"></a>RocketMQ零拷贝</h4><p>RocketMQ基于mmap + write的方式实现零拷贝：mmap() 可以将内核中缓冲区的地址与用户空间的缓冲区进行映射，实现数据共享，省去了将数据从内核缓冲区拷贝到用户缓冲区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tmp_buf = mmap(file, len);</div><div class="line">write(socket, tmp_buf, len);</div></pre></td></tr></table></figure>
+<p><img src="snipaste_20191128172334.jpg" alt="snipaste_20191128172334.jpg"></p>
+<p>mmap + write 实现零拷贝的基本流程如下：</p>
+<ol>
+<li>用户进程向内核发起系统mmap调用</li>
+<li>将用户进程的内核空间的读缓冲区与用户空间的缓存区进行内存地址映射</li>
+<li>内核基于DMA Copy将文件数据从磁盘复制到内核缓冲区</li>
+<li>用户进程mmap系统调用完成并返回</li>
+<li>用户进程向内核发起write系统调用</li>
+<li>内核基于CPU Copy将数据从内核缓冲区拷贝到Socket缓冲区</li>
+<li>内核基于DMA Copy将数据从Socket缓冲区拷贝到网卡</li>
+<li>用户进程write系统调用完成并返回</li>
+</ol>
+<p>RocketMQ中消息基于mmap实现存储和加载的逻辑写在org.apache.rocketmq.store.MappedFile中，内部实现基于nio提供的java.nio.MappedByteBuffer，基于FileChannel的map方法得到mmap的缓冲区：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">// 初始化</div><div class="line">this.fileChannel = new RandomAccessFile(this.file, &quot;rw&quot;).getChannel();</div><div class="line">this.mappedByteBuffer = this.fileChannel.map(MapMode.READ_WRITE, 0, fileSize);</div></pre></td></tr></table></figure>
+<p>查询CommitLog的消息时，基于mappedByteBuffer偏移量pos，数据大小size查询：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public SelectMappedBufferResult selectMappedBuffer(int pos, int size) &#123;</div><div class="line">	int readPosition = getReadPosition();</div><div class="line">	// ...各种安全校验</div><div class="line">    </div><div class="line">	// 返回mappedByteBuffer视图</div><div class="line">	ByteBuffer byteBuffer = this.mappedByteBuffer.slice();</div><div class="line">	byteBuffer.position(pos);</div><div class="line">	ByteBuffer byteBufferNew = byteBuffer.slice();</div><div class="line">	byteBufferNew.limit(size);</div><div class="line">	return new SelectMappedBufferResult(this.fileFromOffset + pos, byteBufferNew, size, this);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>tips: transientStorePoolEnable机制Java NIO mmap的部分内存并不是常驻内存，可以被置换到交换内存(虚拟内存)，RocketMQ为了提高消息发送的性能，引入了内存锁定机制，即将最近需要操作的CommitLog文件映射到内存，并提供内存锁定功能，确保这些文件始终存在内存中，该机制的控制参数就是transientStorePoolEnable</p>
+<p>因此，MappedFile数据保存CommitLog刷盘有2种方式：</p>
+<ul>
+<li>开启transientStorePoolEnable：写入内存字节缓冲区(writeBuffer)  -&gt; 从内存字节缓冲区(writeBuffer)提交(commit)到文件通道(fileChannel)  -&gt; 文件通道(fileChannel) -&gt; flush到磁盘</li>
+<li>未开启transientStorePoolEnable：写入映射文件字节缓冲区(mappedByteBuffer) -&gt; 映射文件字节缓冲区(mappedByteBuffer) -&gt; flush到磁盘</li>
+</ul>
+<p>RocketMQ 基于 mmap+write 实现零拷贝，适用于业务级消息这种小块文件的数据持久化和传输 Kafka 基于 sendfile 这种零拷贝方式，适用于系统日志消息这种高吞吐量的大块文件的数据持久化和传输</p>
+<h4 id="Netty零拷贝"><a href="#Netty零拷贝" class="headerlink" title="Netty零拷贝"></a>Netty零拷贝</h4><p>Netty 的零拷贝分为两种：</p>
+<ul>
+<li>基于操作系统实现的零拷贝，底层基于FileChannel的transferTo方法</li>
+<li>基于Java 层操作优化，对数组缓存对象(ByteBuf )进行封装优化，通过对ByteBuf数据建立数据视图，支持ByteBuf 对象合并，切分，当底层仅保留一份数据存储，减少不必要拷贝</li>
+</ul>
+<h3 id="多路复用"><a href="#多路复用" class="headerlink" title="多路复用"></a>多路复用</h3><p>Netty中对Java NIO功能封装优化之后，实现I/O多路复用代码优雅了很多：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">// 创建mainReactor</div><div class="line">NioEventLoopGroup boosGroup = new NioEventLoopGroup();</div><div class="line">// 创建工作线程组</div><div class="line">NioEventLoopGroup workerGroup = new NioEventLoopGroup();</div><div class="line"></div><div class="line">final ServerBootstrap serverBootstrap = new ServerBootstrap();</div><div class="line">serverBootstrap</div><div class="line">	 // 组装NioEventLoopGroup</div><div class="line">	.group(boosGroup, workerGroup)</div><div class="line">	 // 设置channel类型为NIO类型</div><div class="line">	.channel(NioServerSocketChannel.class)</div><div class="line">	// 设置连接配置参数</div><div class="line">	.option(ChannelOption.SO_BACKLOG, 1024)</div><div class="line">	.childOption(ChannelOption.SO_KEEPALIVE, true)</div><div class="line">	.childOption(ChannelOption.TCP_NODELAY, true)</div><div class="line">	// 配置入站、出站事件handler</div><div class="line">	.childHandler(new ChannelInitializer&lt;NioSocketChannel&gt;() &#123;</div><div class="line">		@Override</div><div class="line">		protected void initChannel(NioSocketChannel ch) &#123;</div><div class="line">			// 配置入站、出站事件channel</div><div class="line">			ch.pipeline().addLast(...);</div><div class="line">			ch.pipeline().addLast(...);</div><div class="line">		&#125;</div><div class="line">	&#125;);</div><div class="line"></div><div class="line">// 绑定端口</div><div class="line">int port = 8080;</div><div class="line">serverBootstrap.bind(port).addListener(future -&gt; &#123;</div><div class="line">    if (future.isSuccess()) &#123;</div><div class="line">        System.out.println(new Date() + &quot;: 端口[&quot; + port + &quot;]绑定成功!&quot;);</div><div class="line">    &#125; else &#123;</div><div class="line">        System.err.println(&quot;端口[&quot; + port + &quot;]绑定失败!&quot;);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h3 id="页缓存-PageCache"><a href="#页缓存-PageCache" class="headerlink" title="页缓存(PageCache)"></a>页缓存(PageCache)</h3><p>页缓存（PageCache)是操作系统对文件的缓存，用来减少对磁盘的 I/O 操作，以页为单位的，内容就是磁盘上的物理块，页缓存能帮助<strong>程序对文件进行顺序读写的速度几乎接近于内存的读写速度</strong>，主要原因就是由于OS使用PageCache机制对读写访问操作进行了性能优化：</p>
+<p>页缓存读取策略：当进程发起一个读操作 （比如，进程发起一个 read() 系统调用），它首先会检查需要的数据是否在页缓存中：</p>
+<ul>
+<li>如果在，则放弃访问磁盘，而直接从页缓存中读取</li>
+<li>如果不在，则内核调度块 I/O 操作从磁盘去读取数据，并读入紧随其后的少数几个页面（不少于一个页面，通常是三个页面），然后将数据放入页缓存中</li>
+</ul>
+<p><img src="snipaste_20191128173051.jpg" alt="snipaste_20191128173051.jpg"></p>
+<p><strong>页缓存写策略</strong>：当进程发起write系统调用写数据到文件中，先写到页缓存，然后方法返回。此时数据还没有真正的保存到文件中去，Linux 仅仅将页缓存中的这一页数据标记为“脏”，并且被加入到脏页链表中</p>
+<p>然后，由flusher 回写线程周期性将脏页链表中的页写到磁盘，让磁盘中的数据和内存中保持一致，最后清理“脏”标识。在以下三种情况下，脏页会被写回磁盘:</p>
+<ul>
+<li>空闲内存低于一个特定阈值</li>
+<li>脏页在内存中驻留超过一个特定的阈值时</li>
+<li>当用户进程调用 sync() 和 fsync() 系统调用时</li>
+</ul>
+<p>RocketMQ中，ConsumeQueue逻辑消费队列存储的数据较少，并且是顺序读取，在page cache机制的预读取作用下，Consume Queue文件的读性能几乎接近读内存，即使在有消息堆积情况下也不会影响性能，提供了2种消息刷盘策略：</p>
+<ul>
+<li>同步刷盘：在消息真正持久化至磁盘后RocketMQ的Broker端才会真正返回给Producer端一个成功的ACK响应</li>
+<li>异步刷盘，能充分利用操作系统的PageCache的优势，只要消息写入PageCache即可将成功的ACK返回给Producer端。消息刷盘采用后台异步线程提交的方式进行，降低了读写延迟，提高了MQ的性能和吞吐量<br>Kafka实现消息高性能读写也利用了页缓存，这里不再展开</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>《深入理解Linux内核 —— Daniel P.Bovet》</p>
+<p>Netty之Java堆外内存扫盲贴 ——江南白衣</p>
+<p>Java NIO？看这一篇就够了！——朱小厮</p>
+<p>RocketMQ 消息存储流程 ——  Zhao Kun(赵坤)</p>
+<p>一文理解Netty模型架构 ——caison</p>
+<p>ref:<br><a href="https://mp.weixin.qq.com/s?__biz=MzI1OTY2MzMxOQ==&amp;mid=2247487075&amp;idx=1&amp;sn=890a6ea1c4b562d55ecc798312f6500b&amp;chksm=ea743adbdd03b3cd33c2cdf894ef46105649cb9d8446236a6cbf704b8c7d5a6d6f535ee454c8&amp;scene=21#wechat_redirect" target="_blank" rel="external">一文彻底搞懂高性能网络 I/O 之道</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果这篇文章帮助了你, 请不吝回报</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.png" alt="Ran WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Ran Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IO/" rel="tag"># IO</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/22/Java-Concurrent用户指南/" rel="next" title="Java-Concurrent用户指南">
+                <i class="fa fa-chevron-left"></i> Java-Concurrent用户指南
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/22/Java-Proxy/" rel="prev" title="Java-Proxy">
+                Java-Proxy <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ran" />
+          <p class="site-author-name" itemprop="name">Ran</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">191</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础概念"><span class="nav-number">1.</span> <span class="nav-text">基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统与内核"><span class="nav-number">1.1.</span> <span class="nav-text">操作系统与内核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内核空间和用户空间"><span class="nav-number">1.2.</span> <span class="nav-text">内核空间和用户空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据流"><span class="nav-number">1.3.</span> <span class="nav-text">数据流</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#I-O-工作原理"><span class="nav-number">2.</span> <span class="nav-text">I/O 工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#磁盘I-O"><span class="nav-number">2.1.</span> <span class="nav-text">磁盘I/O</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络I-O"><span class="nav-number">2.2.</span> <span class="nav-text">网络I/O</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-I-O设计"><span class="nav-number">3.</span> <span class="nav-text">Java I/O设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#I-O分类"><span class="nav-number">3.1.</span> <span class="nav-text">I/O分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#I-O操作接口"><span class="nav-number">3.2.</span> <span class="nav-text">I/O操作接口</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#四个基本抽象流"><span class="nav-number">3.2.1.</span> <span class="nav-text">四个基本抽象流</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#节点流"><span class="nav-number">3.2.2.</span> <span class="nav-text">节点流</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#处理流"><span class="nav-number">3.2.3.</span> <span class="nav-text">处理流</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-NIO"><span class="nav-number">3.3.</span> <span class="nav-text">Java NIO</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#标准I-O存在问题"><span class="nav-number">3.3.1.</span> <span class="nav-text">标准I/O存在问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Buffer"><span class="nav-number">3.3.2.</span> <span class="nav-text">Buffer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Channel"><span class="nav-number">3.3.3.</span> <span class="nav-text">Channel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Selector"><span class="nav-number">3.3.4.</span> <span class="nav-text">Selector</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高性能I-O优化"><span class="nav-number">4.</span> <span class="nav-text">高性能I/O优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#零拷贝"><span class="nav-number">4.1.</span> <span class="nav-text">零拷贝</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Kafka零拷贝"><span class="nav-number">4.1.1.</span> <span class="nav-text">Kafka零拷贝</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RocketMQ零拷贝"><span class="nav-number">4.1.2.</span> <span class="nav-text">RocketMQ零拷贝</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Netty零拷贝"><span class="nav-number">4.1.3.</span> <span class="nav-text">Netty零拷贝</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多路复用"><span class="nav-number">4.2.</span> <span class="nav-text">多路复用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#页缓存-PageCache"><span class="nav-number">4.3.</span> <span class="nav-text">页缓存(PageCache)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ran</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

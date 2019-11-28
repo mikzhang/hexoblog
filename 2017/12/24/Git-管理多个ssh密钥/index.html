@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Git," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="对于Git多帐号的情况,它可以动态管理SSH-KEY。">
+<meta name="keywords" content="Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git-管理多个ssh密钥">
+<meta property="og:url" content="http://mikzhang.github.io/2017/12/24/Git-管理多个ssh密钥/index.html">
+<meta property="og:site_name" content="Ran&#39;s Blog">
+<meta property="og:description" content="对于Git多帐号的情况,它可以动态管理SSH-KEY。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-28T09:37:26.772Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git-管理多个ssh密钥">
+<meta name="twitter:description" content="对于Git多帐号的情况,它可以动态管理SSH-KEY。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mikzhang.github.io/2017/12/24/Git-管理多个ssh密钥/"/>
+
+
+
+
+
+  <title>Git-管理多个ssh密钥 | Ran's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ran's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://mikzhang.github.io/2017/12/24/Git-管理多个ssh密钥/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ran">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ran's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git-管理多个ssh密钥</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-24T00:00:00+00:00">
+                2017-12-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Git/" itemprop="url" rel="index">
+                    <span itemprop="name">Git</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>对于Git多帐号的情况,它可以动态管理SSH-KEY。</p>
+<a id="more"></a>
+<h2 id="SSH之于Git的原理"><a href="#SSH之于Git的原理" class="headerlink" title="SSH之于Git的原理"></a>SSH之于Git的原理</h2><p>Git提交时有Https和SSH两种验证方式,Https的方式需要帐号和密码比较好理解,不过它需要在每次提交时输入帐号和密码,有点麻烦；而SSH的功能可以粗暴的理解为记住帐号密码,不过对这个过程有人会有点疑惑。首先,我们用SSH命令生成一个公钥-私钥对,我们会把公钥添加到Git的服务器,把私钥放在本地。提交文件的时候Git服务器会用公钥和客户端提交私钥做验证（具体细节不究）,如果验证通过则提交成功,那么我们在把公钥添加到服务器的时候肯定是需要登录Git服务器的,这个过程其实可以理解为帐号和密码托管给SSH了,所以也是相当于输入了帐号密码,但是由SSH帮你记住了。这么理解是可以,但是SSH的意义不仅仅是这样,关于SSH的更详细内容看客可以自行再了解。</p>
+<h2 id="生成SSH-KEY"><a href="#生成SSH-KEY" class="headerlink" title="生成SSH-KEY"></a>生成SSH-KEY</h2><p>打开命令行、终端,用命令进入到你要保存SSH-KEY文件的文件夹,我们先用命令测试下终端是否支持SSH:<br>如果你的终端支持SSH,那么你可能看到类似如下的版本信息:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ssh -V</div><div class="line">OpenSSH_7.2p2 Ubuntu-4ubuntu2.2, OpenSSL 1.0.2g  1 Mar 2016</div></pre></td></tr></table></figure></p>
+<p>测试时如果提示不识别SSH命令,需要安装SSH。<br>Ubuntu安装SSH:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install openssh-client openssh-server</div></pre></td></tr></table></figure></p>
+<p>CentOS安装SSH:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install openssh-client openssh-server</div></pre></td></tr></table></figure></p>
+<p>接下来在刚才的文件夹,使用SSH命令在当前文件夹生成一对SSH-KEY:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen -t rsa -C &quot;邮箱地址&quot;</div></pre></td></tr></table></figure></p>
+<p>接下来会出来提示信息,完整的大概是这样:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ ssh-keygen -t rsa -C &quot;smallajax@foxmail.com&quot;</div><div class="line">Generating public/private rsa key pair.</div><div class="line">Enter file in which to save the key (~/.ssh/id_rsa):</div></pre></td></tr></table></figure></p>
+<p>这里需要输入SSH-KEY的文件名字,这里名字理论上可以随便取,但是我们今天要说配置多个SSH-KEY,所以请分别查看以下两节:</p>
+<ul>
+<li>单个Git帐号的配置——全局Git配置</li>
+<li>多个Git帐号的配置——局部Git配置</li>
+</ul>
+<h2 id="单个Git帐号的配置——全局Git配置"><a href="#单个Git帐号的配置——全局Git配置" class="headerlink" title="单个Git帐号的配置——全局Git配置"></a>单个Git帐号的配置——全局Git配置</h2><p>大部分人使用Git一般是一个帐号,所以接着上面的讲。<br>上面说到输入ssh-keygen命令生成SSH-KEY密钥对文件时需要输入文件名称,如果你仅仅要配置一个帐号,那么我们输入默认名称即可:id_rsa。<br>接着会要求输入私钥的密码,并且需要确认密码,为了安全在密码输入的时候不会反显,什么都看不到,这个密码你自己设置,但是你一定要记住:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Enter passphrase (empty for no passphrase):</div><div class="line">Enter same passphrase again:</div></pre></td></tr></table></figure></p>
+<p>到这里生成SSH-KEY的事就完成了,你在当前文件夹会看到两个文件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">id_rsa  id_rsa.pub</div></pre></td></tr></table></figure></p>
+<p>SSH-KEY生成了,接着给服务器和客户端配置SSH-KEY。<br>第一步把id_rsa.pub中的公钥内容添加到Git的SSH中,如果你使用Github或者Gitlib,在个人设置中会找到。<br>第二步把SSH-KEY配置给SSH,让系统的SSH知道这个KEY。<br>Linux把id_rsa文件拷贝到~/.ssh文件夹下,命令如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp id_rsa ~/.ssh/</div></pre></td></tr></table></figure></p>
+<p>Window把id_rsa文件拷贝到C:/Users/你的用户名/.ssh文件夹下。</p>
+<p>拷贝完成后,把.ssh文件夹下的id_rsa文件添加到SSH-Agent,命令如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-add id_rsa文件的路径</div></pre></td></tr></table></figure></p>
+<p>例如Linux:ssh-add ~/.ssh/id_rsa,如果命令行此时正在.ssh文件夹下:ssh-add id_rsa即可,Windows同理。</p>
+<p>最后,执行以下命名配置Git全局用户和邮箱:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user.name &quot;你的名字&quot;</div><div class="line">git config --global user.email &quot;你的邮箱&quot;</div></pre></td></tr></table></figure></p>
+<p>例如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global user.name &quot;YanZhenjie&quot;</div><div class="line">git config --global user.email &quot;smallajax@foxmail.com&quot;</div></pre></td></tr></table></figure></p>
+<p>配置全局用户和邮箱完成后,我们可以查看:<br>Linux用户打开~/.gitconfig文件即可看到配置:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim ~/.gitconfig</div></pre></td></tr></table></figure></p>
+<p>Windows用户打开C:/Users/你的用户名/.gitconfig即可看到配置,内容大概如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[user]</div><div class="line">    name = YanZhenjie</div><div class="line">    email = smallajax@foxmail.com</div></pre></td></tr></table></figure></p>
+<p>此时配置全部结束,请查看下方测试SSH-KEY配置是否成功进行测试。</p>
+<h2 id="多个Git帐号的配置——局部Git配置"><a href="#多个Git帐号的配置——局部Git配置" class="headerlink" title="多个Git帐号的配置——局部Git配置"></a>多个Git帐号的配置——局部Git配置</h2><p>又有很多人同时使用多个Git帐号,比如Github、OSChina、Gitlib等,再接着上面讲配置多个Git帐号。</p>
+<p>上面说到输入ssh-keygen命令生成SSH-KEY密钥对文件时需要输入文件名称,如果你要配置多个帐号,就根据爱好输入KEY文件的名字吧,例如为Github配置就输入:id_rsa_github,为OSChina配置就输入:id_rsa_oschina。</p>
+<p>接着会要求输入私钥的密码,并且需要确认密码,为了安全在密码输入的时候不会反显,什么都看不到,这个密码你自己设置,但是你一定要记住:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Enter passphrase (empty for no passphrase):</div><div class="line">Enter same passphrase again:</div></pre></td></tr></table></figure></p>
+<p>到这里生成SSH-KEY的事就完成了,你在当前文件夹会看到两个文件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">id_rsa_github  id_rsa_github.pub</div></pre></td></tr></table></figure></p>
+<p>SSH-KEY生成了,接着给服务器和客户端配置SSH-KEY。</p>
+<p>第一步把id_rsa_github.pub中的公钥内容添加到Git的SSH中,如果你使用Github或者Gitlib,在个人设置中会找到。<br>第二步为SSH配置私钥位置,这里和上面配置单个Git帐号不一样,不过单个帐号也可以按照多个帐号的配置方法来配置。<br>下面我们需要在.ssh文件夹新建一个名为config的文件,用它来配置多个SSH-KEY的管理。<br>Linux进入.ssh文件夹:cd ~/.ssh,新建config文件:touch config；或者:touch ~/.ssh/config。这里要注意,没有.ssh文件夹的要新建一个.ssh名的文件夹。<br>Window进入C:/Users/你的用户名/.ssh文件夹,右键新建一个文本文件,改名为config即可。这里要注意,没有.ssh文件夹的要新建一个.ssh名的文件夹。</p>
+<p>下面来填写config文件的内容,我以Github、Gitlib、OSChina,局域网为例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">Host github.com</div><div class="line">    HostName github.com</div><div class="line">    User smallajax@foxmail.com</div><div class="line">    PreferredAuthentications publickey</div><div class="line">    IdentityFile /home/Workspace/ssh/id_rsa_github</div><div class="line">Host gitlib.com</div><div class="line">    HostName gitlib.com</div><div class="line">    User smallajax@foxmail.com</div><div class="line">    PreferredAuthentications publickey</div><div class="line">    IdentityFile id_rsa_gitlib</div><div class="line">Host oschina.com</div><div class="line">    HostName oschina.com</div><div class="line">    User smallajax@foxmail.com</div><div class="line">    PreferredAuthentications publickey</div><div class="line">    IdentityFile /D/Workspace/ssh/id_rsa_oschina</div><div class="line">Host 192.168.1.222</div><div class="line">    HostName 192.168.1.222</div><div class="line">    User smallajax@foxmail.com</div><div class="line">    PreferredAuthentications publickey</div><div class="line">    IdentityFile /D/Workspace/ssh/id_rsa_oschina</div></pre></td></tr></table></figure></p>
+<p>解释一下,HostName是服务器的地址,User是用户名,PreferredAuthentications照抄即可,这里主要说的是IdentityFile,上面我们看到了三种情况,所以它的书写原则是:<br>填私钥文件的本地路径。<br>不论是Linux还是Windows都可以写相对路径,比如把id_rsa_xxx私钥文件放在.ssh文件夹下。<br>文件放在不同跟路径下时,需要写绝对路径<br>Linux中没有放在.ssh文件夹内或者子文件夹。<br>Windows中没有放在C盘下时。注意据对路径变化,比如C盘下是/C/xo/abc、比如D盘下/D/ssh/id_rsa这样,还看不懂请参考上方例子。<br>拷贝完成后,把所有的id_rsa私钥文件添加到SSH-Agent,命令如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-add id_rsa文件的路径</div></pre></td></tr></table></figure></p>
+<p>例如添加.ssh文件夹下的,Linux这样做:ssh-add ~/.ssh/id_rsa,如果你在.ssh文件夹下:ssh-add id_rsa即可,Windows同理。</p>
+<p>最后,还剩下项目的用户和邮箱没有配置,和配个单个Git帐号的方式不同,这里我们需要为每个项目分别配置,所以要命令行进入仓库文件夹再设置。第一种情况是先从Git上pull仓库下来,第二种情况是本地初始化Git仓库,总之进入改仓库文件夹后:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --local user.name &quot;你的名字&quot;</div><div class="line">git config --local user.email &quot;你的邮箱&quot;</div></pre></td></tr></table></figure></p>
+<p>不过麻烦的一点是如果是多个项目就需要挨个配置,不过我们一般是pull一个项目就配置一下,也仅仅需要配置一次即可。<br>注意配置单个Git帐号时,是不进入项目文件夹就可以,不过不是使用–local,而是使用–global就可以全局配置。<br>配置项目用户和邮箱完成后,我们可以进入项目文件夹下的.git文件夹查看config文件内容,大概内容如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">[user]</div><div class="line">    name = YanZhenjie</div><div class="line">    email = smallajax@foxmail.com</div></pre></td></tr></table></figure></p>
+<p>此时配置全部结束,请查看下方测试SSH-KEY配置是否成功进行测试。如果配置成功,你就可以clone和commit了。</p>
+<h2 id="测试SSH-KEY配置是否成功"><a href="#测试SSH-KEY配置是否成功" class="headerlink" title="测试SSH-KEY配置是否成功"></a>测试SSH-KEY配置是否成功</h2><p>配置全部结束，我们来测试一下配置是否成功：</p>
+<p>如果你是Github：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh -T git@github.com</div></pre></td></tr></table></figure></p>
+<p>如果是你Gitlib：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh -T git@gitlib.com</div></pre></td></tr></table></figure></p>
+<p>如果你是局域网192.168.1.222：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh -T git@192.168.1.222</div></pre></td></tr></table></figure></p>
+<p>其它自行举一反三吧。<br>此时需要输入刚才生成SSH-KEY时输入的私钥密码，输入后自行观察信息判断是否连接成功。</p>
+<p>比如Github的信息是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Hi yanzhenjie! You&apos;ve successfully authenticated, but GitHub does not provide shell access.</div></pre></td></tr></table></figure></p>
+<p>比如Gitlib的信息是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Welcome to GitLab, YanZhenjie!</div></pre></td></tr></table></figure></p>
+<p>添加SSH到SSH-Agent时报错</p>
+<p>如果执行ssh-add …命令提示如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Could not open a connection to your authentication agent.</div></pre></td></tr></table></figure></p>
+<p>那么请执行eval $(ssh-agent)命令后再重试，如果还不行，请再执行ssh-agent bash命令后重试。<br>ref:<br><a href="http://blog.csdn.net/yanzhenjie1003/article/details/69487932?locationNum=4&amp;fps=1" target="_blank" rel="external">http://blog.csdn.net/yanzhenjie1003/article/details/69487932?locationNum=4&amp;fps=1</a></p>
+<h2 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑:"></a>踩坑:</h2><p>直接 clone git协议的链接，提示 permission denied…, 网友说不是自己建的库,git clone http: ,自己建的库 git clone git:<br>至于具体原理 ref: <a href="http://blog.csdn.net/liangpz521/article/details/21534849" target="_blank" rel="external">http://blog.csdn.net/liangpz521/article/details/21534849</a><br>ran@ranux:~/Documents/xxx_src$ git clone git@git.xxx.com:xxx/xxx-service-wechat.git<br>Cloning into ‘xxx-service-wechat’…<br>The authenticity of host ‘git.xxx.com (61.149.179.190)’ can’t be established.<br>RSA key fingerprint is SHA256:dk7bjq40xJ9oEFm4NS7Uo+lDvgVPilONMLheB6suFB0.<br>Are you sure you want to continue connecting (yes/no)? yes<br>Warning: Permanently added ‘git.xxx.com,61.149.179.190’ (RSA) to the list of known hosts.<br>git@git.xxx.com’s password:<br>Permission denied, please try again.<br>git@git.xxx.com’s password:<br>Connection to git.xxx.com closed by remote host.<br>fatal: Could not read from remote repository.</p>
+<p>Please make sure you have the correct access rights<br>and the repository exists.<br>ran@ranux:~/Documents/xxx_src$ git clone git@git.xxx.com:xxx/xxx-service-wechat.git<br>Cloning into ‘xxx-service-wechat’…<br>The authenticity of host ‘git.xxx.com (61.149.179.190)’ can’t be established.<br>RSA key fingerprint is SHA256:dk7bjq40xJ9oEFm4NS7Uo+lDvgVPilONMLheB6suFB0.<br>Are you sure you want to continue connecting (yes/no)? yes<br>Warning: Permanently added ‘git.xxx.com,61.149.179.190’ (RSA) to the list of known hosts.<br>git@git.xxx.com’s password:<br>Permission denied, please try again.<br>git@git.xxx.com’s password: </p>
+<p>ran@ranux:~/Documents/xxx_src$ git clone <a href="http://git.xxx.com/xxx/xxx-service-wechat.git" target="_blank" rel="external">http://git.xxx.com/xxx/xxx-service-wechat.git</a><br>Cloning into ‘xxx-service-wechat’…<br>Username for ‘<a href="http://git.xxx.com" target="_blank" rel="external">http://git.xxx.com</a>‘: xxx@xxx.com<br>Password for ‘<a href="http://xxx@xxx.com@git.xxx.com" target="_blank" rel="external">http://xxx@xxx.com@git.xxx.com</a>‘:<br>fatal: Authentication failed for ‘<a href="http://git.xxx.com/xxx/xxx-service-wechat.git/" target="_blank" rel="external">http://git.xxx.com/xxx/xxx-service-wechat.git/</a>‘<br>ran@ranux:~/Documents/xxx_src$ git clone <a href="http://git.xxx.com/xxx/xxx-service-wechat.git" target="_blank" rel="external">http://git.xxx.com/xxx/xxx-service-wechat.git</a><br>Cloning into ‘xxx-service-wechat’…<br>Username for ‘<a href="http://git.xxx.com" target="_blank" rel="external">http://git.xxx.com</a>‘: xxx<br>Password for ‘<a href="http://xxx@git.xxx.com" target="_blank" rel="external">http://xxx@git.xxx.com</a>‘:<br>remote: Counting objects: 825, done.<br>remote: Compressing objects: 100% (330/330), done.<br>remote: Total 825 (delta 276), reused 739 (delta 256)<br>Receiving objects: 100% (825/825), 178.90 KiB | 0 bytes/s, done.<br>Resolving deltas: 100% (276/276), done.<br>Checking connectivity… done.</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果这篇文章帮助了你, 请不吝回报</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.png" alt="Ran WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Ran Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Git/" rel="tag"># Git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/20/Mysql-锁/" rel="next" title="Mysql-锁">
+                <i class="fa fa-chevron-left"></i> Mysql-锁
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/01/SQLite-数据类型/" rel="prev" title="SQLite-数据类型">
+                SQLite-数据类型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ran" />
+          <p class="site-author-name" itemprop="name">Ran</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">191</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH之于Git的原理"><span class="nav-number">1.</span> <span class="nav-text">SSH之于Git的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成SSH-KEY"><span class="nav-number">2.</span> <span class="nav-text">生成SSH-KEY</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单个Git帐号的配置——全局Git配置"><span class="nav-number">3.</span> <span class="nav-text">单个Git帐号的配置——全局Git配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多个Git帐号的配置——局部Git配置"><span class="nav-number">4.</span> <span class="nav-text">多个Git帐号的配置——局部Git配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试SSH-KEY配置是否成功"><span class="nav-number">5.</span> <span class="nav-text">测试SSH-KEY配置是否成功</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#踩坑"><span class="nav-number">6.</span> <span class="nav-text">踩坑:</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ran</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

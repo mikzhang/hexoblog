@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,concurrency," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Future基础知识：Java并发（6）带返回结果的任务执行Guava的Future：Guava FutureNetty的Future：Netty Future与Promise 异步编排CompletableFutureCompletableFuture是JDK8提供的Future增强类。CompletableFuture异步任务执行线程池，默认是把异步任务都放在ForkJoinPool中执行。">
+<meta name="keywords" content="Java,concurrency">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java-Java8-CompletableFuture">
+<meta property="og:url" content="http://mikzhang.github.io/2017/09/22/Java-Java8-CompletableFuture/index.html">
+<meta property="og:site_name" content="Ran&#39;s Blog">
+<meta property="og:description" content="Future基础知识：Java并发（6）带返回结果的任务执行Guava的Future：Guava FutureNetty的Future：Netty Future与Promise 异步编排CompletableFutureCompletableFuture是JDK8提供的Future增强类。CompletableFuture异步任务执行线程池，默认是把异步任务都放在ForkJoinPool中执行。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-28T09:37:26.812Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java-Java8-CompletableFuture">
+<meta name="twitter:description" content="Future基础知识：Java并发（6）带返回结果的任务执行Guava的Future：Guava FutureNetty的Future：Netty Future与Promise 异步编排CompletableFutureCompletableFuture是JDK8提供的Future增强类。CompletableFuture异步任务执行线程池，默认是把异步任务都放在ForkJoinPool中执行。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mikzhang.github.io/2017/09/22/Java-Java8-CompletableFuture/"/>
+
+
+
+
+
+  <title>Java-Java8-CompletableFuture | Ran's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ran's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://mikzhang.github.io/2017/09/22/Java-Java8-CompletableFuture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ran">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ran's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java-Java8-CompletableFuture</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-22T00:00:00+00:00">
+                2017-09-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Future基础知识：<a href="http://www.cnblogs.com/shijiaqi1066/p/3412331.html" target="_blank" rel="external">Java并发（6）带返回结果的任务执行</a><br>Guava的Future：<a href="http://www.cnblogs.com/shijiaqi1066/p/5745295.html" target="_blank" rel="external">Guava Future</a><br>Netty的Future：<a href="http://www.cnblogs.com/shijiaqi1066/p/4804875.html" target="_blank" rel="external">Netty Future与Promise</a></p>
+<p><strong>异步编排CompletableFuture</strong><br>CompletableFuture是JDK8提供的Future增强类。CompletableFuture异步任务执行线程池，默认是把异步任务都放在ForkJoinPool中执行。</p>
+<p>官方文档：<br><a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html" target="_blank" rel="external">https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html</a><br><a href="https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/CompletableFuture.html" target="_blank" rel="external">https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/CompletableFuture.html</a></p>
+<p>CompletableFuture接口提供了非常多的方法用于编排异步任务基本每个方法都有两套方法，Async版本的函数与非Async版本的函数。</p>
+<p>若方法不以Async结尾，意味着Action使用相同的线程执行，而Async可能会使用其它的线程去执行(如果使用相同的线程池，也可能会被同一个线程选中执行)。</p>
+<a id="more"></a>
+<h2 id="创建CompletableFuture"><a href="#创建CompletableFuture" class="headerlink" title="创建CompletableFuture"></a>创建CompletableFuture</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public static &lt;U&gt; CompletableFuture&lt;U&gt; completedFuture(U value);</div><div class="line"></div><div class="line">// 执行异步任务</div><div class="line">public static &lt;U&gt; CompletableFuture&lt;U&gt; supplyAsync(Supplier&lt;U&gt; supplier);</div><div class="line">public static &lt;U&gt; CompletableFuture&lt;U&gt; supplyAsync(Supplier&lt;U&gt; supplier, Executor executor);</div><div class="line"></div><div class="line">// 执行异步任务</div><div class="line">public static CompletableFuture&lt;Void&gt; runAsync(Runnable runnable);</div><div class="line">public static CompletableFuture&lt;Void&gt; runAsync(Runnable runnable, Executor executor);</div></pre></td></tr></table></figure>
+<p>例：创建一个已经有结果值的CompletableFuture。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;String&gt; future = CompletableFuture.completedFuture(&quot;a future value&quot;);</div></pre></td></tr></table></figure></p>
+<p>例：异步执行带返回值的异步任务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;String&gt; future = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    System.out.println(&quot;带有返回值的异步任务&quot;);</div><div class="line">    return &quot;a future value&quot;;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>例：异步执行不带返回值的异步任务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Void&gt; future = CompletableFuture.runAsync(()-&gt;&#123;</div><div class="line">    System.out.println(&quot;不带返回值的异步任务&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<h2 id="获取CompletableFuture的返回值"><a href="#获取CompletableFuture的返回值" class="headerlink" title="获取CompletableFuture的返回值"></a>获取CompletableFuture的返回值</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">public T get() throws InterruptedException, ExecutionException;</div><div class="line">public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException；</div><div class="line">public T getNow(T valueIfAbsent)；</div><div class="line">public T join();</div></pre></td></tr></table></figure>
+<p>说明：<br>get方法：阻塞获取CompletableFuture的结果值，另外可以设置该方法的阻塞时间。<br>getNow方法：如果结果已经计算完则返回结果或者抛出异常，否则返回给定的valueIfAbsent值。<br>join方法：返回计算的结果或者抛出一个unchecked异常(CompletionException)。</p>
+<p>例：获取Future的结果值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">// 使用get</div><div class="line">CompletableFuture&lt;String&gt; future = CompletableFuture.completedFuture(&quot;a future value&quot;);</div><div class="line">String string = future.get();</div><div class="line">System.out.println(string);</div><div class="line"></div><div class="line">// 使用join</div><div class="line">CompletableFuture&lt;String&gt; future = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    return &quot;haha&quot;;</div><div class="line">&#125;);</div><div class="line">String join = future.join();</div><div class="line">System.out.println(join);</div></pre></td></tr></table></figure></p>
+<h2 id="连接异步任务"><a href="#连接异步任务" class="headerlink" title="连接异步任务"></a>连接异步任务</h2><p>完成完一个任务后继续执行一个异步任务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">// thenRun 处理 Runnable</div><div class="line">public CompletableFuture&lt;Void&gt; thenRun(Runnable action);</div><div class="line">public CompletableFuture&lt;Void&gt; thenRunAsync(Runnable action);</div><div class="line">public CompletableFuture&lt;Void&gt; thenRunAsync(Runnable action, Executor executor);</div><div class="line"></div><div class="line">// thenAccept 处理 Consumer</div><div class="line">public CompletableFuture&lt;Void&gt; thenAccept(Consumer&lt;? super T&gt; action);</div><div class="line">public CompletableFuture&lt;Void&gt; thenAcceptAsync(Consumer&lt;? super T&gt; action);</div><div class="line">public CompletableFuture&lt;Void&gt; thenAcceptAsync(Consumer&lt;? super T&gt; action, Executor executor);</div><div class="line"></div><div class="line">// thenApply 处理 Function</div><div class="line">public &lt;U&gt; CompletableFuture&lt;U&gt; thenApply(Function&lt;? super T,? extends U&gt; fn);</div><div class="line">public &lt;U&gt; CompletableFuture&lt;U&gt; thenApplyAsync(Function&lt;? super T,? extends U&gt; fn);</div><div class="line">public &lt;U&gt; CompletableFuture&lt;U&gt; thenApplyAsync(Function&lt;? super T,? extends U&gt; fn, Executor executor);</div><div class="line"></div><div class="line">// handle 处理 BiFunction</div><div class="line">public &lt;U&gt; CompletableFuture&lt;U&gt; handle(BiFunction&lt;? super T, Throwable, ? extends U&gt; fn);</div><div class="line">public &lt;U&gt; CompletableFuture&lt;U&gt; handleAsync(BiFunction&lt;? super T, Throwable, ? extends U&gt; fn);</div><div class="line">public &lt;U&gt; CompletableFuture&lt;U&gt; handleAsync(BiFunction&lt;? super T, Throwable, ? extends U&gt; fn, Executor executor);</div></pre></td></tr></table></figure></p>
+<p>例：thenRun方法。执行异步任务，执行完后再接一个异步任务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Void&gt; future = CompletableFuture.runAsync(()-&gt;&#123;</div><div class="line">    System.out.println(&quot;不带返回值的异步任务&quot;);</div><div class="line">&#125;).thenRun(()-&gt;&#123;</div><div class="line">    System.out.println(&quot;前一个future后，再异步执行任务。&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>例：执行异步任务，并将结果给下一个异步任务，最后再返回结果值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">// 转换</div><div class="line">CompletableFuture&lt;String&gt; future = CompletableFuture.supplyAsync(() -&gt; &#123;</div><div class="line">    return &quot;a future value&quot;;</div><div class="line">&#125;);</div><div class="line">CompletableFuture&lt;Integer&gt; future1 = future.thenApplyAsync((str) -&gt; &#123;</div><div class="line">    return str.length();</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 返回值</div><div class="line">Integer join = future1.join();</div><div class="line">System.out.println(join);</div></pre></td></tr></table></figure></p>
+<p>例：执行异步任务，并将结果给下一个异步任务，最后不返回结果值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// 消费</div><div class="line">CompletableFuture&lt;String&gt; future0 = CompletableFuture.completedFuture(&quot;a future value&quot;);</div><div class="line"> </div><div class="line">CompletableFuture&lt;Void&gt; future1 = future0.thenAcceptAsync((str)-&gt;&#123;</div><div class="line">    System.out.println(&quot;没有返回值。消费了字符串：&quot; + str);</div><div class="line">&#125;);</div><div class="line"> </div><div class="line">future1.join();</div></pre></td></tr></table></figure></p>
+<h2 id="组合两个异步任务"><a href="#组合两个异步任务" class="headerlink" title="组合两个异步任务"></a>组合两个异步任务</h2><h3 id="thenCompose方法"><a href="#thenCompose方法" class="headerlink" title="thenCompose方法"></a>thenCompose方法</h3><p>接着上一个CompletableFuture的结果执行一个异步任务，最新的异步任务返回一个新的CompletableFuture。</p>
+<p>具体方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public &lt;U&gt; CompletableFuture&lt;U&gt; thenCompose(Function&lt;? super T,? extends CompletionStage&lt;U&gt;&gt; fn);</div><div class="line">public &lt;U&gt; CompletableFuture&lt;U&gt; thenComposeAsync(Function&lt;? super T,? extends CompletionStage&lt;U&gt;&gt; fn);</div><div class="line">public &lt;U&gt; CompletableFuture&lt;U&gt; thenComposeAsync(Function&lt;? super T,? extends CompletionStage&lt;U&gt;&gt; fn, Executor executor);</div></pre></td></tr></table></figure></p>
+<p>例：CompletableFuture后跟一个新的一步方法，产生新的CompletableFuture。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;String&gt; future = CompletableFuture</div><div class="line">    .completedFuture(10)</div><div class="line">    .thenComposeAsync((x)-&gt;&#123;</div><div class="line">        return CompletableFuture.supplyAsync(()-&gt; x.toString());  // 新的ComplatableFuture</div><div class="line">    &#125;</div><div class="line">);</div><div class="line"></div><div class="line">// 获取结果</div><div class="line">String r = future.join();</div><div class="line">System.err.println(r); // 打印：10</div></pre></td></tr></table></figure></p>
+<h3 id="thenCombine方法"><a href="#thenCombine方法" class="headerlink" title="thenCombine方法"></a>thenCombine方法</h3><p>为两个CompletableFuture的结果值提供一个函数算子，将结果值计算出来。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[Task0] ---\</div><div class="line">            ==&gt;(fn)--&gt;[Task]</div><div class="line">[Task1] ---/</div></pre></td></tr></table></figure></p>
+<p>具体方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public &lt;U,V&gt; CompletableFuture&lt;V&gt; thenCombine(CompletionStage&lt;? extends U&gt; other, BiFunction&lt;? super T,? super U,? extends V&gt; fn);</div><div class="line">public &lt;U,V&gt; CompletableFuture&lt;V&gt; thenCombineAsync(CompletionStage&lt;? extends U&gt; other, BiFunction&lt;? super T,? super U,? extends V&gt; fn);</div><div class="line">public &lt;U,V&gt; CompletableFuture&lt;V&gt; thenCombineAsync(CompletionStage&lt;? extends U&gt; other, BiFunction&lt;? super T,? super U,? extends V&gt; fn, Executor executor);</div></pre></td></tr></table></figure></p>
+<p>例：定义两个Future组合起来的算子，并计算<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Integer&gt; f0 = CompletableFuture.completedFuture(10000);</div><div class="line">CompletableFuture&lt;String&gt; f1 = CompletableFuture.completedFuture(&quot;hello&quot;);</div><div class="line"></div><div class="line">CompletableFuture&lt;String&gt; future = f0.thenCombine(f1, (i, s)-&gt; (s + i)); // 定义算子</div><div class="line"></div><div class="line">// 获取结果值 </div><div class="line">String r = future.join(); System.out.println(r); // 打印：hello10000</div></pre></td></tr></table></figure></p>
+<h3 id="Both系列方法"><a href="#Both系列方法" class="headerlink" title="Both系列方法"></a>Both系列方法</h3><p>执行两个异步任务，并将两个任务的计算结果获取后，再执行一个异步任务，最后再返回值</p>
+<p>thenAcceptBoth方法<br>将两个future的结果值传给第三个算子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public &lt;U&gt; CompletableFuture&lt;Void&gt; thenAcceptBoth(CompletionStage&lt;? extends U&gt; other, BiConsumer&lt;? super T,? super U&gt; action);</div><div class="line">public &lt;U&gt; CompletableFuture&lt;Void&gt; thenAcceptBothAsync(CompletionStage&lt;? extends U&gt; other, BiConsumer&lt;? super T,? super U&gt; action);</div><div class="line">public &lt;U&gt; CompletableFuture&lt;Void&gt; thenAcceptBothAsync(CompletionStage&lt;? extends U&gt; other, BiConsumer&lt;? super T,? super U&gt; action, Executor executor);</div></pre></td></tr></table></figure></p>
+<p>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Integer&gt; f0 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*5);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 2;</div><div class="line">&#125;);</div><div class="line"> </div><div class="line">CompletableFuture&lt;Integer&gt; f1 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*2);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 3;</div><div class="line">&#125;);</div><div class="line"> </div><div class="line">// 提供一个异步算子。使用future的计算结果。</div><div class="line">CompletableFuture&lt;Void&gt; f= f0.thenAcceptBothAsync(f1,(x, y) -&gt; &#123;</div><div class="line">    System.out.println(&quot;两个future都完成，才计算算子。&quot;);</div><div class="line">    System.out.println(x*y);</div><div class="line">&#125;);</div><div class="line"> </div><div class="line">f.join();</div></pre></td></tr></table></figure></p>
+<p>runAfterBoth方法<br>等待之前的两个异步任务都结束，再执行Action。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public CompletableFuture&lt;Void&gt; runAfterBoth(CompletionStage&lt;?&gt; other,  Runnable action);</div></pre></td></tr></table></figure></p>
+<p>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Integer&gt; f0 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*5);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 2;</div><div class="line">&#125;);</div><div class="line"> </div><div class="line">CompletableFuture&lt;Integer&gt; f1 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*2);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 3;</div><div class="line">&#125;);// 提供一个异步算子。使用future的计算结果。</div><div class="line">CompletableFuture&lt;Void&gt; f = f0.runAfterBothAsync(f1, ()-&gt;&#123;</div><div class="line">    System.out.println(&quot;两个future都完成，再执行该任务。&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">f.join();</div></pre></td></tr></table></figure></p>
+<h3 id="Either"><a href="#Either" class="headerlink" title="Either"></a>Either</h3><p>runAfterEither方法<br>两个异步任务，任意一个CompletableFuture获取得到结果值，则执行该方法指定的Runnable 任务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public CompletionStage&lt;Void&gt; runAfterEither(CompletionStage&lt;?&gt; other,Runnable action);</div><div class="line">public CompletionStage&lt;Void&gt; runAfterEitherAsync(CompletionStage&lt;?&gt; other,Runnable action);</div><div class="line">public CompletionStage&lt;Void&gt; runAfterEitherAsync(CompletionStage&lt;?&gt; other,Runnable action,Executor executor);</div></pre></td></tr></table></figure></p>
+<p>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Integer&gt; f0 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*5);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 0;</div><div class="line">&#125;);</div><div class="line"> </div><div class="line">CompletableFuture&lt;Integer&gt; f1 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*2);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 1;</div><div class="line">&#125;);</div><div class="line"> </div><div class="line"></div><div class="line">CompletableFuture&lt;Void&gt; f = f0.runAfterEither(f1, ()-&gt;&#123;</div><div class="line">    System.out.println(&quot;有一个任务完成了&quot;);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">f.join();</div></pre></td></tr></table></figure></p>
+<p>applyToEither方法<br>两个异步任务，任意一个CompletableFuture获取得到结果值，则执行该方法指定的Function任务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public &lt;U&gt; CompletableFuture&lt;U&gt; applyToEither(CompletionStage&lt;? extends T&gt; other, Function&lt;? super T,U&gt; fn);</div><div class="line">public &lt;U&gt; CompletableFuture&lt;U&gt; applyToEitherAsync(CompletionStage&lt;? extends T&gt; other, Function&lt;? super T,U&gt; fn);</div><div class="line">public &lt;U&gt; CompletableFuture&lt;U&gt; applyToEitherAsync(CompletionStage&lt;? extends T&gt; other, Function&lt;? super T,U&gt; fn, Executor executor);</div></pre></td></tr></table></figure></p>
+<p>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Integer&gt; f0 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*5);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 0;</div><div class="line">&#125;);</div><div class="line"> </div><div class="line">CompletableFuture&lt;Integer&gt; f1 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*2);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 1;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">CompletableFuture&lt;String&gt; f = f0.applyToEither(f1, (Integer i)-&gt; &quot;task:&quot; + i);</div><div class="line">String r = f.join();</div><div class="line">System.out.println(r);  // 打印：task:1</div></pre></td></tr></table></figure></p>
+<p>acceptEither方法<br>两个异步任务，任意一个CompletableFuture获取得到结果值，则执行该方法指定的Consumer任务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public CompletableFuture&lt;Void&gt; acceptEither(CompletionStage&lt;? extends T&gt; other, Consumer&lt;? super T&gt; action);</div><div class="line">public CompletableFuture&lt;Void&gt; acceptEitherAsync(CompletionStage&lt;? extends T&gt; other, Consumer&lt;? super T&gt; action);</div><div class="line">public CompletableFuture&lt;Void&gt; acceptEitherAsync(CompletionStage&lt;? extends T&gt; other, Consumer&lt;? super T&gt; action, Executor executor);</div></pre></td></tr></table></figure></p>
+<p>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Integer&gt; f0 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*5);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 0;</div><div class="line">&#125;);</div><div class="line"> </div><div class="line">CompletableFuture&lt;Integer&gt; f1 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*2);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 1;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">CompletableFuture&lt;Void&gt; f = f0.acceptEither(f1, (i)-&gt;&#123;</div><div class="line">    System.out.println(&quot;task:&quot; + i);  // 打印：task:1</div><div class="line">&#125;);</div><div class="line"></div><div class="line">f.join();</div></pre></td></tr></table></figure></p>
+<h2 id="多个任务的组合"><a href="#多个任务的组合" class="headerlink" title="多个任务的组合"></a>多个任务的组合</h2><h3 id="anyOf方法"><a href="#anyOf方法" class="headerlink" title="anyOf方法"></a>anyOf方法</h3><p>将多个CompletableFuture组合为一个CompletableFuture，任意一个CompletableFuture有了结果，则该方法的返回值也会得到结果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public static CompletableFuture&lt;Object&gt; anyOf(CompletableFuture&lt;?&gt;... cfs);</div></pre></td></tr></table></figure></p>
+<p>例：三个CompletableFuture执行完一个就得到一个新的CompletableFuture<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Integer&gt; f0 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*1);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 0;</div><div class="line">&#125;);</div><div class="line"> </div><div class="line">CompletableFuture&lt;Integer&gt; f1 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*2);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 1;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">CompletableFuture&lt;Integer&gt; f2 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*3);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 2;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">long t0 = System.currentTimeMillis();</div><div class="line"></div><div class="line">CompletableFuture&lt;Object&gt; f = CompletableFuture.anyOf(f0, f1, f2);</div><div class="line">Object r = f.join();</div><div class="line">System.out.println(r);   // 打印：0</div><div class="line"></div><div class="line">long t1 = System.currentTimeMillis();</div><div class="line">System.out.println((t1-t0)/1000);   // 打印：1</div></pre></td></tr></table></figure></p>
+<h3 id="allOf方法"><a href="#allOf方法" class="headerlink" title="allOf方法"></a>allOf方法</h3><p>将多个CompletableFuture组合为一个CompletableFuture，所有CompletableFuture有了结果，则该方法的返回值也会得到结果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public static CompletableFuture&lt;Void&gt; allOf(CompletableFuture&lt;?&gt;... cfs);</div></pre></td></tr></table></figure></p>
+<p>例：三个CompletableFuture都执行完，就得到一个新的CompletableFuture<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Integer&gt; f0 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*1);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 0;</div><div class="line">&#125;);</div><div class="line"> </div><div class="line">CompletableFuture&lt;Integer&gt; f1 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*2);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 1;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">CompletableFuture&lt;Integer&gt; f2 = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(1000*3);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line">    return 2;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">long t0 = System.currentTimeMillis();</div><div class="line"></div><div class="line">CompletableFuture&lt;Void&gt; f = CompletableFuture.allOf(f0, f1, f2);</div><div class="line">f.join();</div><div class="line"></div><div class="line">long t1 = System.currentTimeMillis();</div><div class="line">System.out.println((t1-t0)/1000);   // 打印：3</div></pre></td></tr></table></figure></p>
+<h2 id="完成时执行任务"><a href="#完成时执行任务" class="headerlink" title="完成时执行任务"></a>完成时执行任务</h2><p>当一系列的任务计算结果完成或者抛出异常的时候，我们可以执行指定的任务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public CompletableFuture&lt;T&gt; whenComplete(BiConsumer&lt;? super T,? super Throwable&gt; action);</div><div class="line">public CompletableFuture&lt;T&gt; whenCompleteAsync(BiConsumer&lt;? super T,? super Throwable&gt; action);</div><div class="line">public CompletableFuture&lt;T&gt; whenCompleteAsync(BiConsumer&lt;? super T,? super Throwable&gt; action, Executor executor);</div></pre></td></tr></table></figure>
+<p>例：任务完成后，执行最后的任务，并且可以获取最后任务之前的结果值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;Integer&gt; future = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    try &#123;</div><div class="line">        Thread.sleep(5*1000);</div><div class="line">    &#125; catch (InterruptedException e) &#123;</div><div class="line">        throw new RuntimeException(e);</div><div class="line">    &#125;</div><div class="line">    return new Random().nextInt(1000);</div><div class="line">&#125;).whenComplete((i, throwable)-&gt;&#123;</div><div class="line">    System.out.println(&quot;任务结果值：&quot; + throwable);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">// 阻塞</div><div class="line">future.get();</div></pre></td></tr></table></figure></p>
+<h2 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h2><p>使用CompletableFuture编排异步任务在处理异常的时候，有几种方式：</p>
+<ol>
+<li>在异步任务中使用try…catch…处理异常。</li>
+<li>使用whenComplate方法接收异常。</li>
+<li>使用exceptionally方法接收异常。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public CompletableFuture&lt;T&gt; exceptionally(Function&lt;Throwable,? extends T&gt; fn);</div></pre></td></tr></table></figure>
+<p>例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">CompletableFuture&lt;String&gt; f = CompletableFuture.supplyAsync(()-&gt;&#123;</div><div class="line">    return 100/0;</div><div class="line">&#125;).exceptionally(ex -&gt; &#123;</div><div class="line">    ex.printStackTrace();</div><div class="line">    return 0;</div><div class="line">&#125;).thenApply((i)-&gt; &quot;run:&quot; + i.toString());</div><div class="line"></div><div class="line">String r = f.join();</div><div class="line">System.out.println(r);</div></pre></td></tr></table></figure></p>
+<p>打印：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">java.util.concurrent.CompletionException: java.lang.ArithmeticException: / by zero</div><div class="line">	at java.base/java.util.concurrent.CompletableFuture.encodeThrowable(Unknown Source)</div><div class="line">	at java.base/java.util.concurrent.CompletableFuture.completeThrowable(Unknown Source)</div><div class="line">	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(Unknown Source)</div><div class="line">	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.exec(Unknown Source)</div><div class="line">	at java.base/java.util.concurrent.ForkJoinTask.doExec(Unknown Source)</div><div class="line">	at java.base/java.util.concurrent.ForkJoinPool.runWorker(Unknown Source)</div><div class="line">	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(Unknown Source)</div><div class="line">Caused by: java.lang.ArithmeticException: / by zero</div><div class="line">	at test.java/test.TestCompletableFuture.lambda$0(TestCompletableFuture.java:292)</div><div class="line">	... 5 more</div><div class="line">run:0</div></pre></td></tr></table></figure></p>
+<p>ref: <a href="https://www.cnblogs.com/shijiaqi1066/p/8758206.html" target="_blank" rel="external">https://www.cnblogs.com/shijiaqi1066/p/8758206.html</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果这篇文章帮助了你, 请不吝回报</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.png" alt="Ran WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Ran Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/concurrency/" rel="tag"># concurrency</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/22/Java-Lombok/" rel="next" title="Java-Lombok">
+                <i class="fa fa-chevron-left"></i> Java-Lombok
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/22/Java-HashMap-tableSizeFor/" rel="prev" title="Java-HashMap-tableSizeFor">
+                Java-HashMap-tableSizeFor <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ran" />
+          <p class="site-author-name" itemprop="name">Ran</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">191</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建CompletableFuture"><span class="nav-number">1.</span> <span class="nav-text">创建CompletableFuture</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取CompletableFuture的返回值"><span class="nav-number">2.</span> <span class="nav-text">获取CompletableFuture的返回值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#连接异步任务"><span class="nav-number">3.</span> <span class="nav-text">连接异步任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组合两个异步任务"><span class="nav-number">4.</span> <span class="nav-text">组合两个异步任务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#thenCompose方法"><span class="nav-number">4.1.</span> <span class="nav-text">thenCompose方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#thenCombine方法"><span class="nav-number">4.2.</span> <span class="nav-text">thenCombine方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Both系列方法"><span class="nav-number">4.3.</span> <span class="nav-text">Both系列方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Either"><span class="nav-number">4.4.</span> <span class="nav-text">Either</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多个任务的组合"><span class="nav-number">5.</span> <span class="nav-text">多个任务的组合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#anyOf方法"><span class="nav-number">5.1.</span> <span class="nav-text">anyOf方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#allOf方法"><span class="nav-number">5.2.</span> <span class="nav-text">allOf方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完成时执行任务"><span class="nav-number">6.</span> <span class="nav-text">完成时执行任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异常处理"><span class="nav-number">7.</span> <span class="nav-text">异常处理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ran</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

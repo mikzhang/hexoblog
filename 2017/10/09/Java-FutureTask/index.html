@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,FutureTask," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="深入学习 FutureTask">
+<meta name="keywords" content="Java,FutureTask">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java-FutureTask">
+<meta property="og:url" content="http://mikzhang.github.io/2017/10/09/Java-FutureTask/index.html">
+<meta property="og:site_name" content="Ran&#39;s Blog">
+<meta property="og:description" content="深入学习 FutureTask">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://mikzhang.github.io/2017/10/09/Java-FutureTask/728ad60436305482476012b9ac99c699.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/10/09/Java-FutureTask/815ce1e16f6e67713e34c51046a91e3f.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/10/09/Java-FutureTask/92f6bbb0d4800bc528b2dacc1116e0d4.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/10/09/Java-FutureTask/137a6979a224d067b7b401ec072ca00f.png">
+<meta property="og:updated_time" content="2019-11-28T09:37:26.796Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java-FutureTask">
+<meta name="twitter:description" content="深入学习 FutureTask">
+<meta name="twitter:image" content="http://mikzhang.github.io/2017/10/09/Java-FutureTask/728ad60436305482476012b9ac99c699.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mikzhang.github.io/2017/10/09/Java-FutureTask/"/>
+
+
+
+
+
+  <title>Java-FutureTask | Ran's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ran's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://mikzhang.github.io/2017/10/09/Java-FutureTask/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ran">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ran's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java-FutureTask</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-09T00:00:00+00:00">
+                2017-10-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>深入学习 FutureTask</p>
+<a id="more"></a>
+<h2 id="第一部分-What"><a href="#第一部分-What" class="headerlink" title="第一部分:What"></a>第一部分:What</h2><p>在Java中一般通过继承Thread类或者实现Runnable接口这两种方式来创建多线程,但是这两种方式都有个缺陷,就是不能在执行完成后获取执行的结果,因此Java 1.5之后提供了Callable和Future接口,通过它们就可以在任务执行完毕之后得到任务的执行结果。本文会简要的介绍使用方法,然后会从源代码角度分析下具体的实现原理。<br>本文以Java 1.7的代码进行分析。</p>
+<h2 id="第二部分-How"><a href="#第二部分-How" class="headerlink" title="第二部分:How"></a>第二部分:How</h2><h3 id="Callable接口"><a href="#Callable接口" class="headerlink" title="Callable接口"></a>Callable接口</h3><p>对于需要执行的任务需要实现Callable接口,Callable接口定义如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Callable</span>&lt;<span class="title">V</span>&gt; </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Computes a result, or throws an exception if unable to do so.</div><div class="line">     *</div><div class="line">     * <span class="doctag">@return</span> computed result</div><div class="line">     * <span class="doctag">@throws</span> Exception if unable to compute a result</div><div class="line">     */</div><div class="line">    <span class="function">V <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到Callable是个泛型接口,泛型V就是要call()方法返回的类型。Callable接口和Runnable接口很像,都可以被另外一个线程执行,但是正如前面所说的,Runnable不会返回数据也不能抛出异常。</p>
+<h3 id="Future接口"><a href="#Future接口" class="headerlink" title="Future接口"></a>Future接口</h3><p>Future接口代表异步计算的结果,通过Future接口提供的方法可以查看异步计算是否执行完成,或者等待执行结果并获取执行结果,同时还可以取消执行。Future接口的定义如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Future</span>&lt;<span class="title">V</span>&gt; </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">cancel</span><span class="params">(<span class="keyword">boolean</span> mayInterruptIfRunning)</span></span>;</div><div class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isCancelled</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isDone</span><span class="params">()</span></span>;</div><div class="line">    <span class="function">V <span class="title">get</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException, ExecutionException</span>;</div><div class="line">    <span class="function">V <span class="title">get</span><span class="params">(<span class="keyword">long</span> timeout, TimeUnit unit)</span></span></div><div class="line">        <span class="keyword">throws</span> InterruptedException, ExecutionException, TimeoutException;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>cancel():cancel()方法用来取消异步任务的执行。如果异步任务已经完成或者已经被取消,或者由于某些原因不能取消,则会返回false。如果任务还没有被执行,则会返回true并且异步任务不会被执行。如果任务已经开始执行了但是还没有执行完成,若mayInterruptIfRunning为true,则会立即中断执行任务的线程并返回true,若mayInterruptIfRunning为false,则会返回true且不会中断任务执行线程。</li>
+<li>isCanceled():判断任务是否被取消,如果任务在结束(正常执行结束或者执行异常结束)前被取消则返回true,否则返回false。</li>
+<li>isDone():判断任务是否已经完成,如果完成则返回true,否则返回false。需要注意的是:任务执行过程中发生异常、任务被取消也属于任务已完成,也会返回true。</li>
+<li>get():获取任务执行结果,如果任务还没完成则会阻塞等待直到任务执行完成。如果任务被取消则会抛出CancellationException异常,如果任务执行过程发生异常则会抛出ExecutionException异常,如果阻塞等待过程中被中断则会抛出InterruptedException异常。</li>
+<li>get(long timeout,Timeunit unit):带超时时间的get()版本,如果阻塞等待过程中超时则会抛出TimeoutException异常。</li>
+</ul>
+<h3 id="FutureTask"><a href="#FutureTask" class="headerlink" title="FutureTask"></a>FutureTask</h3><p>Future只是一个接口,不能直接用来创建对象,FutureTask是Future的实现类,<br>FutureTask的继承图如下:<br><img src="/2017/10/09/Java-FutureTask/728ad60436305482476012b9ac99c699.png" alt="728ad60436305482476012b9ac99c699.png" title=""><br>可以看到,FutureTask实现了RunnableFuture接口,则RunnableFuture接口继承了Runnable接口和Future接口,所以FutureTask既能当做一个Runnable直接被Thread执行,也能作为Future用来得到Callable的计算结果。</p>
+<p>FutureTask一般配合ExecutorService来使用,也可以直接通过Thread来使用。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.beautyboss.slogen.callback;</div><div class="line"> </div><div class="line"><span class="keyword">import</span> java.util.concurrent.*;</div><div class="line"> </div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CallDemo</span> </span>&#123;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ExecutionException, InterruptedException </span>&#123;</div><div class="line"> </div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 第一种方式:Future + ExecutorService</div><div class="line">         * Task task = new Task();</div><div class="line">         * ExecutorService service = Executors.newCachedThreadPool();</div><div class="line">         * Future&lt;Integer&gt; future = service.submit(task1);</div><div class="line">         * service.shutdown();</div><div class="line">         */</div><div class="line"> </div><div class="line"> </div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 第二种方式: FutureTask + ExecutorService</div><div class="line">         * ExecutorService executor = Executors.newCachedThreadPool();</div><div class="line">         * Task task = new Task();</div><div class="line">         * FutureTask&lt;Integer&gt; futureTask = new FutureTask&lt;Integer&gt;(task);</div><div class="line">         * executor.submit(futureTask);</div><div class="line">         * executor.shutdown();</div><div class="line">         */</div><div class="line"> </div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 第三种方式:FutureTask + Thread</div><div class="line">         */</div><div class="line"> </div><div class="line">        <span class="comment">// 2. 新建FutureTask,需要一个实现了Callable接口的类的实例作为构造函数参数</span></div><div class="line">        FutureTask&lt;Integer&gt; futureTask = <span class="keyword">new</span> FutureTask&lt;Integer&gt;(<span class="keyword">new</span> Task());</div><div class="line">        <span class="comment">// 3. 新建Thread对象并启动</span></div><div class="line">        Thread thread = <span class="keyword">new</span> Thread(futureTask);</div><div class="line">        thread.setName(<span class="string">"Task thread"</span>);</div><div class="line">        thread.start();</div><div class="line"> </div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Thread.sleep(<span class="number">1000</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        System.out.println(<span class="string">"Thread ["</span> + Thread.currentThread().getName() + <span class="string">"] is running"</span>);</div><div class="line"> </div><div class="line">        <span class="comment">// 4. 调用isDone()判断任务是否结束</span></div><div class="line">        <span class="keyword">if</span>(!futureTask.isDone()) &#123;</div><div class="line">            System.out.println(<span class="string">"Task is not done"</span>);</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                Thread.sleep(<span class="number">2000</span>);</div><div class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">int</span> result = <span class="number">0</span>;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="comment">// 5. 调用get()方法获取任务结果,如果任务没有执行完成则阻塞等待</span></div><div class="line">            result = futureTask.get();</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        System.out.println(<span class="string">"result is "</span> + result);</div><div class="line"> </div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="comment">// 1. 继承Callable接口,实现call()方法,泛型参数为要返回的类型</span></div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Task</span>  <span class="keyword">implements</span> <span class="title">Callable</span>&lt;<span class="title">Integer</span>&gt; </span>&#123;</div><div class="line"> </div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> Integer <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">            System.out.println(<span class="string">"Thread ["</span> + Thread.currentThread().getName() + <span class="string">"] is running"</span>);</div><div class="line">            <span class="keyword">int</span> result = <span class="number">0</span>;</div><div class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>;++i) &#123;</div><div class="line">                result += i;</div><div class="line">            &#125;</div><div class="line"> </div><div class="line">            Thread.sleep(<span class="number">3000</span>);</div><div class="line">            <span class="keyword">return</span> result;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="第三部分-Why"><a href="#第三部分-Why" class="headerlink" title="第三部分:Why"></a>第三部分:Why</h2><h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>先从FutureTask的构造函数看起,FutureTask有两个构造函数,其中一个如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">FutureTask</span><span class="params">(Callable&lt;V&gt; callable)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (callable == <span class="keyword">null</span>)</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</div><div class="line">        <span class="keyword">this</span>.callable = callable;</div><div class="line">        <span class="keyword">this</span>.state = NEW;       <span class="comment">// ensure visibility of callable</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个构造函数会把传入的Callable变量保存在this.callable字段中,该字段定义为private Callable<v> callable;用来保存底层的调用,在被执行完成以后会指向null,接着会初始化state字段为NEW。state字段用来保存FutureTask内部的任务执行状态,一共有7中状态,每种状态及其对应的值如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> state;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NEW          = <span class="number">0</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> COMPLETING   = <span class="number">1</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NORMAL       = <span class="number">2</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> EXCEPTIONAL  = <span class="number">3</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CANCELLED    = <span class="number">4</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> INTERRUPTING = <span class="number">5</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> INTERRUPTED  = <span class="number">6</span>;</div></pre></td></tr></table></figure></v></p>
+<p>其中需要注意的是state是volatile类型的,也就是说只要有任何一个线程修改了这个变量,那么其他所有的线程都会知道最新的值。</p>
+<p>为了后面更好的分析FutureTask的实现,这里有必要解释下各个状态。</p>
+<ul>
+<li>NEW:表示是个新的任务或者还没被执行完的任务。这是初始状态。</li>
+<li>COMPLETING:任务已经执行完成或者执行任务的时候发生异常,但是任务执行结果或者异常原因还没有保存到outcome字段(outcome字段用来保存任务执行结果,如果发生异常,则用来保存异常原因)的时候,状态会从NEW变更到COMPLETING。但是这个状态会时间会比较短,属于中间状态。</li>
+<li>NORMAL:任务已经执行完成并且任务执行结果已经保存到outcome字段,状态会从COMPLETING转换到NORMAL。这是一个最终态。</li>
+<li>EXCEPTIONAL:任务执行发生异常并且异常原因已经保存到outcome字段中后,状态会从COMPLETING转换到EXCEPTIONAL。这是一个最终态。</li>
+<li>CANCELLED:任务还没开始执行或者已经开始执行但是还没有执行完成的时候,用户调用了cancel(false)方法取消任务且不中断任务执行线程,这个时候状态会从NEW转化为CANCELLED状态。这是一个最终态。</li>
+<li>INTERRUPTING: 任务还没开始执行或者已经执行但是还没有执行完成的时候,用户调用了cancel(true)方法取消任务并且要中断任务执行线程但是还没有中断任务执行线程之前,状态会从NEW转化为INTERRUPTING。这是一个中间状态。</li>
+<li>INTERRUPTED:调用interrupt()中断任务执行线程之后状态会从INTERRUPTING转换到INTERRUPTED。这是一个最终态。</li>
+</ul>
+<p>有一点需要注意的是,所有值大于COMPLETING的状态都表示任务已经执行完成(任务正常执行完成,任务执行异常或者任务被取消)。</p>
+<p>各个状态之间的可能转换关系如下图所示:<br><img src="/2017/10/09/Java-FutureTask/815ce1e16f6e67713e34c51046a91e3f.png" alt="815ce1e16f6e67713e34c51046a91e3f.png" title=""></p>
+<p>另外一个构造函数如下,<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">FutureTask</span><span class="params">(Runnable runnable, V result)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.callable = Executors.callable(runnable, result);</div><div class="line">        <span class="keyword">this</span>.state = NEW;       <span class="comment">// ensure visibility of callable</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个构造函数会把传入的Runnable封装成一个Callable对象保存在callable字段中,同时如果任务执行成功的话就会返回传入的result。这种情况下如果不需要返回值的话可以传入一个null。</p>
+<p>顺带看下Executors.callable()这个方法,这个方法的功能是把Runnable转换成Callable,代码如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Callable&lt;T&gt; <span class="title">callable</span><span class="params">(Runnable task, T result)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (task == <span class="keyword">null</span>)</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> RunnableAdapter&lt;T&gt;(task, result);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到这里采用的是适配器模式,调用RunnableAdapter<t>(task, result)方法来适配,实现如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">RunnableAdapter</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">Callable</span>&lt;<span class="title">T</span>&gt; </span>&#123;</div><div class="line">    <span class="keyword">final</span> Runnable task;</div><div class="line">    <span class="keyword">final</span> T result;</div><div class="line">    RunnableAdapter(Runnable task, T result) &#123;</div><div class="line">        <span class="keyword">this</span>.task = task;</div><div class="line">        <span class="keyword">this</span>.result = result;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">call</span><span class="params">()</span> </span>&#123;</div><div class="line">        task.run();</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></t></p>
+<p>这个适配器很简单,就是简单的实现了Callable接口,在call()实现中调用Runnable.run()方法,然后把传入的result作为任务的结果返回。</p>
+<p>在new了一个FutureTask对象之后,接下来就是在另一个线程中执行这个Task,无论是通过直接new一个Thread还是通过线程池,执行的都是run()方法,接下来就看看run()方法的实现。</p>
+<h3 id="run"><a href="#run" class="headerlink" title="run()"></a>run()</h3><p>run()方法实现如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// 1. 状态如果不是NEW,说明任务或者已经执行过,或者已经被取消,直接返回</span></div><div class="line">    <span class="comment">// 2. 状态如果是NEW,则尝试把当前执行线程保存在runner字段中</span></div><div class="line">    <span class="comment">// 如果赋值失败则直接返回</span></div><div class="line">    <span class="keyword">if</span> (state != NEW ||</div><div class="line">        !UNSAFE.compareAndSwapObject(<span class="keyword">this</span>, runnerOffset,</div><div class="line">                                     <span class="keyword">null</span>, Thread.currentThread()))</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        Callable&lt;V&gt; c = callable;</div><div class="line">        <span class="keyword">if</span> (c != <span class="keyword">null</span> &amp;&amp; state == NEW) &#123;</div><div class="line">            V result;</div><div class="line">            <span class="keyword">boolean</span> ran;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                <span class="comment">// 3. 执行任务</span></div><div class="line">                result = c.call();</div><div class="line">                ran = <span class="keyword">true</span>;</div><div class="line">            &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</div><div class="line">                result = <span class="keyword">null</span>;</div><div class="line">                ran = <span class="keyword">false</span>;</div><div class="line">                <span class="comment">// 4. 任务异常</span></div><div class="line">                setException(ex);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (ran)</div><div class="line">                <span class="comment">// 4. 任务正常执行完毕</span></div><div class="line">                set(result);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        <span class="comment">// runner must be non-null until state is settled to</span></div><div class="line">        <span class="comment">// prevent concurrent calls to run()</span></div><div class="line">        runner = <span class="keyword">null</span>;</div><div class="line">        <span class="comment">// state must be re-read after nulling runner to prevent</span></div><div class="line">        <span class="comment">// leaked interrupts</span></div><div class="line">        <span class="keyword">int</span> s = state;</div><div class="line">        <span class="comment">// 5. 如果任务被中断,执行中断处理</span></div><div class="line">        <span class="keyword">if</span> (s &gt;= INTERRUPTING)</div><div class="line">            handlePossibleCancellationInterrupt(s);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>run()方法首先会</p>
+<ol>
+<li>判断当前任务的state是否等于NEW,如果不为NEW则说明任务或者已经执行过,或者已经被取消,直接返回。</li>
+<li>如果状态为NEW则接着会通过unsafe类把任务执行线程引用CAS的保存在runner字段中,如果保存失败,则直接返回。</li>
+<li>执行任务。</li>
+<li>如果任务执行发生异常,则调用setException()方法保存异常信息。<br>setException()方法如下:<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setException</span><span class="params">(Throwable t)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (UNSAFE.compareAndSwapInt(<span class="keyword">this</span>, stateOffset, NEW, COMPLETING)) &#123;</div><div class="line">        outcome = t;</div><div class="line">        UNSAFE.putOrderedInt(<span class="keyword">this</span>, stateOffset, EXCEPTIONAL); <span class="comment">// final state</span></div><div class="line">        finishCompletion();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>在setException()方法中</p>
+<ul>
+<li>首先会CAS的把当前的状态从NEW变更为COMPLETING状态。</li>
+<li>把异常原因保存在outcome字段中,outcome字段用来保存任务执行结果或者异常原因。</li>
+<li>CAS的把当前任务状态从COMPLETING变更为EXCEPTIONAL。这个状态转换对应着上图中的二。</li>
+<li>调用finishCompletion()。关于这个方法后面在分析。</li>
+</ul>
+<ol>
+<li>如果任务成功执行则调用set()方法设置执行结果,该方法实现如下:<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(V v)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (UNSAFE.compareAndSwapInt(<span class="keyword">this</span>, stateOffset, NEW, COMPLETING)) &#123;</div><div class="line">        outcome = v;</div><div class="line">        UNSAFE.putOrderedInt(<span class="keyword">this</span>, stateOffset, NORMAL); <span class="comment">// final state</span></div><div class="line">        finishCompletion();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>这个方法跟上面分析的setException()差不多,</p>
+<ul>
+<li>首先会CAS的把当前的状态从NEW变更为COMPLETING状态。</li>
+<li>把任务执行结果保存在outcome字段中。</li>
+<li>CAS的把当前任务状态从COMPLETING变更为NORMAL。这个状态转换对应着上图中的一。</li>
+<li>调用finishCompletion()。</li>
+</ul>
+<p>发起任务线程跟执行任务线程通常情况下都不会是同一个线程,在任务执行线程执行任务的时候,任务发起线程可以查看任务执行状态、获取任务执行结果、取消任务等等操作,接下来分析下这些操作。</p>
+<h3 id="get"><a href="#get" class="headerlink" title="get()"></a>get()</h3><p>任务发起线程可以调用get()方法来获取任务执行结果,如果此时任务已经执行完毕则会直接返回任务结果,如果任务还没执行完毕,则调用方会阻塞直到任务执行结束返回结果为止。get()方法实现如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> V <span class="title">get</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException, ExecutionException </span>&#123;</div><div class="line">    <span class="keyword">int</span> s = state;</div><div class="line">    <span class="keyword">if</span> (s &lt;= COMPLETING)</div><div class="line">        s = awaitDone(<span class="keyword">false</span>, <span class="number">0L</span>);</div><div class="line">    <span class="keyword">return</span> report(s);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>get()方法实现比较简单,会</p>
+<ol>
+<li>判断任务当前的state &lt;= COMPLETING是否成立。前面分析过,COMPLETING状态是任务是否执行完成的临界状态。</li>
+<li>如果成立,表明任务还没有结束(这里的结束包括任务正常执行完毕,任务执行异常,任务被取消),则会调用awaitDone()进行阻塞等待。</li>
+<li>如果不成立表明任务已经结束,调用report()返回结果。</li>
+</ol>
+<h3 id="awaitDone"><a href="#awaitDone" class="headerlink" title="awaitDone()"></a>awaitDone()</h3><p>当调用get()获取任务结果但是任务还没执行完成的时候,调用线程会调用awaitDone()方法进行阻塞等待,该方法定义如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">awaitDone</span><span class="params">(<span class="keyword">boolean</span> timed, <span class="keyword">long</span> nanos)</span></span></div><div class="line">        <span class="keyword">throws</span> InterruptedException &#123;</div><div class="line">    <span class="comment">// 计算等待截止时间</span></div><div class="line">    <span class="keyword">final</span> <span class="keyword">long</span> deadline = timed ? System.nanoTime() + nanos : <span class="number">0L</span>;</div><div class="line">    WaitNode q = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">boolean</span> queued = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">for</span> (;;) &#123;</div><div class="line">        <span class="comment">// 1. 判断阻塞线程是否被中断,如果被中断则在等待队</span></div><div class="line">        <span class="comment">// 列中删除该节点并抛出InterruptedException异常</span></div><div class="line">        <span class="keyword">if</span> (Thread.interrupted()) &#123;</div><div class="line">            removeWaiter(q);</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> InterruptedException();</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        <span class="comment">// 2. 获取当前状态,如果状态大于COMPLETING</span></div><div class="line">        <span class="comment">// 说明任务已经结束(要么正常结束,要么异常结束,要么被取消)</span></div><div class="line">        <span class="comment">// 则把thread显示置空,并返回结果</span></div><div class="line">        <span class="keyword">int</span> s = state;</div><div class="line">        <span class="keyword">if</span> (s &gt; COMPLETING) &#123;</div><div class="line">            <span class="keyword">if</span> (q != <span class="keyword">null</span>)</div><div class="line">                q.thread = <span class="keyword">null</span>;</div><div class="line">            <span class="keyword">return</span> s;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 3. 如果状态处于中间状态COMPLETING</span></div><div class="line">        <span class="comment">// 表示任务已经结束但是任务执行线程还没来得及给outcome赋值</span></div><div class="line">        <span class="comment">// 这个时候让出执行权让其他线程优先执行</span></div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (s == COMPLETING) <span class="comment">// cannot time out yet</span></div><div class="line">            Thread.yield();</div><div class="line">        <span class="comment">// 4. 如果等待节点为空,则构造一个等待节点</span></div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (q == <span class="keyword">null</span>)</div><div class="line">            q = <span class="keyword">new</span> WaitNode();</div><div class="line">        <span class="comment">// 5. 如果还没有入队列,则把当前节点加入waiters首节点并替换原来waiters</span></div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (!queued)</div><div class="line">            queued = UNSAFE.compareAndSwapObject(<span class="keyword">this</span>, waitersOffset,</div><div class="line">                    q.next = waiters, q);</div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (timed) &#123;</div><div class="line">            <span class="comment">// 如果需要等待特定时间,则先计算要等待的时间</span></div><div class="line">            <span class="comment">// 如果已经超时,则删除对应节点并返回对应的状态</span></div><div class="line">            nanos = deadline - System.nanoTime();</div><div class="line">            <span class="keyword">if</span> (nanos &lt;= <span class="number">0L</span>) &#123;</div><div class="line">                removeWaiter(q);</div><div class="line">                <span class="keyword">return</span> state;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 6. 阻塞等待特定时间</span></div><div class="line">            LockSupport.parkNanos(<span class="keyword">this</span>, nanos);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span></div><div class="line">            <span class="comment">// 6. 阻塞等待直到被其他线程唤醒</span></div><div class="line">            LockSupport.park(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>awaitDone()中有个死循环,每一次循环都会</p>
+<ol>
+<li>判断调用get()的线程是否被其他线程中断,如果是的话则在等待队列中删除对应节点然后抛出InterruptedException异常。</li>
+<li>获取任务当前状态,如果当前任务状态大于COMPLETING则表示任务执行完成,则把thread字段置null并返回结果。</li>
+<li>如果任务处于COMPLETING状态,则表示任务已经处理完成(正常执行完成或者执行出现异常),但是执行结果或者异常原因还没有保存到outcome字段中。这个时候调用线程让出执行权让其他线程优先执行。</li>
+<li>如果等待节点为空,则构造一个等待节点WaitNode。</li>
+<li>如果第四步中新建的节点还没如队列,则CAS的把该节点加入waiters队列的首节点。</li>
+<li>阻塞等待。</li>
+</ol>
+<p>假设当前state=NEW且waiters为NULL,也就是说还没有任何一个线程调用get()获取执行结果,这个时候有两个线程threadA和threadB先后调用get()来获取执行结果。再假设这两个线程在加入阻塞队列进行阻塞等待之前任务都没有执行完成且threadA和threadB都没有被中断的情况下(因为如果threadA和threadB在进行阻塞等待结果之前任务就执行完成或线程本身被中断的话,awaitDone()就执行结束返回了),执行过程是这样的,以threadA为例:</p>
+<ol>
+<li>第一轮for循环,执行的逻辑是q == null,所以这时候会新建一个节点q。第一轮循环结束。</li>
+<li>第二轮for循环,执行的逻辑是!queue,这个时候会把第一轮循环中生成的节点的netx指针指向waiters,然后CAS的把节点q替换waiters。也就是把新生成的节点添加到waiters链表的首节点。如果替换成功,queued=true。第二轮循环结束。</li>
+<li>第三轮for循环,进行阻塞等待。要么阻塞特定时间,要么一直阻塞知道被其他线程唤醒。</li>
+</ol>
+<p>在threadA和threadB都阻塞等待之后的waiters结果如图<br><img src="/2017/10/09/Java-FutureTask/92f6bbb0d4800bc528b2dacc1116e0d4.png" alt="92f6bbb0d4800bc528b2dacc1116e0d4.png" title=""></p>
+<h3 id="cancel-boolean"><a href="#cancel-boolean" class="headerlink" title="cancel(boolean)"></a>cancel(boolean)</h3><p>用户可以调用cancel(boolean)方法取消任务的执行,cancel()实现如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">cancel</span><span class="params">(<span class="keyword">boolean</span> mayInterruptIfRunning)</span> </span>&#123;</div><div class="line">    <span class="comment">// 1. 如果任务已经结束,则直接返回false</span></div><div class="line">    <span class="keyword">if</span> (state != NEW)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    <span class="comment">// 2. 如果需要中断任务执行线程</span></div><div class="line">    <span class="keyword">if</span> (mayInterruptIfRunning) &#123;</div><div class="line">        <span class="comment">// 2.1. 把任务状态从NEW转化到INTERRUPTING</span></div><div class="line">        <span class="keyword">if</span> (!UNSAFE.compareAndSwapInt(<span class="keyword">this</span>, stateOffset, NEW, INTERRUPTING))</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        Thread t = runner;</div><div class="line">        <span class="comment">// 2.2. 中断任务执行线程</span></div><div class="line">        <span class="keyword">if</span> (t != <span class="keyword">null</span>)</div><div class="line">            t.interrupt();</div><div class="line">        <span class="comment">// 2.3. 修改状态为INTERRUPTED</span></div><div class="line">        UNSAFE.putOrderedInt(<span class="keyword">this</span>, stateOffset, INTERRUPTED); <span class="comment">// final state</span></div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 3. 如果不需要中断任务执行线程,则直接把状态从NEW转化为CANCELLED</span></div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!UNSAFE.compareAndSwapInt(<span class="keyword">this</span>, stateOffset, NEW, CANCELLED))</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    <span class="comment">// 4. </span></div><div class="line">    finishCompletion();</div><div class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>cancel()方法会做下面几件事:</p>
+<ol>
+<li>判断任务当前执行状态,如果任务状态不为NEW,则说明任务或者已经执行完成,或者执行异常,不能被取消,直接返回false表示执行失败。</li>
+<li>判断需要中断任务执行线程,则</li>
+</ol>
+<ul>
+<li>把任务状态从NEW转化到INTERRUPTING。这是个中间状态。</li>
+<li>中断任务执行线程。</li>
+<li>修改任务状态为INTERRUPTED。这个转换过程对应上图中的四。</li>
+</ul>
+<ol>
+<li>如果不需要中断任务执行线程,直接把任务状态从NEW转化为CANCELLED。如果转化失败则返回false表示取消失败。这个转换过程对应上图中的四。</li>
+<li>调用finishCompletion()。</li>
+</ol>
+<h3 id="finishCompletion"><a href="#finishCompletion" class="headerlink" title="finishCompletion()"></a>finishCompletion()</h3><p>根据前面的分析,不管是任务执行异常还是任务正常执行完毕,或者取消任务,最后都会调用finishCompletion()方法,该方法实现如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">finishCompletion</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// assert state &gt; COMPLETING;</span></div><div class="line">    <span class="keyword">for</span> (WaitNode q; (q = waiters) != <span class="keyword">null</span>;) &#123;</div><div class="line">        <span class="keyword">if</span> (UNSAFE.compareAndSwapObject(<span class="keyword">this</span>, waitersOffset, q, <span class="keyword">null</span>)) &#123;</div><div class="line">            <span class="keyword">for</span> (;;) &#123;</div><div class="line">                Thread t = q.thread;</div><div class="line">                <span class="keyword">if</span> (t != <span class="keyword">null</span>) &#123;</div><div class="line">                    q.thread = <span class="keyword">null</span>;</div><div class="line">                    LockSupport.unpark(t);</div><div class="line">                &#125;</div><div class="line">                WaitNode next = q.next;</div><div class="line">                <span class="keyword">if</span> (next == <span class="keyword">null</span>)</div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">                q.next = <span class="keyword">null</span>; <span class="comment">// unlink to help gc</span></div><div class="line">                q = next;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    done();</div><div class="line"> </div><div class="line">    callable = <span class="keyword">null</span>;        <span class="comment">// to reduce footprint</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个方法的实现比较简单,依次遍历waiters链表,唤醒节点中的线程,然后把callable置空。<br>被唤醒的线程会各自从awaitDone()方法中的LockSupport.park()阻塞中返回,然后会进行新一轮的循环。在新一轮的循环中会返回执行结果(或者更确切的说是返回任务的状态)。</p>
+<h3 id="report"><a href="#report" class="headerlink" title="report()"></a>report()</h3><p>report()方法用在get()方法中,作用是把不同的任务状态映射成任务执行结果。实现如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> V <span class="title">report</span><span class="params">(<span class="keyword">int</span> s)</span> <span class="keyword">throws</span> ExecutionException </span>&#123;</div><div class="line">    Object x = outcome;</div><div class="line">    <span class="comment">// 1. 任务正常执行完成,返回任务执行结果</span></div><div class="line">    <span class="keyword">if</span> (s == NORMAL)</div><div class="line">        <span class="keyword">return</span> (V)x;</div><div class="line">    <span class="comment">// 2. 任务被取消,抛出CancellationException异常</span></div><div class="line">    <span class="keyword">if</span> (s &gt;= CANCELLED)</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> CancellationException();</div><div class="line">    <span class="comment">// 3. 其他状态,抛出执行异常ExecutionException</span></div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> ExecutionException((Throwable)x);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>映射关系如下图所示:<br><img src="/2017/10/09/Java-FutureTask/137a6979a224d067b7b401ec072ca00f.png" alt="137a6979a224d067b7b401ec072ca00f.png" title=""><br>如果任务处于NEW、COMPLETING和INTERRUPTING这三种状态的时候是执行不到report()方法的,所以没必要对这三种状态进行转换。</p>
+<h3 id="get-long-TimeUnit"><a href="#get-long-TimeUnit" class="headerlink" title="get(long,TimeUnit)"></a>get(long,TimeUnit)</h3><p>带超时等待的获取任务结果,实现如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> V <span class="title">get</span><span class="params">(<span class="keyword">long</span> timeout, TimeUnit unit)</span></span></div><div class="line">        <span class="keyword">throws</span> InterruptedException, ExecutionException, TimeoutException &#123;</div><div class="line">    <span class="keyword">if</span> (unit == <span class="keyword">null</span>)</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</div><div class="line">    <span class="keyword">int</span> s = state;</div><div class="line">    <span class="keyword">if</span> (s &lt;= COMPLETING &amp;&amp;</div><div class="line">        <span class="comment">// 如果awaitDone()超时返回之后任务还没结束,则抛出异常</span></div><div class="line">        (s = awaitDone(<span class="keyword">true</span>, unit.toNanos(timeout))) &lt;= COMPLETING)</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> TimeoutException();</div><div class="line">    <span class="keyword">return</span> report(s);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>跟get()不同点在于get(long,TimeUnit)会在awaitDone()超时返回之后抛出TimeoutException异常。</p>
+<h3 id="isCancelled-和isDone"><a href="#isCancelled-和isDone" class="headerlink" title="isCancelled()和isDone()"></a>isCancelled()和isDone()</h3><p>这两个方法分别用来判断任务是否被取消和任务是否执行完成,实现都比较简单,代码如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isCancelled</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> state &gt;= CANCELLED;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isDone</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> state != NEW;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>总结下,其实FutureTask的实现还是比较简单的,当用户实现Callable()接口定义好任务之后,把任务交给其他线程进行执行。FutureTask内部维护一个任务状态,任何操作都是围绕着这个状态进行,并随时更新任务状态。任务发起者调用get()获取执行结果的时候,如果任务还没有执行完毕,则会把自己放入阻塞队列中然后进行阻塞等待。当任务执行完成之后,任务执行线程会依次唤醒阻塞等待的线程。调用cancel()取消任务的时候也只是简单的修改任务状态,如果需要中断任务执行线程的话则调用Thread.interrupt()中断任务执行线程。</p>
+<h2 id="第四部分-Other"><a href="#第四部分-Other" class="headerlink" title="第四部分:Other"></a>第四部分:Other</h2><p>有个值得关注的问题就是当任务还在执行的时候用户调用cancel(true)方法能否真正让任务停止执行呢？<br>在前面的分析中我们直到,当调用cancel(true)方法的时候,实际执行还是Thread.interrupt()方法,而interrupt()方法只是设置中断标志位,如果被中断的线程处于sleep()、wait()或者join()逻辑中则会抛出InterruptedException异常。</p>
+<p>因此结论是:cancel(true)并不一定能够停止正在执行的异步任务。</p>
+<p>ref: <a href="http://www.importnew.com/25286.html" target="_blank" rel="external">http://www.importnew.com/25286.html</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果这篇文章帮助了你, 请不吝回报</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.png" alt="Ran WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Ran Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/FutureTask/" rel="tag"># FutureTask</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/09/Tomcat-部署静态文件/" rel="next" title="Tomcat-部署静态文件">
+                <i class="fa fa-chevron-left"></i> Tomcat-部署静态文件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/09/Java-Annotation实现原理/" rel="prev" title="Java-Annotation实现原理">
+                Java-Annotation实现原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ran" />
+          <p class="site-author-name" itemprop="name">Ran</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">191</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一部分-What"><span class="nav-number">1.</span> <span class="nav-text">第一部分:What</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二部分-How"><span class="nav-number">2.</span> <span class="nav-text">第二部分:How</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Callable接口"><span class="nav-number">2.1.</span> <span class="nav-text">Callable接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Future接口"><span class="nav-number">2.2.</span> <span class="nav-text">Future接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FutureTask"><span class="nav-number">2.3.</span> <span class="nav-text">FutureTask</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三部分-Why"><span class="nav-number">3.</span> <span class="nav-text">第三部分:Why</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造函数"><span class="nav-number">3.1.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#run"><span class="nav-number">3.2.</span> <span class="nav-text">run()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#get"><span class="nav-number">3.3.</span> <span class="nav-text">get()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awaitDone"><span class="nav-number">3.4.</span> <span class="nav-text">awaitDone()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cancel-boolean"><span class="nav-number">3.5.</span> <span class="nav-text">cancel(boolean)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#finishCompletion"><span class="nav-number">3.6.</span> <span class="nav-text">finishCompletion()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#report"><span class="nav-number">3.7.</span> <span class="nav-text">report()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#get-long-TimeUnit"><span class="nav-number">3.8.</span> <span class="nav-text">get(long,TimeUnit)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#isCancelled-和isDone"><span class="nav-number">3.9.</span> <span class="nav-text">isCancelled()和isDone()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四部分-Other"><span class="nav-number">4.</span> <span class="nav-text">第四部分:Other</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ran</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

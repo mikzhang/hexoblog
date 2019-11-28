@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="DataStructure,sort," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="用Java实现7种排序算法">
+<meta name="keywords" content="DataStructure,sort">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DataStructure-sort-in-java">
+<meta property="og:url" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/index.html">
+<meta property="og:site_name" content="Ran&#39;s Blog">
+<meta property="og:description" content="用Java实现7种排序算法">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/874710-20170325174528971-1958932805.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/874710-20170321200015221-636653952.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/874710-20170321212328377-95116156.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/874710-20170322200231440-1649992463.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/874710-20170328210217983-1689530325.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/874710-20170325201940690-1630559904.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/874710-20170323203454752-1019588241.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/874710-20170324195035346-1788803109.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/874710-20170324195237752-1176680883.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/874710-20170324195652627-1999302639.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/874710-20170330164032149-319598517.png">
+<meta property="og:updated_time" content="2019-11-28T09:37:26.760Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DataStructure-sort-in-java">
+<meta name="twitter:description" content="用Java实现7种排序算法">
+<meta name="twitter:image" content="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/874710-20170325174528971-1958932805.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/"/>
+
+
+
+
+
+  <title>DataStructure-sort-in-java | Ran's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ran's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://mikzhang.github.io/2017/09/22/DataStructure-sort-in-java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ran">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ran's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DataStructure-sort-in-java</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-22T00:00:00+00:00">
+                2017-09-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DataStructure/" itemprop="url" rel="index">
+                    <span itemprop="name">DataStructure</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>用Java实现7种排序算法</p>
+<a id="more"></a>
+<h2 id="排序种类"><a href="#排序种类" class="headerlink" title="排序种类"></a>排序种类</h2><p><img src="874710-20170325174528971-1958932805.png" alt="874710-20170325174528971-1958932805.png"></p>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><p><img src="874710-20170321200015221-636653952.png" alt="874710-20170321200015221-636653952.png"><br>原理图如上所示：先将第一个位值上的数跟之后所有位置上的数依次进行比较，如果第一个位置上的数比第二个位置上的数大，则进行互换，然后继续将第一个位置上的数与第三个位置上的数进行比较，经过一轮的比较后，第一个位值上的数就是所有数中最小的一个，接着将第二个位置上的数与之后所有位置上的数进行比较，同样的规则，第二轮比较结束后，第二位放的就是所有数中第二小的数，依次往下比，直到最后一个位置结束。按照这种方法进行排序，就叫做选择排序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line">public class SelectSort &#123;</div><div class="line">    //选择排序,将数组按从小到大排序</div><div class="line">    //根据原理分析，使用两层循环即可实现</div><div class="line">    public void selectSort(int[] array)&#123;</div><div class="line">        for(int i=0; i&lt;array.length; i++)&#123;//第一层</div><div class="line">            for (int j = i + 1; j &lt; array.length; j++) &#123;// 第二层</div><div class="line">                if (array[i] &gt; array[j]) &#123;// 数据互换。将小的放前面</div><div class="line">                    int t = array[i];</div><div class="line">                    array[i] = array[j];</div><div class="line">                    array[j] = t;</div><div class="line">                &#125;</div><div class="line">                printProcess(i, j, array);</div><div class="line">            &#125;</div><div class="line">            System.out.println();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void printArray(int[] array) &#123;</div><div class="line">        for (int i : array) &#123;</div><div class="line">            System.out.print(i + &quot;,&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void printProcess(int i, int j, int[] array) &#123;</div><div class="line">        System.out.print(String.format(&quot;i=%d, j=%d: &quot;, i, j));</div><div class="line">        printArray(array);</div><div class="line">        System.out.println();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        int[] array = &#123;5, 8, 3, 1, 4, 10, 7&#125;;</div><div class="line">        SelectSort ss = new SelectSort();</div><div class="line">        ss.selectSort(array);</div><div class="line"></div><div class="line">        System.out.println(&quot;\n=== final result ===&quot;);</div><div class="line">        printArray(array);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line">/*</div><div class="line">i=0, j=1: 5,8,3,1,4,10,7,</div><div class="line">i=0, j=2: 3,8,5,1,4,10,7,</div><div class="line">i=0, j=3: 1,8,5,3,4,10,7,</div><div class="line">i=0, j=4: 1,8,5,3,4,10,7,</div><div class="line">i=0, j=5: 1,8,5,3,4,10,7,</div><div class="line">i=0, j=6: 1,8,5,3,4,10,7,</div><div class="line"></div><div class="line">i=1, j=2: 1,5,8,3,4,10,7,</div><div class="line">i=1, j=3: 1,3,8,5,4,10,7,</div><div class="line">i=1, j=4: 1,3,8,5,4,10,7,</div><div class="line">i=1, j=5: 1,3,8,5,4,10,7,</div><div class="line">i=1, j=6: 1,3,8,5,4,10,7,</div><div class="line"></div><div class="line">i=2, j=3: 1,3,5,8,4,10,7,</div><div class="line">i=2, j=4: 1,3,4,8,5,10,7,</div><div class="line">i=2, j=5: 1,3,4,8,5,10,7,</div><div class="line">i=2, j=6: 1,3,4,8,5,10,7,</div><div class="line"></div><div class="line">i=3, j=4: 1,3,4,5,8,10,7,</div><div class="line">i=3, j=5: 1,3,4,5,8,10,7,</div><div class="line">i=3, j=6: 1,3,4,5,8,10,7,</div><div class="line"></div><div class="line">i=4, j=5: 1,3,4,5,8,10,7,</div><div class="line">i=4, j=6: 1,3,4,5,7,10,8,</div><div class="line"></div><div class="line">i=5, j=6: 1,3,4,5,7,8,10,</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">=== final result ===</div><div class="line">1,3,4,5,7,8,10,</div><div class="line">*/</div></pre></td></tr></table></figure>
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><p>简单，给定的一组记录，将其分为两个序列组，一个为有序序列(按照顺序从小到大或者从大到小)，一个为无序序列，初始时，将记录中的第一个数当成有序序列组中的一个数据，剩下其他所有数都当做是无序序列组中的数据。然后从无序序列组中的数据中(也就是从记录中的第二个数据开始)依次与有序序列中的记录进行比较，然后插入到有序序列组中合适的位置，直到无序序列组中的最后一个数据插入到有序序列组中为止。<br><img src="874710-20170321212328377-95116156.png" alt="874710-20170321212328377-95116156.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div></pre></td><td class="code"><pre><div class="line">public class InsertSort &#123;</div><div class="line">    //插入排序，按从小到大的顺序</div><div class="line">    public void insertSort(int[] array)&#123;</div><div class="line">        int j, temp;// temp：记录</div><div class="line">        for(int i = 1; i &lt; array.length; i++)&#123;</div><div class="line">            if(array[i] &lt; array[i-1])&#123;</div><div class="line">                temp = array[i];</div><div class="line">                for (j = i - 1; j &gt;= 0 &amp;&amp; array[j] &gt; temp; j--) &#123;</div><div class="line">                    array[j + 1] = array[j];</div><div class="line">                    printProcess(i, j, array);</div><div class="line">                &#125;</div><div class="line">                array[j+1] = temp;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    //如果上面的方法不好理解, 可以看下面的方法</div><div class="line">    public void insertSort2(int[] array) &#123;</div><div class="line">        int j, temp;</div><div class="line">        for (int i = 1; i &lt; array.length; i++) &#123;</div><div class="line">            j = i;</div><div class="line">            temp = array[i];</div><div class="line">            while (j &gt; 0 &amp;&amp; temp &lt; array[j - 1]) &#123;</div><div class="line">                array[j] = array[j - 1];</div><div class="line">                printProcess(i, j, array);</div><div class="line">                j--;</div><div class="line">            &#125;</div><div class="line">            array[j] = temp;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void printArray(int[] array) &#123;</div><div class="line">        for (int i : array) &#123;</div><div class="line">            System.out.print(i + &quot;,&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void printProcess(int i, int j, int[] array) &#123;</div><div class="line">        System.out.print(String.format(&quot;i=%d, j=%d: &quot;, i, j));</div><div class="line">        printArray(array);</div><div class="line">        System.out.println();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        int[] array = &#123;38, 65, 97, 76, 13, 27, 49&#125;;</div><div class="line">        InsertSort ss = new InsertSort();</div><div class="line">        ss.insertSort(array);</div><div class="line">        System.out.println(&quot;\n&quot;);</div><div class="line"></div><div class="line">        int[] arr = &#123;38, 65, 97, 76, 13, 27, 49&#125;;</div><div class="line">        ss.insertSort2(arr);</div><div class="line"></div><div class="line">        System.out.println(&quot;\n=== final result ===&quot;);</div><div class="line">        printArray(array);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line">/*</div><div class="line">i=0, j=1: 5,8,3,1,4,10,7,</div><div class="line">i=0, j=2: 3,8,5,1,4,10,7,</div><div class="line">i=0, j=3: 1,8,5,3,4,10,7,</div><div class="line">i=0, j=4: 1,8,5,3,4,10,7,</div><div class="line">i=0, j=5: 1,8,5,3,4,10,7,</div><div class="line">i=0, j=6: 1,8,5,3,4,10,7,</div><div class="line"></div><div class="line">i=1, j=2: 1,5,8,3,4,10,7,</div><div class="line">i=1, j=3: 1,3,8,5,4,10,7,</div><div class="line">i=1, j=4: 1,3,8,5,4,10,7,</div><div class="line">i=1, j=5: 1,3,8,5,4,10,7,</div><div class="line">i=1, j=6: 1,3,8,5,4,10,7,</div><div class="line"></div><div class="line">i=2, j=3: 1,3,5,8,4,10,7,</div><div class="line">i=2, j=4: 1,3,4,8,5,10,7,</div><div class="line">i=2, j=5: 1,3,4,8,5,10,7,</div><div class="line">i=2, j=6: 1,3,4,8,5,10,7,</div><div class="line"></div><div class="line">i=3, j=4: 1,3,4,5,8,10,7,</div><div class="line">i=3, j=5: 1,3,4,5,8,10,7,</div><div class="line">i=3, j=6: 1,3,4,5,8,10,7,</div><div class="line"></div><div class="line">i=4, j=5: 1,3,4,5,8,10,7,</div><div class="line">i=4, j=6: 1,3,4,5,7,10,8,</div><div class="line"></div><div class="line">i=5, j=6: 1,3,4,5,7,8,10,</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">=== final result ===</div><div class="line">1,3,4,5,7,8,10,</div><div class="line">*/</div></pre></td></tr></table></figure>
+<h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><p>冒泡排序跟选择排序一样的简单，好理解，整个过程就想气泡一样往上升，假设从小到大排序，对于给定的n个记录，从第一个记录开始依次对相邻的两个记录进行比较，当前面的记录大于后面的记录时，交换位置，进行一轮比较后，第n位上就是整个记录中最大的数，然后在对前n-1个记录进行第二轮比较，重复该过程直到进行比较的记录只剩下一个为止。</p>
+<p><img src="874710-20170322200231440-1649992463.png" alt="874710-20170322200231440-1649992463.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">//冒泡排序，从小到大</div><div class="line">    /**</div><div class="line">     * 通过看冒泡排序的原理图，我们知道只要让其一直遍历数组即可，只不过每遍历一次，就要让遍历的长度减1，</div><div class="line">     *     所有就在遍历的外面加一层while循环。判断的条件为，当遍历的长度&gt;=1时，此时就只需要遍历两个数据了，比完后不应该在继续。</div><div class="line">     *     非常简单的逻辑。</div><div class="line">     */</div><div class="line">    public void bubbleSort(int[] array)&#123;</div><div class="line">        int j = array.length - 1;</div><div class="line">        while( j &gt;= 1)&#123;</div><div class="line">            for(int i = 0; i &lt; j; i++)&#123;</div><div class="line">                if(array[i] &gt; array[i+1])&#123;</div><div class="line">                    int t = array[i];</div><div class="line">                    array[i] = array[i+1];</div><div class="line">                    array[i+1] = t;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            j--;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><p>归并排序有两种实现方式，一种是非递归的，一种是递归的，但是我觉得如果你理解了非递归的实现，那么你就知道了归并排序的原理，而递归的也就非常简单了。</p>
+<p>什么是归并排序呢？(我们讲解的是2路归并排序)</p>
+<p>一张图就可理解什么叫做2路归并排序</p>
+<p><img src="874710-20170328210217983-1689530325.png" alt="874710-20170328210217983-1689530325.png"></p>
+<p>初始将一个数组中每个元素都看成一个有序序列(数组长度为n)，然后将相邻两个有序序列合并成一个有序序列，第一趟归并就可以得到n/2个长度为2(最后一个有序序列的长度可能是1，也可能不是，关键看数组中元素的个数了)的有序序列，在进行两两归并，得到n/4个长度为4的有序序列(最后一个的长度可能小于4)…一直这样归并下去，直到得到一个长度为n的有序序列1</p>
+<p>简单来说，通过三步，解决三个问题，就可以写出归并排序　　　　　　</p>
+<p>1、解决相邻两个有序序列归并成一个有序序列，非常简单，新增一个数组(长度和需要排列的数组相同)，</p>
+<p>二路归并的核心操作，在归并的过程中，可能会破坏原来的有序序列，所以，将归并的结果存入另外一个数组中，设两个相邻的有序序列为r[s] ~r[m]和r[m+1]~r[t]，将这两个有序序列归并成一个有序序列，r1[s]~r1[t]，设三个参数i,j,k。 i和j分别指向两个有序序列的第一个记录，即i=s，j=m+1，k指向存放归并结果的位置(也就是将归并结果放到r1中的哪个位置)k=s。然后，比较i和j所指记录的数，取出较小者作为归并结果存入k所指的位置，然后将较小者的指向往后移动，直至两个有序序列之一的所有记录都取完，在将另一个有序序列的剩余记录顺序送到归并后的有序序列中(也就是放到r1中)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">//一次归并</div><div class="line">    /**</div><div class="line">     *         相邻两个有序序列归并成一个有序序列的过程</div><div class="line">     * @param r        原数组，需要归并的数组</div><div class="line">     * @param r1    新数组，归并后的数组</div><div class="line">     * @param s        两个有序序列的第一个有序序列的第一个元素的下标</div><div class="line">     * @param m        两个有序序列的第一个有序序列的最后一个元素的下标</div><div class="line">     * @param t        两个有序序列的第二个有序序列的最后一个元素的下标</div><div class="line">     */</div><div class="line">    public void merge(int[] r, int[] r1, int s, int m, int t)&#123;</div><div class="line">        int i = s;    //两个有序序列的第一个有序序列的第一个元素的下标</div><div class="line">        int j = m+1;    //两个有序序列的第二个有序序列的第一个元素的下标</div><div class="line">        int k = s;        //新数组中的指向</div><div class="line">        while(i &lt;= m &amp;&amp; j &lt;= t)&#123;//两个有序序列都没有遍历完</div><div class="line">            if(r[i] &lt; r[j])&#123;</div><div class="line">                r1[k++] = r[i++];</div><div class="line">            &#125;else&#123;</div><div class="line">                r1[k++] = r[j++];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        //当其中一个序列遍历完之后，将剩下那个序列加到新数组中,判断是哪一个序列没有遍历完</div><div class="line">        while(i &lt;= m)&#123;</div><div class="line">            r1[k++] = r[i++];</div><div class="line">        &#125;</div><div class="line">        while(j&lt;=t)&#123;</div><div class="line">            r1[k++] = r[j++];</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>2、如何完成一趟归并？</p>
+<p>这里就需要分情况了，三种情况，</p>
+<p>假设每个有序序列中的元素个数为h(第一次归并的h=1)，i=0，从第一个元素开始。归并每次取两个有序序列，那么跨度就是2h，问题就来了，只要知道长度为n(n为数组的最大下标值)的数组中有几个这样的两个有序序列，那么可以进行不同的操作了。</p>
+<p>第一种情况：(i+2<em>h-1) &lt;= n  //比如，i=0，h=1时，(i+2</em>h-1)的意思就是指向了第一个两个有序序列的最后一个位置的下标值，用它来跟n(n为数组最大的下标值)比较，如果小于n，那么说明后面还有别的数，如果等于n，说明到结尾了，整个数组正好全是两个有序序列得，不会有多余数。那么就执行一次归并，将这两个有序序列归并，然后i加2h。如果还符合这个条件，继续归并，如果不符合，判断别的情况。</p>
+<p>第二种情况：(i+h-1) &lt; n //说明最后还有两个有序序列，但是最后一个有序序列的长度不是h，同样将其进行归并</p>
+<p>第三种情况: (i+h-1) &gt;= n //说明只剩下最后一个有序序列，则直接将其有序序列送到r1的相应位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">     * 一趟归并排序</div><div class="line">     * @param r    原数组，需要归并操作的数组</div><div class="line">     * @param r1 新数组，归并好的数组</div><div class="line">     * @param h 步长多少(有序序列中含有的元素个数)</div><div class="line">     * @param n    数组长度(数组下标的最大值)</div><div class="line">     */</div><div class="line">    public void mergePass(int[] r, int[] r1, int h, int n)&#123;</div><div class="line">        //判断根据步长能分成多个有序序列，</div><div class="line">        int i = 0;</div><div class="line">        while((i+2*h-1) &lt;= n)&#123;//待归并的两个相邻有序序列的长度均为h,需要理解(i+2*h-1)的意思。</div><div class="line">            merge(r,r1,i,i+h-1,i+2*h-1);//需要注意一次归并需要的参数</div><div class="line">            i += 2*h;            </div><div class="line">        &#125;</div><div class="line">        if(i+h-1 &lt; n)&#123;//说明最后还有两个序列，第一个序列长度为h，第二个序列长度小于h</div><div class="line">            merge(r,r1,i,i+h-1,n);</div><div class="line">            i += 2*h;</div><div class="line">        &#125;else&#123;//剩下最后一个序列，长度并且小于或等于h,不用归并了，直接放入新数组中</div><div class="line">            for(; i&lt;=n; i++)&#123;</div><div class="line">                r1[i] = r[i];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>3、完成整个归并排序</p>
+<p>前面我们解决了两个问题，一个是两个有序序列如何进行归并，一个是如何判断完成一趟归并过程。现在就需要解决如何控制二路归并的结束呢？也就是需要归并多少趟。</p>
+<p>当步长等于n或者大于n时，说明只剩下一个有序序列了，那么即归并结束了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//二分归并排序非递归算法</div><div class="line">    //n：数组最大下标</div><div class="line">    public void mergeSort(int[] r, int[] r1,int n)&#123;</div><div class="line">        int h = 1;    //从1开始排序</div><div class="line">        while(h&lt;n)&#123;    //直到h&gt;=n才结束，也就步长小于n时都要进行归并</div><div class="line">            mergePass(r,r1,h,n);    //一趟归并</div><div class="line">            h = 2*h;</div><div class="line">            mergePass(r1,r,h,n);//因为经过一趟归并后，r1就变为了那个需要归并的数组，那么r就充当新数组，并且这也能够让排序好的数组放回到r数组中</div><div class="line">            h = 2*h;            </div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><p> 快速排序是对冒泡排序的增强，增强得点在于：冒泡排序中，记录的比较和移动是在相邻两个位置进行的，记录每次交换只能后移一个位置，因而总的比较次数和移动次数较多，而快排记录的比较和移动是从两端向中间进行的，较大的记录一次就能从前面移动到后面，较小的记录一次就能从后面移动到前面，这样就减少了比较次数和移动次数</p>
+<p>快速排序原理：选取一个轴值(比较的基准)，将待排序记录分为独立的两个部分，左侧记录都是小于或等于轴值，右侧记录都是大于或等于轴值，然后分别对左侧部分和右侧部分重复前面的过程，也就是左侧部分又选择一个轴值，又分为两个独立的部分，这就使用了递归了。到最后，整个序列就变得有序了。</p>
+<p>问题：如何选择轴值？如何将序列变成左右两部分？ </p>
+<p>轴值的选择有三种：<br>1、选取序列的第一个位置上的记录<br>2、选择序列的中间位置上的记录<br>3、将序列第一个位置 和 中间位置 和 末尾位置上的记录进行比较，选择大小居中的记录，</p>
+<p> 如何将序列划分成左右两部分？　　　　　　　　　</p>
+<p>看图的执行流程，当一趟比较下来，轴值的左侧和右侧就被排好了，其中利用了first和end两个参数，一个从起点开始，一个从末尾开始，当两个相等时，就将序列中所有记录都遍历了一遍，第一次的比较次数是和选择排序第一次比较次数是一样的，但是之后就开始不一样了，因为在轴值的左侧的元素就不用跟轴值右侧的元素进行比较了，而选择排序还是跟所有的比。</p>
+<p><img src="874710-20170325201940690-1630559904.png" alt="874710-20170325201940690-1630559904.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line">     * 对序列划分为左右两个部分,</div><div class="line">     * 轴值为数组第一个元素</div><div class="line">     * i，first:指向需要进行左右两侧排序的序列的第一个位置</div><div class="line">     * j，end:指向需要进行左右两侧排序的序列的最后一个位置</div><div class="line">     */</div><div class="line">    public int Partition(int[] array, int first, int end)&#123;</div><div class="line">        int i = first;</div><div class="line">        int j = end;</div><div class="line">        while(i &lt; j)&#123;        //i和j会慢慢往中间靠，当i==j时，说明已经排好左右两侧的数据了，这里为什么不写i!=j作为条件呢？原因是有些情况是first&gt;end，比如first=0，而end=-1，</div><div class="line">            while(i&lt;j&amp;&amp;array[i] &lt; array[j])&#123;//右侧进行扫描，array[i]是轴值</div><div class="line">                j--;    //最后一个元素是大于轴值的，那么就不动，因为已经在其右边的，j--，往前移动一个位置</div><div class="line">            &#125;</div><div class="line">            if(i &lt; j)&#123;    //这一步是当array[i] &gt; array[j]。轴值的位置变为了j</div><div class="line">                int temp = array[i];</div><div class="line">                array[i] = array[j];</div><div class="line">                array[j] = temp;</div><div class="line">                i++;</div><div class="line">            &#125;</div><div class="line">            while(i&lt;j&amp;&amp;array[i] &lt; array[j])&#123;//左侧扫描，如果都比轴值小的话，i往后移动</div><div class="line">                i++;</div><div class="line">            &#125;</div><div class="line">            if(i &lt; j)&#123;    //当发现有比轴值大的数时，进行互换</div><div class="line">                int temp = array[i];</div><div class="line">                array[i] = array[j];</div><div class="line">                array[j] = temp;</div><div class="line">                j--;        </div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return j;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    public void quickSort(int[] array, int first, int end)&#123;</div><div class="line">        if(first &lt; end)&#123;</div><div class="line">            int pivot = Partition(array,first,end);    //返回轴值的位置，</div><div class="line">            quickSort(array,first,pivot-1);//第一次排好后，pivot-1就是左侧最尾部的位置</div><div class="line">            quickSort(array,pivot+1,end);    //pivot+1，右侧最开始的位置。</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h2 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h2><p>希尔排序其实是插入排序的升级版本，本质上进行的也是插入排序的操作，但是希尔排序并不是把一组记录看成一个整体，而将整个记录分为了若干组记录，然后在对每组记录进行插入排序，</p>
+<p>分组规则为如下所示：假设有 1 2 3 4 5  6 7 8 9 10 十个位置(每个位置上都会放数，这里忽略数，只讨论位置)。(省略了插入排序操作，只对如何分组进行讲解，而完整的希尔排序就是在每次分组完之后进行插入排序操作即可)</p>
+<p>步长为：5、3、1</p>
+<p>第一次分为5组记录(组数跟步长是一样的)：1,6 、2,7、3,8、 4,9、 5,10 这五组记录，分别对这五组记录进行插入排序。<br>第二次分为3组记录：1,4,7,10、2,5,8、3,6,9 这三组记录，分别对这三组记录进行插入排序<br>第三次分为1组记录：1 2 3 4 5 6  7 8 9 10， 为这组记录进行插入排序，</p>
+<p>而步长只要满足最后一次为1，并且是从大到小即可。一般使用(数组长度/2) 或者 (数组长度/3 +1) 来代表步长。</p>
+<p>这样做的好处是：<br>将待排序的数组元素分成多组，每组中记录数相对较少<br>经过前几次的排序后，整个序列变为了“基本有序序列”，最后在对所有元素进行一次直接插入排序。<br>直接插入排序对基本有序和记录数少的序列的效率是非常高的，而希尔排序就是利用了这两点。</p>
+<p><img src="874710-20170323203454752-1019588241.png" alt="874710-20170323203454752-1019588241.png"></p>
+<p>解释：第一次分组，49,13、38,27、65,49、97,55、76,04  五组，对这五组分别进行插入排序，在49找到13时，就会进行插入排序，位置会进行互换，而并非先全部分组，后排序。</p>
+<p>按照步长一直重复执行，直到步长为1后，执行完最后一次直接插入排序，整个希尔排序就完成了。　　　　</p>
+<p>运行时动态图：看最下面我分享的资源即可<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">public void shellSort(int[] array)&#123;</div><div class="line">        int i,j,temp;    //i,j分别为for循环中的控制变量 temp作用是临时记录数</div><div class="line">        int length = array.length;</div><div class="line">        int gap = length;</div><div class="line">        do&#123;</div><div class="line">            gap = gap/2;    //步长， 假设length为10，则步长为5 2 1</div><div class="line">            for(i = gap; i&lt;length; i++)&#123;</div><div class="line">                if(array[i] &lt; array[i-gap])&#123;</div><div class="line">                    temp = array[i];</div><div class="line">                    for(j = i-gap; j&gt;=0 &amp;&amp; array[j]&gt;temp; j-=gap)&#123;</div><div class="line">                        array[j+gap] = array[j];</div><div class="line">                    &#125;</div><div class="line">                    array[j+gap] = temp;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">        &#125;while(gap&gt;0);</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<h2 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h2><p>上面说的希尔排序是对插入排序的增强，那么堆排序呢，就是对选择排序进行增强，选择排序一个数据要跟每个数据都进行一次比较，并没有利用到一些比较的结果，比如，4 跟10比较，3跟4比较后，按理说不用让3跟10在比了，但是选择排序并没有这种智能化，而是老老实实的比较，而堆排序就完美的利用了前几次比较的结果，从而增加了效率。</p>
+<p>讲解堆排序之前，必须要知道什么是堆？</p>
+<p>堆是一颗完全二叉树，什么是完全二叉树？只有最下面的两层结点度能够小于2，并且最下面一层的结点都集中在该层最左边的若干位置的二叉树(还不懂就去百度一下什么是完全二叉树)<br><img src="874710-20170324195035346-1788803109.png" alt="874710-20170324195035346-1788803109.png"></p>
+<p>这个图是一个完全二叉树，但不是堆。<br>堆分两种，大顶堆和小顶堆<br>大顶堆：在完全二叉树的基础上，每个父节点都比自己的两个子结点大，这样的就是大顶堆，特点是根节点是最大的值，看下图，90比70,80大，70比60,10大，以此类推</p>
+<p><img src="874710-20170324195237752-1176680883.png" alt="874710-20170324195237752-1176680883.png"></p>
+<p>小顶堆：和大顶堆相反，根节点是最小的值，并且每个父结点都比自己的子节点要小，如下图</p>
+<p><img src="874710-20170324195652627-1999302639.png" alt="874710-20170324195652627-1999302639.png"></p>
+<p>堆排序就是利用堆的这种特点进行编写的，原理：先将一组拥有n个元素的序列构建成大顶堆或者小顶堆，在将根结点上的数跟堆最后一位数进行互换，此时，第n位的数就是整个序列中最大或者最小的数了，然后在将前n-1位元素进行构建成大顶堆或者小顶堆，在将根结点跟第n-1位进行互换，得到第2大或者第2小的数，在将前n-2位数进行构建，依次类推，直到只剩下1位元素即结束，排序完成。</p>
+<p>通过讲解原理：堆排序分为三步<br>1、构建大顶堆或小顶堆<br>2、循环<br>根节点和末尾结点进行互换，<br>构建大顶堆或小顶堆　<br>3、排序完成</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">/*</div><div class="line">     * 要知道什么是堆这种数据结构</div><div class="line">     *         堆是一颗完全二叉树。分为大顶堆和小顶堆，</div><div class="line">     *         大顶堆，每个父结点都比自己的子节点大，也就是根结点为最大</div><div class="line">     *         小顶堆，每个父结点都比自己的子节点小，也就是根结点最小。</div><div class="line">     * 按照大顶堆和小顶堆这种特点，将一个无序的n个记录的序列构建成大顶堆,将根节点上的数与最后一个</div><div class="line">     * 结点n进行交换，然后在对n-1个记录进行构建大顶堆，继续把根节点与最后一个结点(n-1)互换，继续上面的操作。</div><div class="line">     *         从小到大排序，则使用大顶堆</div><div class="line">     *         从大到小排序，则使用小顶堆</div><div class="line">     *     从小到大</div><div class="line">     */</div><div class="line">    public void heapSort(int[] array)&#123;</div><div class="line">        //第一步：将数组构建成一个大顶堆 </div><div class="line">        int length = array.length;    //length为数组的长度，有几个数就是几，不要跟数组最大的下标值搞混淆了，有10个数，length就是10，数组最大下标为9</div><div class="line">        //找到完全二叉树中的最后一个父结点(拥有子结点)的位置length/2，也就是最后一个父节点是在完全二叉树的第length/2的位置上，但是在数组中的位置是 (length/2)-1，它代表父节点在数组中的位置</div><div class="line">        for(int i = length/2-1; i &gt;= 0; i--)&#123;//依次遍历每一个父节点，比如最后一个父节点是4，那么它前面所有结点都是父节点，都需要进行构建</div><div class="line">            adjustMaxHeap(array,i,length);    //无序序列，所以需要从下往上全部进行构建。该方法做的事情就是，比较找到父节点，和两个子节点中最大的数放置到父节点的位置上。</div><div class="line">        &#125;</div><div class="line">        //第二步：构建好了大顶堆后，将第一个数与最后一个进行互换,互换后继续调整大顶堆，</div><div class="line">        for(int i = length-1; i &gt; 0; i--)&#123;</div><div class="line">            wrap(array, 0, i);        //互换数据，提取出来了。互换数据后，就已经不在是大顶堆了，需要重新进行构建</div><div class="line">            adjustMaxHeap(array, 0, i);    //从上往下，因为基本上都已经有序了，没必要在从下往上重新进行构建堆了，这就利用了前面比较的结果，减少了很多次比较。</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    //互换数据</div><div class="line">    private void wrap(int[] array, int i, int j)&#123;</div><div class="line">        int temp = array[i];</div><div class="line">        array[i] = array[j];</div><div class="line">        array[j] = temp;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    /**</div><div class="line">     *             构建大顶堆的操作，</div><div class="line">     *         父节点和其左右子节点的大小比较和互换，每次将父结点的位置和数组传进来，</div><div class="line">     *         就能构建出大顶堆了。</div><div class="line">     * </div><div class="line">     * @param array    排序数组</div><div class="line">     * @param s    当前所指父节点在数组中位置(下标)</div><div class="line">     * @param length 数组的长度。用来判断父节点的两个子节点是否存在。</div><div class="line">     *         父节点和左子结点的关系： 2s+1</div><div class="line">     *         父结点和右子结点的关系： 2s+2</div><div class="line">     */</div><div class="line">    private void adjustMaxHeap(int[] array, int s, int length) &#123;</div><div class="line">        int temp = array[s];</div><div class="line">        int child;            //代表更大一方的子节点的数组下标</div><div class="line">        //2s+1 是左子节点在数组中的位置，本来s+1是父节点在二叉树中的位置，2*(s+1) 是左子节点在二叉树中的位置，那么左子节点在数组中的位置为2*(s+1)-1，简化就为2s+1了</div><div class="line">        //为什么需要这个for循环？很多人不理解，觉得这个方法里只需要找到父节点和两个子结点最大的一个即可，这是因为忽略了一个小问题，看下面到152行的解释应该就明白了。</div><div class="line">        for(child=s*2+1; child &lt;= length-1; child=child*2+1)&#123;    //child &lt;= length-1 说明肯定有子节点，如果child=length-1，说明只有左结点</div><div class="line">            </div><div class="line">            if(child &lt; length-1&amp;&amp;array[child] &lt; array[child+1])&#123;//child&lt;length-1，就说明肯定右子结点，将其进行比较，找出大的一方的数组下标</div><div class="line">                child++;    //变成右子节点所在数组中的下标，找到那个较大的子节点</div><div class="line">            &#125;</div><div class="line">            if(array[child] &gt; temp)&#123;    //将子节点(可能是左结点，也可能是右结点，就看上面这个判断了)与父节点进行比较，子节点大的话，将大的赋给父节点</div><div class="line">                array[s] = array[child];    </div><div class="line">            &#125;else&#123;        //父节点大，什么也不做，跳出这层循环。</div><div class="line">                break;</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            array[child] = temp;    //父结点变为最大时，要将原先的父节点的值给现在的子节点。</div><div class="line">            s = child;        //因为子节点的值变了，那么就不知道这个子节点在他自己的两个子节点中是否还是最大，所以需要将该子节点的数组下标给s，去重新检测一遍。只有当父节点为最大时，才会执行break退出循环。</div><div class="line">            </div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">        </div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h2 id="总结比较各种排序算法的优缺点"><a href="#总结比较各种排序算法的优缺点" class="headerlink" title="总结比较各种排序算法的优缺点"></a>总结比较各种排序算法的优缺点</h2><p><img src="874710-20170330164032149-319598517.png" alt="874710-20170330164032149-319598517.png"><br>1、注意，排序的稳定性的意思是：举例说明。<br>排序前：5,6（1）,1,4,3,6（2）,（第一个6在第二个6之前）<br>排序后：如果排序后的结果是1,2,3,4,5,6（1），6（2）那么就说此排序算 法是稳定的，反之为不稳定<br>2、当待排序记录个数n较大，并且是无序序列，对稳定性不作要求时，采用快速排序为宜<br>3、当待排序记录个数n较大，内存空间允许，要求排序稳定时，采用归并排序为宜<br>4、当待排序记录个数n较大，且序列中可能出现正序或逆序的情况，不要求稳定性，采用堆排序或归并排序为宜</p>
+<p>ref: <a href="https://www.cnblogs.com/whgk/p/6596787.html" target="_blank" rel="external">https://www.cnblogs.com/whgk/p/6596787.html</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果这篇文章帮助了你, 请不吝回报</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.png" alt="Ran WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Ran Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/DataStructure/" rel="tag"># DataStructure</a>
+          
+            <a href="/tags/sort/" rel="tag"># sort</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/22/DataStructure/" rel="next" title="DataStructure">
+                <i class="fa fa-chevron-left"></i> DataStructure
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/22/DataStructure-linklist-in-java/" rel="prev" title="DataStructure-linklist-in-java">
+                DataStructure-linklist-in-java <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ran" />
+          <p class="site-author-name" itemprop="name">Ran</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">191</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#排序种类"><span class="nav-number">1.</span> <span class="nav-text">排序种类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选择排序"><span class="nav-number">2.</span> <span class="nav-text">选择排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入排序"><span class="nav-number">3.</span> <span class="nav-text">插入排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#冒泡排序"><span class="nav-number">4.</span> <span class="nav-text">冒泡排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#归并排序"><span class="nav-number">5.</span> <span class="nav-text">归并排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快速排序"><span class="nav-number">6.</span> <span class="nav-text">快速排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#希尔排序"><span class="nav-number">7.</span> <span class="nav-text">希尔排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#堆排序"><span class="nav-number">8.</span> <span class="nav-text">堆排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结比较各种排序算法的优缺点"><span class="nav-number">9.</span> <span class="nav-text">总结比较各种排序算法的优缺点</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ran</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

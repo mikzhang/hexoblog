@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="设计模式," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="在阎宏博士的《JAVA与模式》一书中开头是这样描述建造(Builder)模式的: 建造模式是对象的创建模式。建造模式可以将一个产品的内部表象(internal representation)与产品的生产过程分割开来，从而可以使一个建造过程生成具有不同的内部表象的产品对象。">
+<meta name="keywords" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式-建造模式">
+<meta property="og:url" content="http://mikzhang.github.io/2017/10/28/设计模式-建造模式/index.html">
+<meta property="og:site_name" content="Ran&#39;s Blog">
+<meta property="og:description" content="在阎宏博士的《JAVA与模式》一书中开头是这样描述建造(Builder)模式的: 建造模式是对象的创建模式。建造模式可以将一个产品的内部表象(internal representation)与产品的生产过程分割开来，从而可以使一个建造过程生成具有不同的内部表象的产品对象。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://mikzhang.github.io/2017/10/28/设计模式-建造模式/download.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/10/28/设计模式-建造模式/downloa2.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/10/28/设计模式-建造模式/download3.png">
+<meta property="og:image" content="http://mikzhang.github.io/2017/10/28/设计模式-建造模式/download4.png">
+<meta property="og:updated_time" content="2019-11-28T09:37:27.108Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式-建造模式">
+<meta name="twitter:description" content="在阎宏博士的《JAVA与模式》一书中开头是这样描述建造(Builder)模式的: 建造模式是对象的创建模式。建造模式可以将一个产品的内部表象(internal representation)与产品的生产过程分割开来，从而可以使一个建造过程生成具有不同的内部表象的产品对象。">
+<meta name="twitter:image" content="http://mikzhang.github.io/2017/10/28/设计模式-建造模式/download.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://mikzhang.github.io/2017/10/28/设计模式-建造模式/"/>
+
+
+
+
+
+  <title>设计模式-建造模式 | Ran's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ran's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://mikzhang.github.io/2017/10/28/设计模式-建造模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ran">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ran's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">设计模式-建造模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-28T00:00:00+00:00">
+                2017-10-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在阎宏博士的《JAVA与模式》一书中开头是这样描述建造(Builder)模式的:</p>
+<p>建造模式是对象的创建模式。建造模式可以将一个产品的内部表象(internal representation)与产品的生产过程分割开来，从而可以使一个建造过程生成具有不同的内部表象的产品对象。</p>
+<a id="more"></a>
+<h2 id="产品的内部表象"><a href="#产品的内部表象" class="headerlink" title="产品的内部表象"></a>产品的内部表象</h2><p>一个产品常有不同的组成成分作为产品的零件，这些零件有可能是对象，也有可能不是对象，它们通常又叫做产品的内部表象(internal representation)。不同的产品可以有不同的内部表象，也就是不同的零件。使用建造模式可以使客户端不需要知道所生成的产品有哪些零件，每个产品的对应零件彼此有何不同，是怎么建造出来的，以及怎么组成产品。</p>
+<h2 id="对象性质的建造"><a href="#对象性质的建造" class="headerlink" title="对象性质的建造"></a>对象性质的建造</h2><p>有些情况下，一个对象会有一些重要的性质，在它们没有恰当的值之前，对象不能作为一个完整的产品使用。比如，一个电子邮件有发件人地址、收件人地址、主题、内容、附录等部分，而在最起码的收件人地址得到赋值之前，这个电子邮件不能发送。</p>
+<p>有些情况下，一个对象的一些性质必须按照某个顺序赋值才有意义。在某个性质没有赋值之前，另一个性质则无法赋值。这些情况使得性质本身的建造涉及到复杂的商业逻辑。这时候，此对象相当于一个有待建造的产品，而对象的这些性质相当于产品的零件，建造产品的过程是建造零件的过程。由于建造零件的过程很复杂，因此，这些零件的建造过程往往被“外部化”到另一个称做建造者的对象里，建造者对象返还给客户端的是一个全部零件都建造完毕的产品对象。</p>
+<p>建造模式利用一个导演者对象和具体建造者对象一个个地建造出所有的零件，从而建造出完整的产品对象。建造者模式将产品的结构和产品的零件的建造过程对客户端隐藏起来，把对建造过程进行指挥的责任和具体建造者零件的责任分割开来，达到责任划分和封装的目的。　</p>
+<h2 id="建造模式的结构"><a href="#建造模式的结构" class="headerlink" title="建造模式的结构"></a>建造模式的结构</h2><img src="/2017/10/28/设计模式-建造模式/download.png" alt="download.png" title="">
+<p>在这个示意性的系统里，最终产品Product只有两个零件，即part1和part2。相应的建造方法也有两个:buildPart1()和buildPart2()、同时可以看出本模式涉及到四个角色，它们分别是:</p>
+<ul>
+<li><strong>抽象建造者(Builder)</strong>角色: 给出一个抽象接口，以规范产品对象的各个组成成分的建造。一般而言，此接口独立于应用程序的商业逻辑。模式中直接创建产品对象的是具体建造者 (ConcreteBuilder)角色。具体建造者类必须实现这个接口所要求的两种方法:一种是建造方法(buildPart1和 buildPart2)，另一种是返还结构方法(retrieveResult)。一般来说，产品所包含的零件数目与建造方法的数目相符。换言之，有多少 零件，就有多少相应的建造方法。</li>
+<li><strong>具体建造者(ConcreteBuilder)</strong>角色: 担任这个角色的是与应用程序紧密相关的一些类，它们在应用程序调用下创建产品的实例。这个角色要完成的任务包括:1.实现抽象建造者Builder所声明的接口，给出一步一步地完成创建产品实例的操作。2.在建造过程完成后，提供产品的实例。</li>
+<li><strong>导演者(Director)</strong>角色: 担任这个角色的类调用具体建造者角色以创建产品对象。应当指出的是，导演者角色并没有产品类的具体知识，真正拥有产品类的具体知识的是具体建造者角色。</li>
+<li><strong>产品(Product)</strong>角色: 产品便是建造中的复杂对象。一般来说，一个系统中会有多于一个的产品类，而且这些产品类并不一定有共同的接口，而完全可以是不相关联的。</li>
+</ul>
+<p>导演者角色是与客户端打交道的角色。导演者将客户端创建产品的请求划分为对各个零件的建造请求，再将这些请求委派给具体建造者角色。具体建造者角色是做具体建造工作的，但是却不为客户端所知。</p>
+<p>一般来说，每有一个产品类，就有一个相应的具体建造者类。这些产品应当有一样数目的零件，而每有一个零件就相应地在所有的建造者角色里有一个建造方法。</p>
+<p>产品类Product<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Product</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 定义一些关于产品的操作</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> String part1;</div><div class="line">    <span class="keyword">private</span> String part2;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPart1</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> part1;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPart1</span><span class="params">(String part1)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.part1 = part1;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPart2</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> part2;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPart2</span><span class="params">(String part2)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.part2 = part2;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>抽象建造者类Builder<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Builder</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildPart1</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildPart2</span><span class="params">()</span></span>;</div><div class="line">    <span class="function"><span class="keyword">public</span> Product <span class="title">retrieveResult</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>具体建造者类ConcreteBuilder<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcreteBuilder</span> <span class="keyword">implements</span> <span class="title">Builder</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Product product = <span class="keyword">new</span> Product();</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 产品零件建造方法1</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildPart1</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">//构建产品的第一个零件</span></div><div class="line"> 　　　　product.setPart1(<span class="string">"编号:9527"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 产品零件建造方法2</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildPart2</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">//构建产品的第二个零件</span></div><div class="line"> 　　　　product.setPart2(<span class="string">"名称:XXX"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 产品返还方法</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Product <span class="title">retrieveResult</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> product;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>导演者类Director<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Director</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 持有当前需要使用的建造器对象</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> Builder builder;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 构造方法，传入建造器对象</div><div class="line">     * <span class="doctag">@param</span> builder 建造器对象</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Director</span><span class="params">(Builder builder)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.builder = builder;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 产品构造方法，负责调用各个零件建造方法</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">construct</span><span class="params">()</span></span>&#123;</div><div class="line">        builder.buildPart1();</div><div class="line">        builder.buildPart2();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>客户端类Client<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[]args)</span></span>&#123;</div><div class="line">        Builder builder = <span class="keyword">new</span> ConcreteBuilder();</div><div class="line">        Director director = <span class="keyword">new</span> Director(builder);</div><div class="line">        director.construct();</div><div class="line">        Product product = builder.retrieveResult();</div><div class="line">        System.out.println(product.getPart1());</div><div class="line">        System.out.println(product.getPart2());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="时序图"><a href="#时序图" class="headerlink" title="时序图"></a>时序图</h2><img src="/2017/10/28/设计模式-建造模式/downloa2.png" alt="downloa2.png" title="">
+<p>客户端负责创建导演者和具体建造者对象。然后，客户端把具体建造者对象交给导演者，导演者操作具体建造者，开始创建产品。当产品完成后，建造者把产品返还给客户端。<br>把创建具体建造者对象的任务交给客户端而不是导演者对象，是为了将导演者对象与具体建造者对象的耦合变成动态的，从而使导演者对象可以操纵数个具体建造者对象中的任何一个。</p>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>假设有一个电子杂志系统，定期地向用户的电子邮件信箱发送电子杂志。用户可以通过网页订阅电子杂志，也可以通过网页结束订阅。当客户开始订阅时，系统发送一个电子邮件表示欢迎，当客户结束订阅时，系统发送一个电子邮件表示欢送。本例子就是这个系统负责发送“欢迎”和“欢送”邮件的模块。</p>
+<p>在本例中，产品类就是发给某个客户的“欢迎”和“欢送”邮件，如下图所示。<br><img src="/2017/10/28/设计模式-建造模式/download3.png" alt="download3.png" title=""><br>虽然在这个例子里面各个产品类均有一个共同的接口，但这仅仅是本例子特有的，并不代表建造模式的特点。建造模式可以应用到具有完全不同接口的产品类上。大多数情况下是不知道最终构建出来的产品是什么样的，所以在标准的建造模式里面，一般是不需要对产品定义抽象接口的，因为最终构造的产品千差万别，给这些产品定义公共接口几乎是没有意义的。</p>
+<p>下图所示就是这个系统的类图。<br><img src="/2017/10/28/设计模式-建造模式/download4.png" alt="download4.png" title=""><br>这个系统含有客户端(Client)、导演者(Director)、抽象建造者(Builder)、具体建造者(WelcomeBuilder和GoodbyeBuilder)、产品(WelcomeMessage和GoodbyeMessage)等角色。</p>
+<h3 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h3><p>抽象类AutoMessage源代码，send()操作仅仅是示意性的，并没有给出任何发送电子邮件的代码。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AutoMessage</span> </span>&#123;</div><div class="line">    <span class="comment">//收件人地址</span></div><div class="line">    <span class="keyword">private</span> String to;</div><div class="line">    <span class="comment">//发件人地址</span></div><div class="line">    <span class="keyword">private</span> String from;</div><div class="line">    <span class="comment">//标题</span></div><div class="line">    <span class="keyword">private</span> String subject;</div><div class="line">    <span class="comment">//内容</span></div><div class="line">    <span class="keyword">private</span> String body;</div><div class="line">    <span class="comment">//发送日期</span></div><div class="line">    <span class="keyword">private</span> Date sendDate;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">send</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"收件人地址:"</span> + to);</div><div class="line">        System.out.println(<span class="string">"发件人地址:"</span> + from);</div><div class="line">        System.out.println(<span class="string">"标题:"</span> + subject);</div><div class="line">        System.out.println(<span class="string">"内容:"</span> + body);</div><div class="line">        System.out.println(<span class="string">"发送日期:"</span> + sendDate);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getTo</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> to;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTo</span><span class="params">(String to)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.to = to;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getFrom</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> from;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFrom</span><span class="params">(String from)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.from = from;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSubject</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> subject;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSubject</span><span class="params">(String subject)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.subject = subject;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getBody</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> body;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBody</span><span class="params">(String body)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.body = body;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> Date <span class="title">getSendDate</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> sendDate;</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSendDate</span><span class="params">(Date sendDate)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.sendDate = sendDate;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>具体产品类WelcomeMessage<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WelcomeMessage</span> <span class="keyword">extends</span> <span class="title">AutoMessage</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 构造子</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WelcomeMessage</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"发送欢迎信息"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>具体产品类GoodbyeMessage<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GoodbyeMessage</span> <span class="keyword">extends</span> <span class="title">AutoMessage</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GoodbyeMessage</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"发送欢送信息"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>抽象建造者类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</div><div class="line">    <span class="keyword">protected</span> AutoMessage msg;</div><div class="line">    <span class="comment">//标题零件的建造方法</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildSubject</span><span class="params">()</span></span>;</div><div class="line">    <span class="comment">//内容零件的建造方法</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildBody</span><span class="params">()</span></span>;</div><div class="line">    <span class="comment">//收件人零件的建造方法</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildTo</span><span class="params">(String to)</span></span>&#123;</div><div class="line">        msg.setTo(to);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//发件人零件的建造方法</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildFrom</span><span class="params">(String from)</span></span>&#123;</div><div class="line">        msg.setFrom(from);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//发送时间零件的建造方法</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildSendDate</span><span class="params">()</span></span>&#123;</div><div class="line">        msg.setSendDate(<span class="keyword">new</span> Date());</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 邮件产品完成后，用此方法发送邮件</div><div class="line">     * 此方法相当于产品返还方法</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">()</span></span>&#123;</div><div class="line">        msg.send();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>具体建造者WelcomeBuilder<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WelcomeBuilder</span> <span class="keyword">extends</span> <span class="title">Builder</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WelcomeBuilder</span><span class="params">()</span></span>&#123;</div><div class="line">        msg = <span class="keyword">new</span> WelcomeMessage();</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildBody</span><span class="params">()</span> </span>&#123;</div><div class="line"> 　　　　msg.setBody(<span class="string">"欢迎内容"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildSubject</span><span class="params">()</span> </span>&#123;</div><div class="line"> 　　　　msg.setSubject(<span class="string">"欢迎标题"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>具体建造者<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GoodbyeBuilder</span> <span class="keyword">extends</span> <span class="title">Builder</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GoodbyeBuilder</span><span class="params">()</span></span>&#123;</div><div class="line">        msg = <span class="keyword">new</span> GoodbyeMessage();</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildBody</span><span class="params">()</span> </span>&#123;</div><div class="line"> 　　　　msg.setBody(<span class="string">"欢送内容"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildSubject</span><span class="params">()</span> </span>&#123;</div><div class="line"> 　　　　msg.setSubject(<span class="string">"欢送标题"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>导演者Director，这个类提供一个construct()方法，此方法调用建造者的建造方法，包括buildTo()、buildFrom()、buildSubject()、buildBody()、buildSendDate()等，从而一部分一部分地建造出产品对象，既AutoMessage对象。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Director</span> </span>&#123;</div><div class="line">    Builder builder;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 构造子</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Director</span><span class="params">(Builder builder)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.builder = builder;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 产品构造方法，负责调用各零件的建造方法</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">construct</span><span class="params">(String toAddress , String fromAddress)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.builder.buildTo(toAddress);</div><div class="line">        <span class="keyword">this</span>.builder.buildFrom(fromAddress);</div><div class="line">        <span class="keyword">this</span>.builder.buildSubject();</div><div class="line">        <span class="keyword">this</span>.builder.buildBody();</div><div class="line">        <span class="keyword">this</span>.builder.buildSendDate();</div><div class="line">        <span class="keyword">this</span>.builder.sendMessage();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>客户端<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        Builder builder = <span class="keyword">new</span> WelcomeBuilder();</div><div class="line">        Director director = <span class="keyword">new</span> Director(builder);</div><div class="line">        director.construct(<span class="string">"toAddress@126.com"</span>, <span class="string">"fromAddress@126.com"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="建造模式分成两个很重要的部分"><a href="#建造模式分成两个很重要的部分" class="headerlink" title="建造模式分成两个很重要的部分"></a>建造模式分成两个很重要的部分</h2><ol>
+<li><strong>Builder接口</strong>，这里是定义了如何构建各个部件，也就是知道每个部件功能如何实现，以及如何装配这些部件到产品中去；</li>
+<li><strong>Director</strong>，Director是知道如何组合来构建产品，也就是说Director负责整体的构建算法，而且通常是分步骤地来执行。</li>
+</ol>
+<p>不管如何变化，建造模式都存在这么两个部分，一个部分是部件构造和产品装配，另一个部分是整体构建的算法。认识这点是很重要的，因为在建造模式中，强调的是固定整体构建的算法，而灵活扩展和切换部件的具体构造和产品装配的方式。</p>
+<p>再直白点说，建造模式的<strong>重心在于分离构建算法和具体的构造实现</strong>，从而使得构建算法可以重用。具体的构造实现可以很方便地扩展和切换，从而可以灵活地组合来构造出不同的产品对象。</p>
+<h2 id="使用建造模式构建复杂对象"><a href="#使用建造模式构建复杂对象" class="headerlink" title="使用建造模式构建复杂对象"></a>使用建造模式构建复杂对象</h2><p>考虑这样一个实际应用，要创建一个保险合同的对象，里面很多属性的值都有约束，要求创建出来的对象是满足这些约束规则的。约束规则比如:保险合同通常情况下可以和个人签订，也可以和某个公司签订，但是一份保险合同不能同时与个人和公司签订。这个对象里有很多类似这样的约束，采用建造模式来构建复杂的对象，通常会对建造模式进行一定的简化，因为目标明确，就是创建某个复杂对象，因此做适当简化会使程序更简洁。大致简化如下:</p>
+<ul>
+<li>由于是用Builder模式来创建某个对象，因此就没有必要再定义一个Builder接口，直接提供一个具体的建造者类就可以了。</li>
+<li>对于创建一个复杂的对象，可能会有很多种不同的选择和步骤，干脆去掉“导演者”，把导演者的功能和Client的功能合并起来，也就是说,Client这个时候就相当于导演者，它来指导构建器类去构建需要的复杂对象。</li>
+</ul>
+<p>保险合同类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 保险合同对象</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InsuranceContract</span> </span>&#123;</div><div class="line">    <span class="comment">//保险合同编号</span></div><div class="line">　　<span class="keyword">private</span> String contractId;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 被保险人员的名称，同一份保险合同，要么跟人员签订，要么跟公司签订</div><div class="line">     * 也就是说，“被保险人员”和“被保险公司”这两个属性，不可能同时有值</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> String personName;</div><div class="line">    <span class="comment">//被保险公司的名称</span></div><div class="line">　　<span class="keyword">private</span> String companyName;</div><div class="line">    <span class="comment">//保险开始生效日期</span></div><div class="line">　　<span class="keyword">private</span> <span class="keyword">long</span> beginDate;</div><div class="line">    <span class="comment">//保险失效日期，一定会大于保险开始生效日期</span></div><div class="line">　　<span class="keyword">private</span> <span class="keyword">long</span> endDate;</div><div class="line">    <span class="comment">//其他数据</span></div><div class="line">　　<span class="keyword">private</span> String otherData;</div><div class="line">    <span class="comment">//私有构造方法</span></div><div class="line">　　<span class="function"><span class="keyword">private</span> <span class="title">InsuranceContract</span><span class="params">(ConcreteBuilder builder)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.contractId = builder.contractId;</div><div class="line">        <span class="keyword">this</span>.personName = builder.personName;</div><div class="line">        <span class="keyword">this</span>.companyName = builder.companyName;</div><div class="line">        <span class="keyword">this</span>.beginDate = builder.beginDate;</div><div class="line">        <span class="keyword">this</span>.endDate = builder.endDate;</div><div class="line">        <span class="keyword">this</span>.otherData = builder.otherData;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 保险合同的一些操作</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">someOperation</span><span class="params">()</span></span>&#123;</div><div class="line">        System.out.println(<span class="string">"当前正在操作的保险合同编号为【"</span>+<span class="keyword">this</span>.contractId+<span class="string">"】"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcreteBuilder</span></span>&#123;</div><div class="line">        <span class="keyword">private</span> String contractId;</div><div class="line">        <span class="keyword">private</span> String personName;</div><div class="line">        <span class="keyword">private</span> String companyName;</div><div class="line">        <span class="keyword">private</span> <span class="keyword">long</span> beginDate;</div><div class="line">        <span class="keyword">private</span> <span class="keyword">long</span> endDate;</div><div class="line">        <span class="keyword">private</span> String otherData;</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 构造方法，传入必须要有的参数</div><div class="line">         * <span class="doctag">@param</span> contractId     保险合同编号</div><div class="line">         * <span class="doctag">@param</span> beginDate        保险合同开始生效日期</div><div class="line">         * <span class="doctag">@param</span> endDate        保险合同失效日期</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ConcreteBuilder</span><span class="params">(String contractId,<span class="keyword">long</span> beginDate,<span class="keyword">long</span> endDate)</span></span>&#123;</div><div class="line">            <span class="keyword">this</span>.contractId = contractId;</div><div class="line">            <span class="keyword">this</span>.beginDate = beginDate;</div><div class="line">            <span class="keyword">this</span>.endDate = endDate;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//被保险人员的名称</span></div><div class="line">　　　　<span class="function"><span class="keyword">public</span> ConcreteBuilder <span class="title">setPersonName</span><span class="params">(String personName)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.personName = personName;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//被保险公司的名称</span></div><div class="line">　　　　<span class="function"><span class="keyword">public</span> ConcreteBuilder <span class="title">setCompanyName</span><span class="params">(String companyName)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.companyName = companyName;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//其他数据</span></div><div class="line">　　　　<span class="function"><span class="keyword">public</span> ConcreteBuilder <span class="title">setOtherData</span><span class="params">(String otherData)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.otherData = otherData;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * 构建真正的对象并返回</div><div class="line">         * <span class="doctag">@return</span>    构建的保险合同对象</div><div class="line">         */</div><div class="line">        <span class="function"><span class="keyword">public</span> InsuranceContract <span class="title">build</span><span class="params">()</span></span>&#123;</div><div class="line">            <span class="keyword">if</span>(contractId == <span class="keyword">null</span> || contractId.trim().length()==<span class="number">0</span>)&#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"合同编号不能为空"</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">boolean</span> signPerson = (personName != <span class="keyword">null</span> &amp;&amp; personName.trim().length() &gt; <span class="number">0</span>);</div><div class="line">            <span class="keyword">boolean</span> signCompany = (companyName != <span class="keyword">null</span> &amp;&amp; companyName.trim().length() &gt; <span class="number">0</span>);</div><div class="line">            <span class="keyword">if</span>(signPerson &amp;&amp; signCompany)&#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"一份保险合同不能同时与个人和公司签订"</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span>(signPerson == <span class="keyword">false</span> &amp;&amp; signCompany == <span class="keyword">false</span>)&#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"一份保险合同不能没有签订对象"</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span>(beginDate &lt;= <span class="number">0</span> )&#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"一份保险合同必须有开始生效的日期"</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span>(endDate &lt;=<span class="number">0</span>)&#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"一份保险合同必须有失效的日期"</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span>(endDate &lt; beginDate)&#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"一份保险合同的失效日期必须大于生效日期"</span>);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> InsuranceContract(<span class="keyword">this</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>客户端类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[]args)</span></span>&#123;</div><div class="line">        <span class="comment">//创建构建器对象</span></div><div class="line"> 　　　　InsuranceContract.ConcreteBuilder builder =</div><div class="line">            <span class="keyword">new</span> InsuranceContract.ConcreteBuilder(<span class="string">"9527"</span>, <span class="number">123L</span>, <span class="number">456L</span>);</div><div class="line">        <span class="comment">//设置需要的数据，然后构建保险合同对象</span></div><div class="line"> 　　　　InsuranceContract contract = </div><div class="line">            builder.setPersonName(<span class="string">"小明"</span>).setOtherData(<span class="string">"test"</span>).build();</div><div class="line">        <span class="comment">//操作保险合同对象的方法</span></div><div class="line"> 　　　　contract.someOperation();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在本例中将具体建造者合并到了产品对象中，并将产品对象的构造函数私有化，防止客户端不使用构建器来构建产品对象，而是直接去使用new来构建产品对象所导致的问题。另外，这个构建器的功能就是为了创建被构建的对象，完全可以不用单独一个类。</p>
+<h2 id="什么情况下使用建造模式"><a href="#什么情况下使用建造模式" class="headerlink" title="什么情况下使用建造模式"></a>什么情况下使用建造模式</h2><ol>
+<li>需要生成的产品对象有复杂的内部结构，每一个内部成分本身可以是对象，也可以仅仅是一个对象(即产品对象)的一个组成部分。</li>
+<li>需要生成的产品对象的属性相互依赖。建造模式可以强制实行一种分步骤进行的建造过程，因此，如果产品对象的一个属性必须在另一个属性被赋值之后才可以被赋值，使用建造模式是一个很好的设计思想。</li>
+<li>在对象创建过程中会使用到系统中的其他一些对象，这些对象在产品对象的创建过程中不易得到。</li>
+</ol>
+<p>ref: <a href="http://www.cnblogs.com/java-my-life/archive/2012/04/07/2433939.html" target="_blank" rel="external">http://www.cnblogs.com/java-my-life/archive/2012/04/07/2433939.html</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>如果这篇文章帮助了你, 请不吝回报</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/wechatpay.png" alt="Ran WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/alipay.jpg" alt="Ran Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/28/设计模式-抽象工厂模式/" rel="next" title="设计模式-抽象工厂模式">
+                <i class="fa fa-chevron-left"></i> 设计模式-抽象工厂模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/30/设计模式-策底理解单例模式/" rel="prev" title="设计模式-策底理解单例模式">
+                设计模式-策底理解单例模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Ran" />
+          <p class="site-author-name" itemprop="name">Ran</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">191</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#产品的内部表象"><span class="nav-number">1.</span> <span class="nav-text">产品的内部表象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象性质的建造"><span class="nav-number">2.</span> <span class="nav-text">对象性质的建造</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建造模式的结构"><span class="nav-number">3.</span> <span class="nav-text">建造模式的结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#时序图"><span class="nav-number">4.</span> <span class="nav-text">时序图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">5.</span> <span class="nav-text">使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#源代码"><span class="nav-number">5.1.</span> <span class="nav-text">源代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建造模式分成两个很重要的部分"><span class="nav-number">6.</span> <span class="nav-text">建造模式分成两个很重要的部分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用建造模式构建复杂对象"><span class="nav-number">7.</span> <span class="nav-text">使用建造模式构建复杂对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么情况下使用建造模式"><span class="nav-number">8.</span> <span class="nav-text">什么情况下使用建造模式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ran</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
